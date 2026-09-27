@@ -1,0 +1,837 @@
+version: 2
+
+anchors:
+
+  # --- Prices ----------------------------------------------------------------
+
+  - &ticker_symbol
+    name: ticker_symbol
+    description: Ticker symbol
+    data_type: varchar
+
+  - &trading_date
+    name: trading_date
+    description: Trading day
+    data_type: date
+
+  - &open_price
+    name: open_price
+    description: Opening price, in the listing currency
+    data_type: double
+
+  - &high_price
+    name: high_price
+    description: Highest traded price of the day
+    data_type: double
+
+  - &low_price
+    name: low_price
+    description: Lowest traded price of the day
+    data_type: double
+
+  - &close_price
+    name: close_price
+    description: Closing price, not adjusted for splits or dividends
+    data_type: double
+
+  - &trade_volume
+    name: trade_volume
+    description: Number of shares traded
+    data_type: bigint
+
+  # --- Company profile -------------------------------------------------------
+
+  - &asset_type
+    name: asset_type
+    description: Asset type
+    data_type: varchar
+
+  - &company_name
+    name: company_name
+    description: Company name
+    data_type: varchar
+
+  - &business_description
+    name: business_description
+    description: Business description
+    data_type: varchar
+
+  - &central_index_key
+    name: central_index_key
+    description: SEC Central Index Key uniquely identifying entities
+    data_type: varchar
+
+  - &listing_exchange
+    name: listing_exchange
+    description: Listing exchange where the asset is traded
+    data_type: varchar
+
+  - &currency
+    name: currency
+    description: Currency used in associated price and valuation fields
+    data_type: varchar
+
+  - &country
+    name: country
+    description: >
+      Country assigned by Alpha Vantage; its meaning is undocumented. Not the country of incorporation
+      (CCL, incorporated in Panama, is USA) and not necessarily the country in the address (MDT, address in Ireland, is USA).
+      Use SEC EDGAR data via cik for legal domicile.
+    data_type: varchar
+
+  - &sector
+    name: sector
+    description: Sector classification
+    data_type: varchar
+
+  - &industry
+    name: industry
+    description: Industry classification
+    data_type: varchar
+
+  - &address
+    name: address
+    description: >
+      Company address as reported by Alpha Vantage, in the format of the SEC-filed business address.
+      May differ from where the company is run (MDT: Galway, Ireland).
+    data_type: varchar
+
+  - &official_site
+    name: official_site
+    description: Company website URL
+    data_type: varchar
+
+  - &fiscal_year_end
+    name: fiscal_year_end
+    description: Month the fiscal year ends
+    data_type: varchar
+
+  - &latest_quarter
+    name: latest_quarter
+    description: End date of the latest reported fiscal quarter
+    data_type: date
+
+  # --- Company fundamentals --------------------------------------------------
+
+  - &market_capitalization
+    name: market_capitalization
+    description: Market capitalization, in the reporting currency
+    data_type: bigint
+
+  - &ebitda
+    name: ebitda
+    description: Earnings before interest, taxes, depreciation and amortization, trailing twelve months
+    data_type: bigint
+
+  - &pe_ratio
+    name: pe_ratio
+    description: Price-to-earnings ratio
+    data_type: double
+
+  - &peg_ratio
+    name: peg_ratio
+    description: Price/earnings-to-growth ratio
+    data_type: double
+
+  - &book_value
+    name: book_value
+    description: Book value per share
+    data_type: double
+
+  - &dividend_per_share
+    name: dividend_per_share
+    description: Dividends paid per share, trailing twelve months
+    data_type: double
+
+  - &dividend_yield
+    name: dividend_yield
+    description: Dividend yield as a decimal fraction (0.025 = 2.5%)
+    data_type: double
+
+  - &eps
+    name: eps
+    description: Earnings per share, trailing twelve months
+    data_type: double
+
+  - &revenue_per_share_ttm
+    name: revenue_per_share_ttm
+    description: Revenue per share, trailing twelve months
+    data_type: double
+
+  - &profit_margin
+    name: profit_margin
+    description: Net profit margin as a decimal fraction
+    data_type: double
+
+  - &operating_margin_ttm
+    name: operating_margin_ttm
+    description: Operating margin as a decimal fraction, trailing twelve months
+    data_type: double
+
+  - &return_on_assets_ttm
+    name: return_on_assets_ttm
+    description: Return on assets as a decimal fraction, trailing twelve months
+    data_type: double
+
+  - &return_on_equity_ttm
+    name: return_on_equity_ttm
+    description: Return on equity as a decimal fraction, trailing twelve months
+    data_type: double
+
+  - &revenue_ttm
+    name: revenue_ttm
+    description: Total revenue, trailing twelve months
+    data_type: bigint
+
+  - &gross_profit_ttm
+    name: gross_profit_ttm
+    description: Gross profit, trailing twelve months
+    data_type: bigint
+
+  - &diluted_eps_ttm
+    name: diluted_eps_ttm
+    description: Diluted earnings per share, trailing twelve months
+    data_type: double
+
+  - &quarterly_earnings_growth_yoy
+    name: quarterly_earnings_growth_yoy
+    description: Year-over-year growth in quarterly earnings as a decimal fraction
+    data_type: double
+
+  - &quarterly_revenue_growth_yoy
+    name: quarterly_revenue_growth_yoy
+    description: Year-over-year growth in quarterly revenue as a decimal fraction
+    data_type: double
+
+  - &analyst_target_price
+    name: analyst_target_price
+    description: Consensus analyst price target
+    data_type: double
+
+  - &analyst_rating_strong_buy
+    name: analyst_rating_strong_buy
+    description: Number of analysts rating the stock Strong Buy
+    data_type: integer
+
+  - &analyst_rating_buy
+    name: analyst_rating_buy
+    description: Number of analysts rating the stock Buy
+    data_type: integer
+
+  - &analyst_rating_hold
+    name: analyst_rating_hold
+    description: Number of analysts rating the stock Hold
+    data_type: integer
+
+  - &analyst_rating_sell
+    name: analyst_rating_sell
+    description: Number of analysts rating the stock Sell
+    data_type: integer
+
+  - &analyst_rating_strong_sell
+    name: analyst_rating_strong_sell
+    description: Number of analysts rating the stock Strong Sell
+    data_type: integer
+
+  - &trailing_pe
+    name: trailing_pe
+    description: Price-to-earnings ratio on trailing twelve-month earnings
+    data_type: double
+
+  - &forward_pe
+    name: forward_pe
+    description: Price-to-earnings ratio on forecast earnings
+    data_type: double
+
+  - &price_to_sales_ratio_ttm
+    name: price_to_sales_ratio_ttm
+    description: Price-to-sales ratio, trailing twelve months
+    data_type: double
+
+  - &price_to_book_ratio
+    name: price_to_book_ratio
+    description: Price-to-book ratio
+    data_type: double
+
+  - &ev_to_revenue
+    name: ev_to_revenue
+    description: Enterprise value to revenue
+    data_type: double
+
+  - &ev_to_ebitda
+    name: ev_to_ebitda
+    description: Enterprise value to EBITDA
+    data_type: double
+
+  - &beta
+    name: beta
+    description: Beta, the stock's volatility relative to the market
+    data_type: double
+
+  - &high_52_week
+    name: high_52_week
+    description: Highest price in the last 52 weeks
+    data_type: double
+
+  - &low_52_week
+    name: low_52_week
+    description: Lowest price in the last 52 weeks
+    data_type: double
+
+  - &moving_average_50_day
+    name: moving_average_50_day
+    description: 50-day moving average of the closing price
+    data_type: double
+
+  - &moving_average_200_day
+    name: moving_average_200_day
+    description: 200-day moving average of the closing price
+    data_type: double
+
+  - &shares_outstanding
+    name: shares_outstanding
+    description: Total shares outstanding
+    data_type: bigint
+
+  - &shares_float
+    name: shares_float
+    description: Shares available for public trading
+    data_type: bigint
+
+  - &percent_insiders
+    name: percent_insiders
+    description: Percentage of shares held by insiders (0-100)
+    data_type: double
+
+  - &percent_institutions
+    name: percent_institutions
+    description: Percentage of shares held by institutions (0-100)
+    data_type: double
+
+  - &dividend_date
+    name: dividend_date
+    description: Payment date of the latest dividend
+    data_type: date
+
+  - &ex_dividend_date
+    name: ex_dividend_date
+    description: Ex-dividend date of the latest dividend
+    data_type: date
+
+  # --- Economic series -------------------------------------------------------
+
+  - &indicator
+    name: indicator
+    description: Alpha Vantage function name for the series, e.g. CPI or REAL_GDP
+    data_type: varchar
+
+  - &series_name
+    name: series_name
+    description: Full name of the series, e.g. "Consumer Price Index for all Urban Consumers"
+    data_type: varchar
+
+  - &series_interval
+    name: series_interval
+    description: Period covered by each observation; one of annual, quarterly or monthly
+    data_type: varchar
+
+  - &series_unit
+    name: series_unit
+    description: Unit of the observed value, e.g. "percent" or "billions of dollars"
+    data_type: varchar
+
+  - &period_start_date
+    name: period_start_date
+    description: Start date of the period the observation covers
+    data_type: date
+
+  - &value
+    name: value
+    description: Observed value in the series unit; null where the API reported no value
+    data_type: double
+
+  # --- Lineage ---------------------------------------------------------------
+
+  - &loaded_at
+    name: loaded_at
+    description: Start time of the dlt load that last wrote the row. Re-fetched rows are rewritten on every load.
+    data_type: timestamp with time zone
+
+  - &record_id
+    name: record_id
+    description: >
+      Record identifier: a hash of the row's primary key, stable across loads and versions of the row.
+    data_type: varchar
+
+sources:
+  - name: alpha_vantage
+    schema: alpha_vantage
+    description: >
+      Market and US macroeconomic data from the Alpha Vantage API (https://www.alphavantage.co/documentation/),
+      loaded by the dlt pipeline in src/financial. Tables are upserted on their primary keys, so re-runs update rows in place.
+    config:
+      loaded_at_field: "to_timestamp(cast(_dlt_load_id as double))"
+      freshness:
+        error_after: {count: 1, period: day}
+    tables:
+      - name: daily_prices
+        description: Daily OHLCV bars per symbol for the last 100 trading days. One row per symbol per trading day.
+        columns:
+
+          - <<: *ticker_symbol
+            name: symbol
+
+          - <<: *trading_date
+            name: date
+
+          - <<: *open_price
+            name: open
+
+          - <<: *high_price
+            name: high
+
+          - <<: *low_price
+            name: low
+
+          - <<: *close_price
+            name: close
+
+          - <<: *trade_volume
+            name: volume
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: company_overviews
+        description: >
+          Company profile and fundamentals, one row per symbol, refreshed on every load.
+          All values are text as returned by the API, which uses "None" and "-" for missing values; cast them downstream.
+        columns:
+
+          - <<: *ticker_symbol
+            name: symbol
+
+          - *asset_type
+
+          - <<: *company_name
+            name: name
+
+          - <<: *business_description
+            name: description
+
+          - <<: *central_index_key
+            name: cik
+
+          - <<: *listing_exchange
+            name: exchange
+
+          - *currency
+
+          - *country
+
+          - *sector
+
+          - *industry
+
+          - *address
+
+          - *official_site
+
+          - *fiscal_year_end
+
+          - <<: *latest_quarter
+            data_type: varchar
+
+          - <<: *market_capitalization
+            data_type: varchar
+
+          - <<: *ebitda
+            data_type: varchar
+
+          - <<: *pe_ratio
+            data_type: varchar
+
+          - <<: *peg_ratio
+            data_type: varchar
+
+          - <<: *book_value
+            data_type: varchar
+
+          - <<: *dividend_per_share
+            data_type: varchar
+
+          - <<: *dividend_yield
+            data_type: varchar
+
+          - <<: *eps
+            data_type: varchar
+
+          - <<: *revenue_per_share_ttm
+            data_type: varchar
+
+          - <<: *profit_margin
+            data_type: varchar
+
+          - <<: *operating_margin_ttm
+            data_type: varchar
+
+          - <<: *return_on_assets_ttm
+            data_type: varchar
+
+          - <<: *return_on_equity_ttm
+            data_type: varchar
+
+          - <<: *revenue_ttm
+            data_type: varchar
+
+          - <<: *gross_profit_ttm
+            data_type: varchar
+
+          - <<: *diluted_eps_ttm
+            name: diluted_epsttm
+            data_type: varchar
+
+          - <<: *quarterly_earnings_growth_yoy
+            data_type: varchar
+
+          - <<: *quarterly_revenue_growth_yoy
+            data_type: varchar
+
+          - <<: *analyst_target_price
+            data_type: varchar
+
+          - <<: *analyst_rating_strong_buy
+            data_type: varchar
+
+          - <<: *analyst_rating_buy
+            data_type: varchar
+
+          - <<: *analyst_rating_hold
+            data_type: varchar
+
+          - <<: *analyst_rating_sell
+            data_type: varchar
+
+          - <<: *analyst_rating_strong_sell
+            data_type: varchar
+
+          - <<: *trailing_pe
+            data_type: varchar
+
+          - <<: *forward_pe
+            data_type: varchar
+
+          - <<: *price_to_sales_ratio_ttm
+            data_type: varchar
+
+          - <<: *price_to_book_ratio
+            data_type: varchar
+
+          - <<: *ev_to_revenue
+            data_type: varchar
+
+          - <<: *ev_to_ebitda
+            data_type: varchar
+
+          - <<: *beta
+            data_type: varchar
+
+          - <<: *high_52_week
+            name: _52_week_high
+            data_type: varchar
+
+          - <<: *low_52_week
+            name: _52_week_low
+            data_type: varchar
+
+          - <<: *moving_average_50_day
+            name: _50_day_moving_average
+            data_type: varchar
+
+          - <<: *moving_average_200_day
+            name: _200_day_moving_average
+            data_type: varchar
+
+          - <<: *shares_outstanding
+            data_type: varchar
+
+          - <<: *shares_float
+            data_type: varchar
+
+          - <<: *percent_insiders
+            data_type: varchar
+
+          - <<: *percent_institutions
+            data_type: varchar
+
+          - <<: *dividend_date
+            data_type: varchar
+
+          - <<: *ex_dividend_date
+            data_type: varchar
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: economic_indicators
+        description: >
+          US macroeconomic time series, one row per indicator per period. Full history is returned on every load.
+          Indicators: REAL_GDP (quarterly), CPI, FEDERAL_FUNDS_RATE, TREASURY_YIELD (10-year) and UNEMPLOYMENT (monthly),
+          INFLATION (annual).
+        columns:
+
+          - *indicator
+
+          - <<: *series_name
+            name: name
+
+          - <<: *series_interval
+            name: interval
+
+          - <<: *series_unit
+            name: unit
+
+          - <<: *period_start_date
+            name: date
+
+          - *value
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+models:
+  - name: stg_alpha_vantage__daily_prices
+    description: >
+      Daily price bars, one row per ticker per trading day. Renames and casts `daily_prices` to the concept bank.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, trading_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "low_price <= least(open_price, close_price) and high_price >= greatest(open_price, close_price)"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "trade_volume >= 0"
+    columns:
+
+      - <<: *ticker_symbol
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_alpha_vantage__company_overviews')
+                field: ticker_symbol
+              config:
+                severity: warn  # ETFs have no company overview
+
+      - <<: *trading_date
+        data_tests: [not_null]
+
+      - <<: *open_price
+        data_tests: [not_null]
+
+      - <<: *high_price
+        data_tests: [not_null]
+
+      - <<: *low_price
+        data_tests: [not_null]
+
+      - <<: *close_price
+        data_tests: [not_null]
+
+      - <<: *trade_volume
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_alpha_vantage__company_overviews
+    description: >
+      Company profile and fundamentals, one row per ticker. Nulls the API's "None" / "-" placeholders and
+      casts `company_overviews` from text to the concept bank types.
+    columns:
+
+      - <<: *ticker_symbol
+        data_tests: [unique, not_null]
+
+      - *asset_type
+
+      - *company_name
+
+      - *business_description
+
+      - *central_index_key
+
+      - *listing_exchange
+
+      - *currency
+
+      - *country
+
+      - *sector
+
+      - *industry
+
+      - *address
+
+      - *official_site
+
+      - *fiscal_year_end
+
+      - *latest_quarter
+
+      - *market_capitalization
+
+      - *ebitda
+
+      - *pe_ratio
+
+      - *peg_ratio
+
+      - *book_value
+
+      - *dividend_per_share
+
+      - *dividend_yield
+
+      - *eps
+
+      - *revenue_per_share_ttm
+
+      - *profit_margin
+
+      - *operating_margin_ttm
+
+      - *return_on_assets_ttm
+
+      - *return_on_equity_ttm
+
+      - *revenue_ttm
+
+      - *gross_profit_ttm
+
+      - *diluted_eps_ttm
+
+      - *quarterly_earnings_growth_yoy
+
+      - *quarterly_revenue_growth_yoy
+
+      - *analyst_target_price
+
+      - *analyst_rating_strong_buy
+
+      - *analyst_rating_buy
+
+      - *analyst_rating_hold
+
+      - *analyst_rating_sell
+
+      - *analyst_rating_strong_sell
+
+      - *trailing_pe
+
+      - *forward_pe
+
+      - *price_to_sales_ratio_ttm
+
+      - *price_to_book_ratio
+
+      - *ev_to_revenue
+
+      - *ev_to_ebitda
+
+      - *beta
+
+      - *high_52_week
+
+      - *low_52_week
+
+      - *moving_average_50_day
+
+      - *moving_average_200_day
+
+      - *shares_outstanding
+
+      - *shares_float
+
+      - *percent_insiders
+
+      - *percent_institutions
+
+      - *dividend_date
+
+      - *ex_dividend_date
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_alpha_vantage__economic_indicators
+    description: >
+      US macroeconomic observations, one row per indicator per period. Renames and casts `economic_indicators`
+      to the concept bank.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [indicator, period_start_date]
+    columns:
+
+      - <<: *indicator
+        data_tests: [not_null]
+
+      - *series_name
+
+      - <<: *series_interval
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [annual, quarterly, monthly]
+
+      - *series_unit
+
+      - <<: *period_start_date
+        data_tests: [not_null]
+
+      - *value
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+unit_tests:
+  - name: company_overviews_nulls_placeholders_and_casts
+    description: The API's "None" and "-" placeholders become nulls; real values cast to the concept bank types.
+    model: stg_alpha_vantage__company_overviews
+    given:
+      - input: source('alpha_vantage', 'company_overviews')
+        rows:
+          - {symbol: AAA, sector: "None", pe_ratio: "None", peg_ratio: "-", beta: "1.25",
+             market_capitalization: "212460716000", dividend_date: "2026-01-15", _dlt_load_id: "1790520062.5", _dlt_id: "a"}
+          - {symbol: BBB, sector: TECHNOLOGY, pe_ratio: "31.2", peg_ratio: "1.8", beta: "-",
+             market_capitalization: "None", dividend_date: "None", _dlt_load_id: "1790520062.5", _dlt_id: "b"}
+    expect:
+      rows:
+        - {ticker_symbol: AAA, sector: null, pe_ratio: null, peg_ratio: null, beta: 1.25,
+           market_capitalization: 212460716000, dividend_date: 2026-01-15}
+        - {ticker_symbol: BBB, sector: TECHNOLOGY, pe_ratio: 31.2, peg_ratio: 1.8, beta: null,
+           market_capitalization: null, dividend_date: null}

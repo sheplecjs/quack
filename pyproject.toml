@@ -1,0 +1,36 @@
+[project]
+name = "quack"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "sheplecjs", email = "colin.shepley@pm.me" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+quack = "quack:main"
+ingest-financial = "financial.pipelines:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+# Only consider package versions published at least 5 days ago
+exclude-newer = "5 days"
+
+[tool.uv.workspace]
+members = [
+    "projects/financial",
+]
+
+[dependency-groups]
+dev = [
+    "detect-secrets>=1.5.0",
+    "pytest>=9.1.1",
+    "ruff>=0.16.8",
+    "ty>=0.0.82",
+    "yamllint>=1.38.0",
+]

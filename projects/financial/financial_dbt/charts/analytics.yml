@@ -1,0 +1,31 @@
+title: "Jaffle Shop overview"
+theme: clarity
+source: analytics
+variables:
+  is_food:
+    input: select
+  date_range:
+    input: daterange
+queries:
+  revenue_by_month:
+    sql: |
+      SELECT order_date AS date,
+             sum(product_price) AS revenue
+      FROM main.order_items
+      WHERE {{ filter('is_food_item', is_food) }}
+      AND {{ filter_date_range('order_date', date_range) }}
+      GROUP BY 1
+      ORDER BY 1
+
+charts:
+  revenue_trend:
+    type: line
+    query: revenue_by_month
+    x: date
+    y: revenue
+    title: "Revenue by month"
+
+rows:
+  - title: "Trends"
+    cols:
+      - revenue_trend

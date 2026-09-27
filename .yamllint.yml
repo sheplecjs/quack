@@ -1,0 +1,15 @@
+extends: default
+
+# yamllint doesn't discover nested .gitignore files; list each one here
+ignore-from-file:
+  - .gitignore
+  - projects/financial/.gitignore
+  - projects/financial/financial_dbt/.gitignore
+
+rules:
+  document-start: disable
+  line-length:
+    max: 150
+  indentation:
+    spaces: consistent
+    indent-sequences: whatever

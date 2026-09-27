@@ -1,0 +1,5 @@
+sources:
+  analytics:
+    type: dbt_profile
+    profile: financial
+    target: local-dev

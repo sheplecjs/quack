@@ -1,0 +1,25 @@
+name: financial_dbt
+
+flags:
+  send_anonymous_usage_stats: false
+
+profile: financial
+
+seed-paths: ["seeds"]
+model-paths: ["models"]
+macro-paths: ["macros"]
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+seeds:
+  financial_dbt:
+    +schema: raw
+
+models:
+  financial_dbt:
+    alpha_vantage:
+      staging:
+        +materialized: view
+        +contract:
+          enforced: true

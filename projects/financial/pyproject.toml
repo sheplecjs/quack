@@ -1,0 +1,30 @@
+[project]
+name = "financial"
+version = "0.1.0"
+description = "A dbt-core based analytics stack."
+readme = "README.md"
+authors = [
+    { name = "sheplecjs", email = "colin.shepley@pm.me" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "dlt[duckdb]>=1.20",
+]
+
+[project.scripts]
+financial-load = "financial.pipelines:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dbt = [
+    "dbt-charts>=0.8.0",
+    "dbt-core<2",
+    "dbt-duckdb>=1.11.0",
+]
+interactive = [
+    "marimo[sql]>=0.24.2",
+    "requests>=2.34.2",
+]

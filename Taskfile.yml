@@ -1,0 +1,116 @@
+version: "3"
+
+vars:
+  # Directory `task` was invoked from; lets docker tasks target whichever project you're in
+  PROJECT_DIR: "{{.USER_WORKING_DIR}}"
+  PROJECT: "{{base .PROJECT_DIR}}"
+  IMAGE: "quack-{{.PROJECT}}"
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+
+  # --- Environment ---------------------------------------------------------
+
+  setup:
+    desc: Initialise the dev environment on a fresh clone
+    cmds:
+      - uv python install
+      # Every member's deps and dependency groups, so root-level checks can resolve them
+      - uv sync --all-packages --all-groups --locked
+      - task: secrets:baseline  # pragma: allowlist secret
+    preconditions:
+      - sh: command -v uv
+        msg: "uv is not installed: https://docs.astral.sh/uv/getting-started/installation/"
+
+  # --- Dev checks ----------------------------------------------------------
+
+  lint:
+    desc: Lint Python with ruff
+    cmds:
+      - uv run ruff check . --fix
+
+  format:
+    desc: Check Python formatting with ruff
+    cmds:
+      - uv run ruff format .
+
+  typecheck:
+    desc: Type check with ty
+    cmds:
+      - uv run ty check
+
+  yamllint:
+    desc: Lint YAML files
+    cmds:
+      - uv run yamllint .
+
+  secrets:
+    desc: Scan for secrets not already in the baseline
+    cmds:
+      # Tracked and untracked (but not ignored) files
+      - >-
+        git ls-files -z --cached --others --exclude-standard
+        | xargs -0 uv run detect-secrets-hook --baseline .secrets.baseline
+
+  secrets:baseline:
+    desc: Create the detect-secrets baseline if it doesn't exist
+    cmds:
+      - >-
+        git ls-files -z --cached --others --exclude-standard
+        | xargs -0 uv run detect-secrets scan > .secrets.baseline
+    status:
+      - test -f .secrets.baseline
+
+  test:
+    desc: Run the test suite
+    cmds:
+      - uv run pytest
+
+  fix:
+    desc: Auto-fix lint issues and format Python
+    cmds:
+      - uv run ruff check --fix .
+      - uv run ruff format .
+
+  check:
+    desc: Run all static checks (lint, format, types, yaml, secrets)
+    cmds:
+      - task: lint
+      - task: format
+      - task: typecheck
+      - task: yamllint
+      - task: secrets
+
+  ci:
+    desc: Run all checks plus tests
+    cmds:
+      - task: check
+      - task: test
+
+  # --- Docker (run from inside a project dir, e.g. projects/financial) --------
+
+  docker:build:
+    desc: Build the Dockerfile in the current directory
+    dir: "{{.PROJECT_DIR}}"
+    cmds:
+      - docker build --build-context workspace={{.ROOT_DIR}} --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t {{.IMAGE}} .
+    preconditions:
+      - sh: test -f Dockerfile
+        msg: "No Dockerfile in {{.PROJECT_DIR}}; run this from a project directory"
+
+  docker:run:
+    desc: Build and run the Dockerfile in the current directory (extra args after --)
+    dir: "{{.PROJECT_DIR}}"
+    deps: [docker:build]
+    cmds:
+      - mkdir -p {{.ROOT_DIR}}/data/{{.PROJECT}}
+      - docker run --rm -v {{.ROOT_DIR}}/data/{{.PROJECT}}:/data {{.IMAGE}} {{.CLI_ARGS}}
+
+  marimo:
+    desc: Spin up a marimo notebook server.
+    dir: "{{.PROJECT_DIR}}"
+    cmds:
+      - uv run marimo edit src/notebooks/

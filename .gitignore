@@ -1,0 +1,23 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Local DuckDB data
+data/
+*.duckdb
+*.duckdb.wal
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+
+
+# Local task list
+TODO.md
