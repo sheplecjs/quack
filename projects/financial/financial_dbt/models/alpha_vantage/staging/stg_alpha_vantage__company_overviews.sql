@@ -59,13 +59,17 @@ select
     cast({{ av_null('_200_day_moving_average') }} as double) as moving_average_200_day,
     cast({{ av_null('shares_outstanding') }} as bigint) as shares_outstanding,
     cast({{ av_null('shares_float') }} as bigint) as shares_float,
-    cast({{ av_null('percent_insiders') }} as double) as percent_insiders,
-    cast({{ av_null('percent_institutions') }} as double) as percent_institutions,
+    cast({{ av_null('percent_insiders') }} as double) / 100 as percent_insiders,  -- 0-100 to fraction
+    cast({{ av_null('percent_institutions') }} as double) / 100 as percent_institutions,  -- 0-100 to fraction
     cast({{ av_null('dividend_date') }} as date) as dividend_date,
     cast({{ av_null('ex_dividend_date') }} as date) as ex_dividend_date,
 
     -- Lineage
     to_timestamp(cast(_dlt_load_id as double)) as loaded_at,
-    cast(_dlt_id as varchar) as record_id
+    cast(_dlt_id as varchar) as record_id,
+
+    -- Versioning (scd2)
+    cast(_dlt_valid_from as timestamp with time zone) as valid_from,
+    cast(_dlt_valid_to as timestamp with time zone) as valid_to
 
 from source

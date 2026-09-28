@@ -1,0 +1,349 @@
+# Template for the per-holding asset boards (asset_<ticker>.yml), not rendered on its own.
+# Each asset board extends this file and sets only its title and the ticker.
+title: Asset detail
+notes: |
+  Detail for one holding of the portfolio: price, returns, analyst view, fundamentals and company profile.
+  Asset boards extend this template and fix `ticker`, so each renders as a standalone static page.
+
+source: analytics
+
+style:
+  frame:
+    width: 1440
+  variables:
+    position: title-inline
+
+variables:
+  ticker:
+    notes: The holding this board shows. Set by each asset board; hidden, because a static page can't change it.
+    visible: false
+
+queries:
+  # ── The anchor ──────────────────────────────────────────────────────────
+  # Every "latest" figure on the board reads its date from here, so KPIs, the
+  # allocation donut and the holdings table can't disagree about "today".
+  as_of:
+    notes: The latest trading day in the portfolio data.
+    sql: |
+      SELECT MAX(trading_date) AS as_of_date
+      FROM fct_portfolio_daily
+
+  # ── Asset detail ────────────────────────────────────────────────────────
+  asset_kpis:
+    notes: The selected holding's latest position, returns and analyst target.
+    sql: |
+      SELECT
+        positions.close_price,
+        positions.price_return,
+        positions.position_value,
+        positions.unrealized_gain,
+        positions.total_return,
+        positions.estimated_dividends,
+        companies.analyst_target_price,
+        companies.analyst_target_price / positions.close_price - 1 AS target_upside
+      FROM fct_portfolio_positions_daily AS positions
+      LEFT JOIN dim_companies AS companies
+        ON companies.ticker_symbol = positions.ticker_symbol
+       AND companies.is_current
+      WHERE positions.trading_date = (SELECT as_of_date FROM {{ queries.as_of }})
+        AND positions.ticker_symbol = {{ ticker }}
+
+  asset_prices:
+    notes: The selected holding's daily close since purchase, with its purchase price.
+    sql: |
+      SELECT trading_date, close_price AS close, purchase_price
+      FROM fct_portfolio_positions_daily
+      WHERE ticker_symbol = {{ ticker }}
+      ORDER BY trading_date
+
+  asset_weekly_returns:
+    notes: The selected holding's weekly returns since purchase (compounded from daily closes), labelled by direction.
+    sql: |
+      WITH daily AS (
+        SELECT prices.trading_date, prices.daily_return
+        FROM fct_daily_prices AS prices
+        INNER JOIN portfolio_holdings AS holdings
+          ON holdings.ticker_symbol = prices.ticker_symbol
+        WHERE prices.ticker_symbol = {{ ticker }}
+          AND prices.trading_date > holdings.purchase_date
+      ),
+      weekly AS (
+        SELECT
+          date_trunc('week', trading_date)::DATE AS week_start,
+          exp(sum(ln(1 + daily_return))) - 1 AS weekly_return
+        FROM daily
+        GROUP BY 1
+      )
+      SELECT
+        week_start,
+        weekly_return,
+        CASE WHEN weekly_return >= 0 THEN 'Up' ELSE 'Down' END AS direction
+      FROM weekly
+      ORDER BY week_start
+
+  asset_ratings:
+    notes: Number of analysts at each rating for the selected holding (current fundamentals).
+    sql: |
+      SELECT rating_order, rating, analysts
+      FROM dim_companies,
+        LATERAL (VALUES
+          (1, 'Strong buy', analyst_rating_strong_buy),
+          (2, 'Buy', analyst_rating_buy),
+          (3, 'Hold', analyst_rating_hold),
+          (4, 'Sell', analyst_rating_sell),
+          (5, 'Strong sell', analyst_rating_strong_sell)
+        ) AS ratings (rating_order, rating, analysts)
+      WHERE is_current
+        AND ticker_symbol = {{ ticker }}
+      ORDER BY rating_order
+
+  asset_fundamentals:
+    notes: The selected holding's current fundamentals, formatted for reading, one metric per row.
+    sql: |
+      WITH company AS (
+        SELECT * FROM dim_companies
+        WHERE is_current AND ticker_symbol = {{ ticker }}
+      )
+      SELECT metric, value
+      FROM company,
+        LATERAL (VALUES
+          (1, 'Market cap', CASE WHEN market_capitalization >= 1e12
+                                  THEN printf('$%.2fT', market_capitalization / 1e12)
+                                  ELSE printf('$%.1fB', market_capitalization / 1e9) END),
+          (2, 'P/E (trailing)', printf('%.1f', trailing_pe)),
+          (3, 'P/E (forward)', printf('%.1f', forward_pe)),
+          (4, 'PEG ratio', printf('%.2f', peg_ratio)),
+          (5, 'EPS (TTM)', printf('$%.2f', eps)),
+          (6, 'Profit margin', printf('%.1f%%', profit_margin * 100)),
+          (7, 'Return on equity', printf('%.1f%%', return_on_equity_ttm * 100)),
+          (8, 'Revenue growth (YoY)', printf('%+.1f%%', quarterly_revenue_growth_yoy * 100)),
+          (9, 'Dividend yield', printf('%.2f%%', dividend_yield * 100)),
+          (10, 'Beta', printf('%.2f', beta)),
+          (11, '52-week range', printf('$%.2f to $%.2f', low_52_week, high_52_week)),
+          (12, 'Latest quarter', strftime(latest_quarter, '%-d %b %Y'))
+        ) AS metrics (metric_order, metric, value)
+      ORDER BY metric_order
+
+  asset_profile:
+    notes: The selected holding's company profile, one attribute per row.
+    sql: |
+      WITH company AS (
+        SELECT * FROM dim_companies
+        WHERE is_current AND ticker_symbol = {{ ticker }}
+      )
+      SELECT attribute, detail
+      FROM company,
+        LATERAL (VALUES
+          (1, 'Company', company_name),
+          (2, 'Sector', upper(left(sector, 1)) || lower(substr(sector, 2))),
+          (3, 'Industry', upper(left(industry, 1)) || lower(substr(industry, 2))),
+          (4, 'Exchange', listing_exchange || ' (' || currency || ')'),
+          (5, 'Address', address),
+          (6, 'Website', official_site),
+          (7, 'Fiscal year end', fiscal_year_end),
+          (8, 'Business', business_description)
+        ) AS profile (attribute_order, attribute, detail)
+      ORDER BY attribute_order
+
+  # ── Navigation ──────────────────────────────────────────────────────────
+  holdings_nav:
+    notes: Every holding with its return, for linking between asset boards; follows the portfolio_holdings seed.
+    sql: |
+      SELECT
+        ticker_symbol,
+        price_return,
+        'asset_' || lower(ticker_symbol) || '.html' AS detail_page
+      FROM fct_portfolio_positions_daily
+      WHERE trading_date = (SELECT as_of_date FROM {{ queries.as_of }})
+      ORDER BY ticker_symbol
+
+charts:
+  # ── Asset detail: KPIs ──────────────────────────────────────────────────
+  asset_kpi_close:
+    type: kpi
+    query: asset_kpis
+    label: Last close
+    notes: The selected holding's latest price and its price return since purchase.
+    value: close_price
+    style:
+      value:
+        format: currency_full
+    support:
+      value: price_return
+      label: since purchase
+      format: percent_delta
+
+  asset_kpi_value:
+    type: kpi
+    query: asset_kpis
+    label: Position value
+    notes: What the holding is worth now, and its gain on cost.
+    value: position_value
+    style:
+      value:
+        format: currency_whole
+    support:
+      value: unrealized_gain
+      label: unrealized gain
+      format: currency_whole
+
+  asset_kpi_total_return:
+    type: kpi
+    query: asset_kpis
+    label: Total return (est.)
+    notes: Return since purchase including estimated dividends.
+    value: total_return
+    style:
+      value:
+        format: percent_delta
+    support:
+      value: estimated_dividends
+      label: estimated dividends
+      format: currency_whole
+
+  asset_kpi_target:
+    type: kpi
+    query: asset_kpis
+    label: Analyst target
+    notes: The consensus analyst price target and the move it implies from the last close.
+    value: analyst_target_price
+    style:
+      value:
+        format: currency_full
+    support:
+      value: target_upside
+      label: from last close
+      format: percent_delta
+
+  # ── Asset detail: center ────────────────────────────────────────────────
+  asset_price_trend:
+    query: asset_prices
+    type: line
+    title: Price since purchase
+    subtitle: Daily close, with the purchase price for reference
+    notes: How the holding's price has moved relative to what was paid for it.
+    x: trading_date
+    y: close
+    layers:
+    - type: line
+      y: purchase_price
+      label: Bought at
+    style:
+      axis_y:
+        labels:
+          align: right
+          format: currency
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+
+  asset_returns:
+    query: asset_weekly_returns
+    type: bar
+    title: Weekly returns
+    subtitle: Compounded from daily closes, week starting Monday
+    notes: How volatile the holding has been, week to week.
+    x: week_start
+    y: weekly_return
+    color: direction
+    style:
+      legend:
+        visible: false
+      color:
+        categorical:
+          palette: ["#c2410c", "#15803d"]  # Down, Up (alphabetical)
+      axis_y:
+        labels:
+          align: right
+          format: percent
+
+  # ── Asset detail: right column ──────────────────────────────────────────
+  asset_ratings_bar:
+    query: asset_ratings
+    type: bar
+    title: Analyst ratings
+    subtitle: Number of analysts at each rating
+    notes: Where analyst sentiment on the holding sits.
+    x: rating
+    y: analysts
+    sort:
+      by: rating_order
+      order: asc
+    style:
+      orientation: horizontal
+
+  asset_fundamentals_table:
+    type: table
+    query: asset_fundamentals
+    title: Fundamentals
+    notes: The holding's current valuation, profitability and risk figures.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        metric:
+          label: Metric
+        value:
+          label: Current
+          align: right
+          # Values are preformatted text; ones that look numeric (P/E, PEG, beta) would
+          # otherwise get the compact default, which shows 0.48 as "480m"
+          format: ",.2~f"
+
+  # ── Asset detail: bottom ────────────────────────────────────────────────
+  asset_profile_table:
+    type: table
+    query: asset_profile
+    title: Company profile
+    notes: Who the company is and what it does.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        attribute:
+          label: " "
+          width: 140
+        detail:
+          label: " "
+
+  # ── Navigation ──────────────────────────────────────────────────────────
+  holdings_nav_table:
+    type: table
+    query: holdings_nav
+    title: Holdings
+    notes: Links to every holding's asset board, with its price return since purchase.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        ticker_symbol:
+          label: Ticker
+          link: "{{ detail_page }}"
+        price_return:
+          label: Return
+          format: percent_delta
+          align: right
+        detail_page:
+          visible: false
+
+rows:
+- cols:
+  - width: "17%"
+    rows:
+    - text: "[← Portfolio overview](portfolio.html)"
+    - asset_kpi_close
+    - asset_kpi_value
+    - asset_kpi_total_return
+    - asset_kpi_target
+    - holdings_nav_table
+  - width: "55%"
+    rows:
+    - asset_price_trend
+    - asset_returns
+  - width: "28%"
+    rows:
+    - asset_ratings_bar
+    - asset_fundamentals_table
+- cols:
+  - asset_profile_table

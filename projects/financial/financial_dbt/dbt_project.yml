@@ -12,10 +12,6 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
-seeds:
-  financial_dbt:
-    +schema: raw
-
 models:
   financial_dbt:
     alpha_vantage:
@@ -23,3 +19,19 @@ models:
         +materialized: view
         +contract:
           enforced: true
+      intermediate:
+        +materialized: view
+        +contract:
+          enforced: true
+      marts:
+        +materialized: table
+        +contract:
+          enforced: true
+
+# Tests warn rather than fail, and each one keeps its failing rows as a view in the
+# default audit schema (<target schema>_dbt_test__audit) for inspection
+data_tests:
+  financial_dbt:
+    +severity: warn
+    +store_failures: true
+    +store_failures_as: view

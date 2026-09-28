@@ -1,0 +1,350 @@
+title: Portfolio Performance
+notes: |
+  Performance of a portfolio holding the shares in the portfolio_holdings seed (100 of each), bought at the
+  first close in the data. Each holding has its own asset board (asset_<ticker>.yml), linked from the holdings
+  table. Built for static HTML export: no variables or tabs, and links are relative to the exported files.
+  Returns exclude real dividends: dividend figures are ESTIMATES accrued from each company's trailing-twelve-month
+  dividend per share.
+
+source: analytics
+
+style:
+  frame:
+    width: 1440
+  variables:
+    position: title-inline
+
+queries:
+  # ── The anchor ──────────────────────────────────────────────────────────
+  # Every "latest" figure on the board reads its date from here, so KPIs, the
+  # allocation donut and the holdings table can't disagree about "today".
+  as_of:
+    notes: The latest trading day in the portfolio data.
+    sql: |
+      SELECT MAX(trading_date) AS as_of_date
+      FROM fct_portfolio_daily
+
+  # ── KPI rail ────────────────────────────────────────────────────────────
+  portfolio_kpis:
+    notes: Whole-portfolio value, gain, returns and estimated dividends on the latest trading day.
+    sql: |
+      SELECT
+        portfolio_value,
+        portfolio_cost_basis,
+        portfolio_unrealized_gain,
+        portfolio_price_return,
+        portfolio_estimated_dividends,
+        portfolio_total_return,
+        portfolio_estimated_dividends / portfolio_cost_basis AS dividend_return
+      FROM fct_portfolio_daily
+      WHERE trading_date = (SELECT as_of_date FROM {{ queries.as_of }})
+
+  # ── Hero: portfolio value stacked by holding ────────────────────────────
+  value_by_holding:
+    notes: Daily market value of each holding since purchase.
+    sql: |
+      SELECT trading_date, ticker_symbol, position_value
+      FROM fct_portfolio_positions_daily
+      ORDER BY trading_date, ticker_symbol
+
+  # ── Donut: allocation today ────────────────────────────────────────────
+  allocation:
+    notes: Each holding's share of the portfolio's value on the latest trading day.
+    sql: |
+      SELECT ticker_symbol, position_value, portfolio_weight
+      FROM fct_portfolio_positions_daily
+      WHERE trading_date = (SELECT as_of_date FROM {{ queries.as_of }})
+      -- Alphabetical, like every other chart's series, so each ticker keeps its color
+      ORDER BY ticker_symbol
+
+  # ── Rebased performance: each holding and the portfolio, 100 at purchase ─
+  rebased:
+    notes: Price performance rebased to 100 at purchase, per holding plus the whole portfolio.
+    sql: |
+      SELECT trading_date, ticker_symbol AS series, 100 * (1 + price_return) AS rebased_index
+      FROM fct_portfolio_positions_daily
+      UNION ALL
+      SELECT trading_date, 'Portfolio' AS series, 100 * (1 + portfolio_price_return) AS rebased_index
+      FROM fct_portfolio_daily
+      ORDER BY trading_date, series
+
+  # ── Macro context: 10-year Treasury yield as available each trading day ─
+  treasury_yield:
+    notes: >
+      10-year Treasury yield in effect on each trading day of the holding period, aligned by the
+      date each monthly figure became available (no look-ahead).
+    sql: |
+      SELECT trading_date, ANY_VALUE(value) AS yield
+      FROM mart_daily_market
+      WHERE indicator = 'TREASURY_YIELD'
+        AND trading_date >= (SELECT MIN(trading_date) FROM fct_portfolio_daily)
+      GROUP BY trading_date
+      ORDER BY trading_date
+
+  # ── Holdings table ──────────────────────────────────────────────────────
+  holdings:
+    notes: One row per holding on the latest trading day, with its current fundamentals.
+    sql: |
+      SELECT
+        positions.ticker_symbol,
+        companies.company_name,
+        upper(left(companies.sector, 1)) || lower(substr(companies.sector, 2)) AS sector,
+        positions.shares_held,
+        positions.purchase_price,
+        positions.close_price,
+        positions.position_value,
+        positions.position_value AS value_bar,
+        positions.portfolio_weight,
+        positions.price_return,
+        positions.estimated_dividends,
+        positions.total_return,
+        companies.pe_ratio,
+        companies.dividend_yield,
+        companies.beta,
+        'asset_' || lower(positions.ticker_symbol) || '.html' AS detail_page
+      FROM fct_portfolio_positions_daily AS positions
+      LEFT JOIN dim_companies AS companies
+        ON companies.ticker_symbol = positions.ticker_symbol
+       AND companies.is_current
+      WHERE positions.trading_date = (SELECT as_of_date FROM {{ queries.as_of }})
+      ORDER BY positions.position_value DESC, positions.ticker_symbol ASC
+
+charts:
+  # ── KPIs ────────────────────────────────────────────────────────────────
+  # Support lines carry no tone or glyph: both are static in dbt charts, and a
+  # return can change sign on the next load. The signed format shows direction.
+  kpi_value:
+    type: kpi
+    query: portfolio_kpis
+    label: Portfolio value
+    notes: What the portfolio is worth now, and its price return since purchase.
+    value: portfolio_value
+    style:
+      value:
+        format: currency_whole
+    support:
+      value: portfolio_price_return
+      label: price return since purchase
+      format: percent_delta
+
+  kpi_gain:
+    type: kpi
+    query: portfolio_kpis
+    label: Unrealized gain
+    notes: Price gain on the portfolio's cost, excluding dividends.
+    value: portfolio_unrealized_gain
+    style:
+      value:
+        format: currency_whole
+    support:
+      value: portfolio_cost_basis
+      label: cost basis
+      format: currency_whole
+
+  kpi_total_return:
+    type: kpi
+    query: portfolio_kpis
+    label: Total return (est.)
+    notes: Return since purchase including estimated dividends.
+    value: portfolio_total_return
+    style:
+      value:
+        format: percent_delta
+    support:
+      value: portfolio_estimated_dividends
+      label: estimated dividends
+      format: currency_whole
+
+  # ── Hero ────────────────────────────────────────────────────────────────
+  hero_value:
+    query: value_by_holding
+    type: area
+    title: Portfolio value by holding
+    subtitle: Daily market value, 100 shares of each since purchase
+    notes: How the portfolio's value has moved, and which holdings drove it.
+    x: trading_date
+    y: position_value
+    color: ticker_symbol
+    sort:
+      by: ticker_symbol
+      order: asc
+    style:
+      stack: zero
+      axis_y:
+        labels:
+          align: right
+          format: currency
+      endpoint_labels:
+        visible: true
+
+  # ── Donut ───────────────────────────────────────────────────────────────
+  allocation_donut:
+    query: allocation
+    type: donut
+    title: Allocation
+    subtitle: Share of value today
+    notes: How concentrated the portfolio is after price moves since purchase.
+    theta: position_value
+    color: ticker_symbol
+    total:
+      visible: false  # the portfolio value is the first KPI; the center is too small for it
+    style:
+      legend:
+        visible: false
+      marks:
+        slice:
+          labels:
+            template: "{{ '{:.0%}'.format(portfolio_weight) }} {{ ticker_symbol }}"
+            offset: 4
+            font:
+              size: 10
+
+  # ── Right column ────────────────────────────────────────────────────────
+  rebased_trend:
+    query: rebased
+    type: line
+    title: Performance since purchase
+    subtitle: Price rebased to 100 at purchase
+    notes: Which holdings have out- or under-performed the portfolio as a whole.
+    x: trading_date
+    y: rebased_index
+    color: series
+    sort:
+      by: series
+      order: asc
+    style:
+      padding:
+        right: 36
+      axis_y:
+        labels:
+          format: integer
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+
+  treasury_trend:
+    query: treasury_yield
+    type: line
+    title: 10-year Treasury yield
+    subtitle: As available each trading day
+    notes: The rate backdrop over the holding period.
+    x: trading_date
+    y: yield
+    style:
+      padding:
+        right: 36
+      axis_y:
+        labels:
+          format: ".2%"
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+
+  # ── Bottom table ────────────────────────────────────────────────────────
+  holdings_table:
+    type: table
+    query: holdings
+    title: Holdings
+    subtitle: Select a ticker or company for its asset detail
+    notes: The detail behind every overview figure, one row per holding, each linking to its asset board.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        ticker_symbol:
+          label: Ticker
+          width: 70
+          link: "{{ detail_page }}"
+        company_name:
+          label: Company
+          width: 200
+          link: "{{ detail_page }}"
+        detail_page:
+          visible: false  # relative link to the holding's asset board, e.g. asset_jnj.html
+        sector:
+          label: Sector
+          width: 110
+        shares_held:
+          label: Shares
+          width: 70
+          format: integer
+          align: right
+        purchase_price:
+          label: Bought at
+          width: 80
+          format: currency_full
+          align: right
+        close_price:
+          label: Last close
+          format: currency_full
+          align: right
+        position_value:
+          label: Value
+          format: currency_whole
+          align: right
+        value_bar:
+          label: " "
+          spark:
+            type: bar
+        portfolio_weight:
+          label: Weight
+          format: percent
+          align: right
+          scale:
+            background:
+              palette: dbt-seq-amber
+        price_return:
+          label: Price return
+          format: percent_delta
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+        estimated_dividends:
+          label: Est. dividends
+          format: currency_whole
+          align: right
+        total_return:
+          label: Total return (est.)
+          format: percent_delta
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+        pe_ratio:
+          label: P/E
+          format: ",.1f"
+          align: right
+        dividend_yield:
+          label: Div. yield
+          format: ".2%"
+          align: right
+        beta:
+          label: Beta
+          format: number_full
+          align: right
+
+rows:
+- cols:
+  - width: "17%"
+    rows:
+    - text: "[← Back](index.html)"
+    - kpi_value
+    - kpi_gain
+    - kpi_total_return
+    - height: 300
+      rows:
+      - allocation_donut
+  - width: "55%"
+    rows:
+    - hero_value
+  - width: "28%"
+    rows:
+    - rebased_trend
+    - treasury_trend
+- cols:
+  - holdings_table

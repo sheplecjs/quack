@@ -13,7 +13,7 @@ with app.setup:
 @app.cell
 def _():
     _df = mo.sql(
-        f"""
+        """
         SELECT
            *
         FROM
@@ -21,14 +21,8 @@ def _():
         WHERE symbol = 'JNJ'
         ORDER BY 1
         """,
-        engine=conn
+        engine=conn,  # ty: ignore[invalid-argument-type]
     )
-    return
-
-
-@app.cell
-def _():
-    return
 
 
 if __name__ == "__main__":

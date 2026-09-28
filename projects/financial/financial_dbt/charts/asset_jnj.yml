@@ -1,0 +1,8 @@
+extends: ./_asset_base.yml
+title: "Johnson & Johnson (JNJ)"
+
+variables:
+  ticker:
+    notes: Fixed to JNJ for this board.
+    default: JNJ
+    visible: false

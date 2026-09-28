@@ -43,7 +43,7 @@ anchors:
 
   - &asset_type
     name: asset_type
-    description: Asset type
+    description: Asset type, e.g. "Common Stock". ADRs are also reported as "Common Stock" (TSM, SONY, NVO)
     data_type: varchar
 
   - &company_name
@@ -74,9 +74,10 @@ anchors:
   - &country
     name: country
     description: >
-      Country assigned by Alpha Vantage; its meaning is undocumented. Not the country of incorporation
-      (CCL, incorporated in Panama, is USA) and not necessarily the country in the address (MDT, address in Ireland, is USA).
-      Use SEC EDGAR data via cik for legal domicile.
+      Market country assigned by Alpha Vantage: USA for every US-listed security, including foreign companies
+      traded through ADRs (TSM, SONY, NVO all return USA). Says nothing about the company itself: not its
+      incorporation (CCL, Panama), headquarters or operations. Use address for the home country and SEC EDGAR
+      via cik for legal domicile.
     data_type: varchar
 
   - &sector
@@ -92,8 +93,9 @@ anchors:
   - &address
     name: address
     description: >
-      Company address as reported by Alpha Vantage, in the format of the SEC-filed business address.
-      May differ from where the company is run (MDT: Galway, Ireland).
+      Company address as reported by Alpha Vantage, in the format of the SEC-filed business address. Its
+      country is the company's home country, including for foreign issuers (TSM: Taiwan), but may differ
+      from where the company is run (MDT: Galway, Ireland).
     data_type: varchar
 
   - &official_site
@@ -300,12 +302,12 @@ anchors:
 
   - &percent_insiders
     name: percent_insiders
-    description: Percentage of shares held by insiders (0-100)
+    description: Fraction of shares held by insiders (0.04 = 4%)
     data_type: double
 
   - &percent_institutions
     name: percent_institutions
-    description: Percentage of shares held by institutions (0-100)
+    description: Fraction of shares held by institutions (0.71 = 71%)
     data_type: double
 
   - &dividend_date
@@ -337,7 +339,7 @@ anchors:
 
   - &series_unit
     name: series_unit
-    description: Unit of the observed value, e.g. "percent" or "billions of dollars"
+    description: Unit of the observed value, e.g. "fraction" or "billions of dollars"
     data_type: varchar
 
   - &period_start_date
@@ -347,28 +349,175 @@ anchors:
 
   - &value
     name: value
-    description: Observed value in the series unit; null where the API reported no value
+    description: Observed value in the series unit (percentages as fractions, 0.041 = 4.1%); null where the API reported no value
     data_type: double
+
+  # --- Derived (intermediate and marts) -------------------------------------
+
+  - &available_from_date
+    name: available_from_date
+    description: >
+      First date an economic observation is treated as available: the day after its period ends. Actual publication
+      is usually later, and Alpha Vantage gives no release dates.
+    data_type: date
+
+  - &daily_return
+    name: daily_return
+    description: Close-to-close return from the ticker's previous trading day, as a fraction (0.012 = 1.2%); null on its first day
+    data_type: double
+
+  - &close_index
+    name: close_index
+    description: Closing price rebased to 100 at the ticker's first trading day in the data, for comparing tickers on one axis
+    data_type: double
+
+  - &is_current
+    name: is_current
+    description: Whether this is the current version of the record (valid_to is null)
+    data_type: boolean
+
+  - &price_record_id
+    name: price_record_id
+    description: record_id of the daily price row, for tracing a mart row back to its source
+    data_type: varchar
+
+  - &indicator_record_id
+    name: indicator_record_id
+    description: record_id of the economic observation in effect on the trading day
+    data_type: varchar
+
+  # --- Portfolio -----------------------------------------------------------
+
+  - &shares_held
+    name: shares_held
+    description: Number of shares held in the position
+    data_type: integer
+
+  - &purchase_date
+    name: purchase_date
+    description: Date the position was bought; the purchase price is the close of the first trading day on or after it
+    data_type: date
+
+  - &purchase_price
+    name: purchase_price
+    description: Close on the position's first trading day on or after its purchase date
+    data_type: double
+
+  - &position_value
+    name: position_value
+    description: shares_held x close_price on the trading day, in the listing currency
+    data_type: double
+
+  - &cost_basis
+    name: cost_basis
+    description: shares_held x purchase_price
+    data_type: double
+
+  - &unrealized_gain
+    name: unrealized_gain
+    description: position_value - cost_basis, excluding dividends
+    data_type: double
+
+  - &price_return
+    name: price_return
+    description: Price-only return since purchase, as a fraction (close_price / purchase_price - 1)
+    data_type: double
+
+  - &estimated_dividends
+    name: estimated_dividends
+    description: >
+      ESTIMATED dividends accrued since purchase: shares_held x trailing-twelve-month dividend per share x days held / 365.
+      Uses the company's current fundamentals; no payment history is loaded.
+    data_type: double
+
+  - &total_return
+    name: total_return
+    description: Return since purchase including estimated dividends, as a fraction ((position_value + estimated_dividends) / cost_basis - 1)
+    data_type: double
+
+  - &portfolio_weight
+    name: portfolio_weight
+    description: Share of the portfolio's value in this position on the trading day, as a fraction
+    data_type: double
+
+  - &position_count
+    name: position_count
+    description: Number of positions held on the trading day
+    data_type: bigint
+
+  - &portfolio_value
+    name: portfolio_value
+    description: Sum of position_value across the portfolio on the trading day
+    data_type: double
+
+  - &portfolio_cost_basis
+    name: portfolio_cost_basis
+    description: Sum of cost_basis across the portfolio
+    data_type: double
+
+  - &portfolio_unrealized_gain
+    name: portfolio_unrealized_gain
+    description: portfolio_value - portfolio_cost_basis, excluding dividends
+    data_type: double
+
+  - &portfolio_price_return
+    name: portfolio_price_return
+    description: Price-only portfolio return since purchase, as a fraction, weighted by position size
+    data_type: double
+
+  - &portfolio_estimated_dividends
+    name: portfolio_estimated_dividends
+    description: Sum of estimated_dividends across the portfolio (an estimate, see estimated_dividends)
+    data_type: double
+
+  - &portfolio_total_return
+    name: portfolio_total_return
+    description: Portfolio return since purchase including estimated dividends, as a fraction
+    data_type: double
+
+  - &portfolio_daily_return
+    name: portfolio_daily_return
+    description: Change in portfolio_value from the previous trading day, as a fraction; null on the first day
+    data_type: double
+
+  - &price_record_ids_hash
+    name: price_record_ids_hash
+    description: "Audit hash of the price rows behind an aggregate: md5 of the sorted price_record_ids joined with ','"
+    data_type: varchar
 
   # --- Lineage ---------------------------------------------------------------
 
   - &loaded_at
     name: loaded_at
-    description: Start time of the dlt load that last wrote the row. Re-fetched rows are rewritten on every load.
+    description: >
+      Start time of the dlt load that last wrote the row. Upserted tables rewrite every re-fetched row;
+      versioned (scd2) tables write a row only when its values change.
     data_type: timestamp with time zone
 
   - &record_id
     name: record_id
     description: >
-      Record identifier: a hash of the row's primary key, stable across loads and versions of the row.
+      dlt row identifier. Upserted tables: a hash of the primary key, stable across loads. Versioned (scd2)
+      tables: a hash of the row's content, so it identifies the values, and repeats if values revert.
     data_type: varchar
+
+  - &valid_from
+    name: valid_from
+    description: When this version of the record became current (start of the dlt load that first saw it)
+    data_type: timestamp with time zone
+
+  - &valid_to
+    name: valid_to
+    description: When this version was replaced by a newer one; null while it is the current version
+    data_type: timestamp with time zone
 
 sources:
   - name: alpha_vantage
     schema: alpha_vantage
     description: >
       Market and US macroeconomic data from the Alpha Vantage API (https://www.alphavantage.co/documentation/),
-      loaded by the dlt pipeline in src/financial. Tables are upserted on their primary keys, so re-runs update rows in place.
+      loaded by the dlt pipeline in src/financial. Prices and economic indicators are upserted on their primary keys;
+      company overviews are versioned (scd2), keeping every change.
     config:
       loaded_at_field: "to_timestamp(cast(_dlt_load_id as double))"
       freshness:
@@ -376,6 +525,7 @@ sources:
     tables:
       - name: daily_prices
         description: Daily OHLCV bars per symbol for the last 100 trading days. One row per symbol per trading day.
+        data_tests: [declared_types_match]
         columns:
 
           - <<: *ticker_symbol
@@ -409,8 +559,14 @@ sources:
 
       - name: company_overviews
         description: >
-          Company profile and fundamentals, one row per symbol, refreshed on every load.
+          Company profile and fundamentals, one row per symbol per version (scd2). A new version is written only when
+          a symbol's values change. A symbol the API stops returning keeps its last version as current.
           All values are text as returned by the API, which uses "None" and "-" for missing values; cast them downstream.
+        config:
+          # Unchanged rows aren't rewritten, so the table's own load ids stop advancing when nothing changes.
+          # Use the pipeline's latest successful load instead.
+          loaded_at_query: "select max(inserted_at) from alpha_vantage._dlt_loads where status = 0"
+        data_tests: [declared_types_match]
         columns:
 
           - <<: *ticker_symbol
@@ -564,9 +720,11 @@ sources:
             data_type: varchar
 
           - <<: *percent_insiders
+            description: Percentage of shares held by insiders (0-100), as text
             data_type: varchar
 
           - <<: *percent_institutions
+            description: Percentage of shares held by institutions (0-100), as text
             data_type: varchar
 
           - <<: *dividend_date
@@ -582,12 +740,20 @@ sources:
 
           - <<: *record_id
             name: _dlt_id
+            description: dlt row identifier; a hash of the row's content (repeats if values revert to an earlier version)
+
+          - <<: *valid_from
+            name: _dlt_valid_from
+
+          - <<: *valid_to
+            name: _dlt_valid_to
 
       - name: economic_indicators
         description: >
           US macroeconomic time series, one row per indicator per period. Full history is returned on every load.
           Indicators: REAL_GDP (quarterly), CPI, FEDERAL_FUNDS_RATE, TREASURY_YIELD (10-year) and UNEMPLOYMENT (monthly),
           INFLATION (annual).
+        data_tests: [declared_types_match]
         columns:
 
           - *indicator
@@ -600,11 +766,13 @@ sources:
 
           - <<: *series_unit
             name: unit
+            description: Unit of the observed value as reported by the API, e.g. "percent" or "billions of dollars"
 
           - <<: *period_start_date
             name: date
 
-          - *value
+          - <<: *value
+            description: Observed value in the reported unit (percent series on a 0-100 scale); null where the API reported no value
 
           - <<: *loaded_at
             name: _dlt_load_id
@@ -633,12 +801,10 @@ models:
       - <<: *ticker_symbol
         data_tests:
           - not_null
-          - relationships:
+          - relationships:  # expect warnings for ETFs, which have no company overview
               arguments:
                 to: ref('stg_alpha_vantage__company_overviews')
                 field: ticker_symbol
-              config:
-                severity: warn  # ETFs have no company overview
 
       - <<: *trading_date
         data_tests: [not_null]
@@ -665,12 +831,23 @@ models:
 
   - name: stg_alpha_vantage__company_overviews
     description: >
-      Company profile and fundamentals, one row per ticker. Nulls the API's "None" / "-" placeholders and
-      casts `company_overviews` from text to the concept bank types.
+      Company profile and fundamentals, one row per ticker per version; the current version has a null valid_to.
+      Nulls the API's "None" / "-" placeholders and casts `company_overviews` from text to the concept bank types.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, valid_from]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "valid_to is null or valid_to > valid_from"
     columns:
 
       - <<: *ticker_symbol
-        data_tests: [unique, not_null]
+        data_tests:
+          - not_null
+          - unique:  # at most one current version per ticker
+              config:
+                where: "valid_to is null"
 
       - *asset_type
 
@@ -783,7 +960,12 @@ models:
       - *loaded_at
 
       - <<: *record_id
-        data_tests: [unique, not_null]
+        data_tests: [not_null]  # not unique: a content hash repeats if values revert
+
+      - <<: *valid_from
+        data_tests: [not_null]
+
+      - *valid_to
 
   - name: stg_alpha_vantage__economic_indicators
     description: >
@@ -818,20 +1000,472 @@ models:
       - <<: *record_id
         data_tests: [unique, not_null]
 
+  # --- Intermediate --------------------------------------------------------
+
+  - name: int_alpha_vantage__economic_observations
+    description: >
+      Economic observations with the date each is treated as available (the day after its period ends).
+      Shared by fct_economic_indicators and the daily as-of join.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [indicator, period_start_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "available_from_date > period_start_date"
+    columns:
+
+      - *indicator
+
+      - *series_name
+
+      - *series_interval
+
+      - *series_unit
+
+      - *period_start_date
+
+      - <<: *available_from_date
+        data_tests: [not_null]
+
+      - *value
+
+      - *loaded_at
+
+      - *record_id
+
+  - name: int_alpha_vantage__indicators_as_of_daily
+    description: >
+      For each trading day and indicator, the latest non-null observation available by that day (ASOF JOIN on
+      available_from_date). A day before an indicator's first available observation has no row for it.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [trading_date, indicator]
+      - dbt_utils.expression_is_true:  # no look-ahead: nothing is used before it's available
+          arguments:
+            expression: "available_from_date <= trading_date"
+    columns:
+
+      - <<: *trading_date
+        data_tests: [not_null]
+
+      - *indicator
+
+      - *series_name
+
+      - *series_interval
+
+      - *series_unit
+
+      - *period_start_date
+
+      - *available_from_date
+
+      - <<: *value
+        data_tests: [not_null]
+
+      - *record_id
+
+  # --- Marts ---------------------------------------------------------------
+
+  - name: dim_companies
+    description: >
+      Company profile and fundamentals, one row per ticker per version. Filter on is_current to screen on the
+      latest fundamentals; join on valid_from / valid_to for the version in effect at a point in time.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, valid_from]
+    columns:
+
+      - <<: *ticker_symbol
+        data_tests:
+          - not_null
+          - unique:  # one current version per ticker
+              config:
+                where: "is_current"
+
+      - *asset_type
+
+      - *company_name
+
+      - *business_description
+
+      - *central_index_key
+
+      - *listing_exchange
+
+      - *currency
+
+      - *country
+
+      - *sector
+
+      - *industry
+
+      - *address
+
+      - *official_site
+
+      - *fiscal_year_end
+
+      - *latest_quarter
+
+      - *market_capitalization
+
+      - *ebitda
+
+      - *pe_ratio
+
+      - *peg_ratio
+
+      - *book_value
+
+      - *dividend_per_share
+
+      - *dividend_yield
+
+      - *eps
+
+      - *revenue_per_share_ttm
+
+      - *profit_margin
+
+      - *operating_margin_ttm
+
+      - *return_on_assets_ttm
+
+      - *return_on_equity_ttm
+
+      - *revenue_ttm
+
+      - *gross_profit_ttm
+
+      - *diluted_eps_ttm
+
+      - *quarterly_earnings_growth_yoy
+
+      - *quarterly_revenue_growth_yoy
+
+      - *analyst_target_price
+
+      - *analyst_rating_strong_buy
+
+      - *analyst_rating_buy
+
+      - *analyst_rating_hold
+
+      - *analyst_rating_sell
+
+      - *analyst_rating_strong_sell
+
+      - *trailing_pe
+
+      - *forward_pe
+
+      - *price_to_sales_ratio_ttm
+
+      - *price_to_book_ratio
+
+      - *ev_to_revenue
+
+      - *ev_to_ebitda
+
+      - *beta
+
+      - *high_52_week
+
+      - *low_52_week
+
+      - *moving_average_50_day
+
+      - *moving_average_200_day
+
+      - *shares_outstanding
+
+      - *shares_float
+
+      - *percent_insiders
+
+      - *percent_institutions
+
+      - *dividend_date
+
+      - *ex_dividend_date
+
+      - *loaded_at
+
+      - *record_id
+
+      - <<: *valid_from
+        data_tests: [not_null]
+
+      - *valid_to
+
+      - <<: *is_current
+        data_tests: [not_null]
+
+  - name: fct_daily_prices
+    description: Daily price bars, one row per ticker per trading day, with returns and a rebased close for charting.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, trading_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "close_index > 0"
+    columns:
+
+      - *ticker_symbol
+
+      - *trading_date
+
+      - *open_price
+
+      - *high_price
+
+      - *low_price
+
+      - *close_price
+
+      - *trade_volume
+
+      - *daily_return
+
+      - <<: *close_index
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: fct_economic_indicators
+    description: US macroeconomic observations at their native grain, one row per indicator per period.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [indicator, period_start_date]
+    columns:
+
+      - *indicator
+
+      - *series_name
+
+      - *series_interval
+
+      - *series_unit
+
+      - *period_start_date
+
+      - *available_from_date
+
+      - *value
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: mart_daily_market
+    description: >
+      Chart-ready daily market data in long format: one row per trading day, ticker and indicator, with the
+      indicator value available that day. Profile attributes come from each company's current version.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [trading_date, ticker_symbol, indicator]
+      - dbt_utils.expression_is_true:  # no look-ahead
+          arguments:
+            expression: "available_from_date <= trading_date"
+    columns:
+
+      - <<: *trading_date
+        data_tests: [not_null]
+
+      - <<: *ticker_symbol
+        data_tests: [not_null]
+
+      - *company_name
+
+      - *sector
+
+      - *industry
+
+      - *close_price
+
+      - *trade_volume
+
+      - *daily_return
+
+      - *close_index
+
+      - <<: *indicator
+        data_tests: [not_null]
+
+      - *series_name
+
+      - *series_unit
+
+      - *period_start_date
+
+      - *available_from_date
+
+      - *value
+
+      - <<: *price_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+      - <<: *indicator_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_economic_indicators')
+                field: record_id
+
+  - name: fct_portfolio_positions_daily
+    description: >
+      Each holding in the portfolio_holdings seed, one row per ticker per trading day from its purchase date:
+      value, cost, returns and ESTIMATED dividends.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, trading_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "trading_date >= purchase_date and estimated_dividends >= 0 and position_value > 0"
+    columns:
+
+      - *ticker_symbol
+
+      - *trading_date
+
+      - *shares_held
+
+      - *purchase_date
+
+      - *purchase_price
+
+      - *close_price
+
+      - *position_value
+
+      - *cost_basis
+
+      - *unrealized_gain
+
+      - *price_return
+
+      - *estimated_dividends
+
+      - *total_return
+
+      - *portfolio_weight
+
+      - <<: *price_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+  - name: fct_portfolio_daily
+    description: The whole portfolio, one row per trading day, summed from fct_portfolio_positions_daily.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "position_count > 0 and portfolio_value > 0"
+    columns:
+
+      - <<: *trading_date
+        data_tests: [unique, not_null]
+
+      - *position_count
+
+      - *portfolio_value
+
+      - *portfolio_cost_basis
+
+      - *portfolio_unrealized_gain
+
+      - *portfolio_price_return
+
+      - *portfolio_estimated_dividends
+
+      - *portfolio_total_return
+
+      - *portfolio_daily_return
+
+      - <<: *price_record_ids_hash
+        data_tests: [not_null]
+
+seeds:
+  - name: portfolio_holdings
+    description: >
+      The portfolio to report on: one row per holding. Edit this file to change the portfolio. A purchase_date
+      before the first loaded trading day is bought at the first close available.
+    config:
+      column_types:
+        ticker_symbol: varchar
+        shares_held: integer
+        purchase_date: date
+    data_tests: [declared_types_match]
+    columns:
+
+      - <<: *ticker_symbol
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: ticker_symbol
+
+      - <<: *shares_held
+        data_tests: [not_null]
+
+      - <<: *purchase_date
+        data_tests: [not_null]
+
 unit_tests:
   - name: company_overviews_nulls_placeholders_and_casts
-    description: The API's "None" and "-" placeholders become nulls; real values cast to the concept bank types.
+    description: >
+      The API's "None" and "-" placeholders become nulls; real values cast to the concept bank types, and
+      0-100 percentages become fractions.
     model: stg_alpha_vantage__company_overviews
     given:
       - input: source('alpha_vantage', 'company_overviews')
         rows:
           - {symbol: AAA, sector: "None", pe_ratio: "None", peg_ratio: "-", beta: "1.25",
-             market_capitalization: "212460716000", dividend_date: "2026-01-15", _dlt_load_id: "1790520062.5", _dlt_id: "a"}
+             market_capitalization: "212460716000", dividend_date: "2026-01-15", percent_insiders: "50",
+             _dlt_load_id: "1790520062.5", _dlt_id: "a"}
           - {symbol: BBB, sector: TECHNOLOGY, pe_ratio: "31.2", peg_ratio: "1.8", beta: "-",
-             market_capitalization: "None", dividend_date: "None", _dlt_load_id: "1790520062.5", _dlt_id: "b"}
+             market_capitalization: "None", dividend_date: "None", percent_insiders: "None",
+             _dlt_load_id: "1790520062.5", _dlt_id: "b"}
     expect:
       rows:
         - {ticker_symbol: AAA, sector: null, pe_ratio: null, peg_ratio: null, beta: 1.25,
-           market_capitalization: 212460716000, dividend_date: 2026-01-15}
+           market_capitalization: 212460716000, dividend_date: 2026-01-15, percent_insiders: 0.5}
         - {ticker_symbol: BBB, sector: TECHNOLOGY, pe_ratio: 31.2, peg_ratio: 1.8, beta: null,
-           market_capitalization: null, dividend_date: null}
+           market_capitalization: null, dividend_date: null, percent_insiders: null}
+
+  - name: economic_indicators_percent_series_become_fractions
+    description: Series reported in percent are divided by 100 and relabelled "fraction"; other units are unchanged.
+    model: stg_alpha_vantage__economic_indicators
+    given:
+      - input: source('alpha_vantage', 'economic_indicators')
+        rows:
+          - {indicator: UNEMPLOYMENT, unit: percent, date: 2026-08-01, value: 25, _dlt_load_id: "1790520062.5", _dlt_id: "a"}
+          - {indicator: REAL_GDP, unit: billions of dollars, date: 2026-04-01, value: 6000.5, _dlt_load_id: "1790520062.5", _dlt_id: "b"}
+    expect:
+      rows:
+        - {indicator: UNEMPLOYMENT, series_unit: fraction, value: 0.25}
+        - {indicator: REAL_GDP, series_unit: billions of dollars, value: 6000.5}

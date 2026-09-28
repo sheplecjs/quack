@@ -1,0 +1,8 @@
+extends: ./_asset_base.yml
+title: "NVIDIA Corporation (NVDA)"
+
+variables:
+  ticker:
+    notes: Fixed to NVDA for this board.
+    default: NVDA
+    visible: false

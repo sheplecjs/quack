@@ -4,25 +4,16 @@ Docs: https://www.alphavantage.co/documentation/
 """
 
 import time
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator
 from typing import Any
 
 import dlt
 from dlt.sources import DltResource
 from dlt.sources.helpers.requests import Client, RequestException
 
-BASE_URL = "https://www.alphavantage.co/query"
-MIN_REQUEST_INTERVAL = 1.2
-RATE_LIMIT_BACKOFF = (2, 5, 10, 0)
+from financial.config import AlphaVantageConfig
 
-DEFAULT_INDICATORS: dict[str, dict[str, str]] = {
-    "REAL_GDP": {"interval": "quarterly"},
-    "CPI": {"interval": "monthly"},
-    "INFLATION": {},
-    "FEDERAL_FUNDS_RATE": {"interval": "monthly"},
-    "TREASURY_YIELD": {"interval": "monthly", "maturity": "10year"},
-    "UNEMPLOYMENT": {},
-}
+BASE_URL = "https://www.alphavantage.co/query"
 
 _client = Client(raise_for_status=False)
 _last_request_at = 0.0
@@ -32,14 +23,22 @@ class AlphaVantageError(Exception):
     """Raised when Alpha Vantage returns an error, rate limit, or premium-only notice."""
 
 
-def _get(api_key: str, function: str, **params: str) -> dict[str, Any]:
+def _get(settings: AlphaVantageConfig, function: str, **params: str) -> dict[str, Any]:
     global _last_request_at
-    time.sleep(max(0.0, _last_request_at + MIN_REQUEST_INTERVAL - time.monotonic()))
+    time.sleep(
+        max(0.0, _last_request_at + settings.min_request_interval - time.monotonic())
+    )
     try:
         response = _client.get(
-            BASE_URL, params={"function": function, **params, "apikey": api_key}
+            BASE_URL,
+            params={
+                "function": function,
+                **params,
+                "apikey": settings.api_key.get_secret_value(),
+            },
         )
     except RequestException as e:
+        # requests' own messages include the URL, and with it the key
         raise AlphaVantageError(f"{function}: {type(e).__name__}") from None
     finally:
         _last_request_at = time.monotonic()
@@ -48,21 +47,28 @@ def _get(api_key: str, function: str, **params: str) -> dict[str, Any]:
     return response.json()
 
 
-def _query(api_key: str, function: str, **params: str) -> dict[str, Any]:
-    for backoff in RATE_LIMIT_BACKOFF:
-        payload = _get(api_key, function, **params)
+def _query(
+    settings: AlphaVantageConfig, function: str, **params: str
+) -> dict[str, Any]:
+    # Errors and rate limits come back as HTTP 200 with a single message key.
+    # The burst limit is enforced over a window, so back off and retry it; the
+    # daily limit shares the same message and will still fail after retries.
+    for backoff in (*settings.rate_limit_backoff, None):
+        payload = _get(settings, function, **params)
         message = payload.get("Information") or payload.get("Note")
-        if not (message and "sparingly" in message):
+        if backoff is None or not (message and "sparingly" in message):
             break
         time.sleep(backoff)
 
     for key in ("Error Message", "Information", "Note"):
         if key in payload:
-            raise AlphaVantageError(f"{function}: {payload[key]}")
+            # Alpha Vantage echoes the API key in its rate-limit message
+            raise AlphaVantageError(settings.redact(f"{function}: {payload[key]}"))
     return payload
 
 
 def _to_float(value: str) -> float | None:
+    # Alpha Vantage uses "." and "None" for missing values
     try:
         return float(value)
     except ValueError:
@@ -75,13 +81,11 @@ def _to_float(value: str) -> float | None:
     primary_key=("symbol", "date"),
     columns={"date": {"data_type": "date"}},
 )
-def daily_prices(
-    symbols: Sequence[str], api_key: str, outputsize: str = "compact"
-) -> Iterator[list[dict[str, Any]]]:
-    """Daily OHLCV bars per symbol. `compact` is the last 100 days; `full` is premium-only."""
-    for symbol in symbols:
+def daily_prices(settings: AlphaVantageConfig) -> Iterator[list[dict[str, Any]]]:
+    """Daily OHLCV bars per symbol."""
+    for symbol in settings.symbols:
         payload = _query(
-            api_key, "TIME_SERIES_DAILY", symbol=symbol, outputsize=outputsize
+            settings, "TIME_SERIES_DAILY", symbol=symbol, outputsize=settings.outputsize
         )
         yield [
             {
@@ -99,13 +103,17 @@ def daily_prices(
 
 @dlt.resource(
     name="company_overviews",
-    write_disposition={"disposition": "merge", "strategy": "upsert"},
-    primary_key="symbol",
+    # scd2 keeps every version of a company's fundamentals, with validity columns
+    # _dlt_valid_from / _dlt_valid_to (null while current). merge_key limits retirement
+    # to the symbols in this load, so a partial run (--symbols) doesn't retire the rest.
+    write_disposition={"disposition": "merge", "strategy": "scd2"},
+    merge_key="symbol",
 )
-def company_overviews(symbols: Sequence[str], api_key: str) -> Iterator[dict[str, Any]]:
+def company_overviews(settings: AlphaVantageConfig) -> Iterator[dict[str, Any]]:
     """Company fundamentals, one row per symbol. Values are left as returned for dbt to type."""
-    for symbol in symbols:
-        overview = _query(api_key, "OVERVIEW", symbol=symbol)
+    for symbol in settings.symbols:
+        overview = _query(settings, "OVERVIEW", symbol=symbol)
+        # ETFs and unknown symbols return an empty object
         if overview:
             yield overview
 
@@ -116,15 +124,13 @@ def company_overviews(symbols: Sequence[str], api_key: str) -> Iterator[dict[str
     primary_key=("indicator", "date"),
     columns={"date": {"data_type": "date"}},
 )
-def economic_indicators(
-    indicators: dict[str, dict[str, str]], api_key: str
-) -> Iterator[list[dict[str, Any]]]:
+def economic_indicators(settings: AlphaVantageConfig) -> Iterator[list[dict[str, Any]]]:
     """US macro time series (GDP, CPI, rates, ...), one row per indicator per period."""
-    for indicator, params in indicators.items():
-        payload = _query(api_key, indicator, **params)
+    for indicator in settings.indicators:
+        payload = _query(settings, indicator.function, **indicator.params())
         yield [
             {
-                "indicator": indicator,
+                "indicator": indicator.function,
                 "name": payload["name"],
                 "interval": payload["interval"],
                 "unit": payload["unit"],
@@ -138,17 +144,26 @@ def economic_indicators(
 @dlt.source(name="alpha_vantage")
 def alpha_vantage_source(
     symbols: list[str] = dlt.config.value,
-    indicators: dict[str, dict[str, str]] | None = None,
+    indicators: list[dict[str, str]] | None = None,
+    outputsize: str = "compact",
     api_key: str = dlt.secrets.value,
 ) -> list[DltResource]:
     """Stock prices, company fundamentals and economic indicators from Alpha Vantage.
 
-    `symbols` is read from `[sources.alpha_vantage]` in .dlt/config.toml and
-    `api_key` from `[sources.alpha_vantage]` in .dlt/secrets.toml (or the
-    SOURCES__ALPHA_VANTAGE__API_KEY env var) unless passed explicitly.
+    dlt reads each argument from `[sources.alpha_vantage]` in .dlt/config.toml, and
+    `api_key` from .dlt/secrets.toml (or SOURCES__ALPHA_VANTAGE__API_KEY), unless passed
+    explicitly. AlphaVantageConfig validates them all before any request is made.
     """
+    raw: dict[str, Any] = {
+        "api_key": api_key,
+        "symbols": symbols,
+        "outputsize": outputsize,
+    }
+    if indicators is not None:
+        raw["indicators"] = indicators
+    settings = AlphaVantageConfig.model_validate(raw)
     return [
-        daily_prices(symbols, api_key),
-        company_overviews(symbols, api_key),
-        economic_indicators(indicators or DEFAULT_INDICATORS, api_key),
+        daily_prices(settings),
+        company_overviews(settings),
+        economic_indicators(settings),
     ]

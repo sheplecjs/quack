@@ -52,6 +52,8 @@ anchors:
 - **Anchor name = concept name = final column name.**
 - **Every concept has `name`, `description` and `data_type`.** Use DuckDB's own type names, not aliases:
   `varchar` not `text`/`string`, `double` not `float8`.
+- **Percentages are fractions** (0.041 = 4.1%), whatever scale the source uses. Staging converts 0-100 values,
+  and the source override's description records the raw scale.
 - **Name concepts by meaning, not by source column.** Use `company_name` and `series_name`, not two concepts
   called `name`.
 - **No `data_tests` in the bank.** Sources inherit everything the bank holds, so a bank-level test would run
@@ -78,7 +80,10 @@ sources:
   should correspond to a rename in `stg_*.sql`, and every `data_type` override to a cast. Keep them in step.
 - A source column that no model carries forward is defined inline at the source, not in the bank. The bank
   holds only concepts that exist in the finished models.
-- Source-level `data_tests` are allowed for assumptions about the raw data (e.g. the source's grain).
+- **Every source table carries `data_tests: [declared_types_match]`.** It compares the declared columns (after
+  overrides) with the real table and reports each column as `type_mismatch`, `missing` or `undeclared`.
+  Types are compared by name, case-insensitively, which is why the bank uses DuckDB's own type names.
+- Other source-level `data_tests` are allowed for assumptions about the raw data (e.g. the source's grain).
 
 #### 3. Models: overrides are tactical data tests
 
@@ -123,17 +128,43 @@ Tests in staging:
 
 - **Types are enforced by a contract:** `+contract: {enforced: true}` on the staging folder in `dbt_project.yml`.
   Staging columns are bare concepts, so the contract checks the output against the bank on every build.
-  The planned source test covers the other half: raw tables against the source overrides.
+  `declared_types_match` on the sources covers the other half: raw tables against the source overrides.
 - **Grain:** a unique key test on every model (`unique` for single-column keys, `unique_combination_of_columns`
-  for composite keys), plus `unique` + `not_null` on `record_id`.
+  for composite keys), plus `unique` + `not_null` on `record_id` for upserted tables. Versioned tables use
+  `(key, valid_from)` as the key, `unique` on the key filtered to `valid_to is null` (one current version),
+  and `not_null` only on `record_id`.
 - **Source assumptions:** `not_null` on required values, `accepted_values` on small fixed sets, and
   `expression_is_true` for internal consistency (e.g. a price bar's low ≤ open, close ≤ high).
-- **References between staging models:** use `relationships`, with `severity: warn` where orphans are
-  expected (ETFs have no company overview).
+- **References between staging models:** use `relationships`, with a comment where orphans are expected
+  (ETFs have no company overview).
 - **Unit tests** (`unit_tests:` in the domain YAML) cover the cleaning logic: placeholders become nulls
   and real values cast correctly.
 - **Not in staging:** freshness (sources), business rules, checks across models, audit-hash checks
   (marts).
+
+Test configuration (`data_tests:` in `dbt_project.yml`) applies to every test in the project:
+- **Severity is `warn`:** a failing test is reported but doesn't stop `dbt build` or skip downstream models.
+  Only contracts and unit tests stop a build.
+- **Failing rows are kept** as a view per test in the default audit schema, `<target schema>_dbt_test__audit`
+  (`main_dbt_test__audit` locally). Query a test's view to see what failed.
+- **Don't set `severity` on individual tests** unless it differs from the default: set `error` on a test
+  whose failure must block the build.
+
+### Intermediate and marts layers
+
+- **Intermediate** (`int_<domain>__<purpose>`, views) holds each step that does something hard once, e.g.
+  aligning grains. It's shared by several marts. Don't join everything into one wide intermediate table:
+  mixed grains fan out, and snapshot data joined to history implies history that doesn't exist.
+- **Marts** (tables) are `dim_*` (entities, possibly versioned), `fct_*` (events or observations at their native
+  grain) and `mart_*` (chart- or consumer-ready, denormalised). Sort each mart with an `order by` on the
+  columns it's usually filtered by (ticker, date) so DuckDB can skip blocks.
+- **Contracts are enforced on every layer.** Derived columns are new concepts in the bank (e.g. `daily_return`,
+  `close_index`, `available_from_date`), so every model's output is declared.
+- **Point in time.** Economic observations join to trading days by `available_from_date` (the day after the
+  period ends), never by period start, and an `available_from_date <= trading_date` test guards against
+  look-ahead. Versioned records join by `valid_from` / `valid_to`.
+- **Carry lineage through.** A mart that combines sources keeps each source's id under its own concept
+  (`price_record_id`, `indicator_record_id`) with a `relationships` test back to the fact it came from.
 
 ### Lineage concepts
 
@@ -143,6 +174,9 @@ Every model carries its load lineage as two bank concepts, mapped at the source 
 |---|---|---|---|
 | `loaded_at` (`timestamp with time zone`) | `_dlt_load_id` | `name`, `data_type: varchar` | `to_timestamp(cast(_dlt_load_id as double))` |
 | `record_id` (`varchar`) | `_dlt_id` | `name` | `_dlt_id` |
+
+Versioned (`scd2`) tables also carry `valid_from` and `valid_to` (`timestamp with time zone`), mapped from
+`_dlt_valid_from` / `_dlt_valid_to` with a `name` override. `valid_to` is null for the current version.
 
 Models that aggregate rows can't carry `record_id`. They carry a hash of their contributing ids as a
 separate concept (e.g. `&record_ids_hash`), so any aggregate row can be checked against its inputs:
@@ -158,26 +192,43 @@ md5(string_agg(record_id, ',' order by record_id)) as record_ids_hash
 - **The hash confirms which rows went into an aggregate; it can't identify them.** To find the rows,
   re-run the grouping upstream.
 
-**What the audit path guarantees.** dlt resources load with `write_disposition={"disposition": "merge",
-"strategy": "upsert"}`. Under `upsert`, `_dlt_id` is a hash of the row's primary key. That has these
-consequences:
+**What the audit path guarantees** depends on each resource's dlt merge strategy:
 
+| Resource | Strategy | `_dlt_id` (`record_id`) is | Grain |
+|---|---|---|---|
+| `daily_prices`, `economic_indicators` | `upsert` | a hash of the primary key | one row per key |
+| `company_overviews` | `scd2`, `merge_key="symbol"` | a hash of the row's content | one row per key per version |
+
+Under `upsert`:
 - **`record_id` identifies a record, not a version.** It stays the same across loads for the same key,
   even when the row's values change, e.g. a restated closing price.
 - **An aggregate hash proves which records went into it, not which values.** If upstream values are
-  corrected but the set of keys is the same, the hash doesn't change. To detect value changes you need a
-  content hash: dlt's `scd2` strategy, or a row hash computed in staging as its own concept.
-- **Hashes are reproducible across builds and loads.** `upsert` never deletes rows, so every id a mart
-  has stored still exists upstream. Incremental models may carry `record_id` and the hashes derived
-  from it.
-- **Rows are never deleted.** A row the API stops returning stays in the table with its last values. If
-  an audit also needs the current membership, filter on `loaded_at` explicitly.
+  corrected but the set of keys is the same, the hash doesn't change.
 - **`loaded_at` is the time the row was last written, not when it first arrived.** Every re-fetched row
   is rewritten, changed or not, so for resources that refetch history it tracks the latest load.
 - **Primary keys must be unique within a load.** `upsert` doesn't deduplicate its input: a key that
   appears twice in one batch loads as two rows with the same key and the same `record_id`, and no
-  error is raised. Don't list a symbol twice in `.dlt/config.toml`. A `unique` test on the key in staging
-  catches it.
+  error is raised. The pydantic config rejects duplicate symbols, and a unique-key test in staging
+  catches anything else.
+
+Under `scd2`:
+- **`record_id` identifies the values.** A change writes a new version with a new id; the old version gets
+  a `valid_to`. An aggregate hash over versioned rows therefore proves which values went in.
+- **`record_id` is not unique.** If values revert to an earlier state, the new version repeats the old
+  version's id. The key is `(ticker_symbol, valid_from)`; test `record_id` for `not_null` only.
+- **Unchanged rows aren't rewritten,** so `loaded_at` is when the version was first seen, and the table's
+  own load ids stop advancing when nothing changes. Source freshness uses the pipeline's load log instead
+  (`loaded_at_query` on `_dlt_loads`).
+- **`merge_key` limits retirement to the keys in the load,** so a partial run (`--symbols`) doesn't retire
+  other companies. The flip side: a symbol the API stops returning keeps its last version as current.
+- **Join to prices as of a date** with `valid_from <= date and (valid_to is null or date < valid_to)`,
+  or use `valid_to is null` for the current version only.
+
+For every strategy:
+- **Hashes are reproducible across builds and loads.** Neither strategy deletes rows, so every id a mart
+  has stored still exists upstream. Incremental models may carry `record_id` and hashes derived from it.
+- **Changing a resource's strategy needs a reload of that resource:**
+  `uv run financial-load --resources <resource> --refresh` drops its table and state before loading.
 
 ### Why
 
@@ -204,8 +255,7 @@ consequences:
 
 ### Not yet enforced
 
-Staging models enforce their types through contracts. Everything else here is a convention:
-- the source test comparing declared with actual types is planned;
-- nothing checks the placement rules for overrides.
+Types are checked in both directions: source tables by `declared_types_match`, staging models by
+contracts. The placement rules for overrides are still conventions that nothing checks.
 
 Check a change by hand against the rules above.

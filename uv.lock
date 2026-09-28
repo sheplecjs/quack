@@ -557,6 +557,7 @@ version = "0.1.0"
 source = { editable = "projects/financial" }
 dependencies = [
     { name = "dlt", extra = ["duckdb"] },
+    { name = "pydantic" },
 ]
 
 [package.dev-dependencies]
@@ -571,7 +572,10 @@ interactive = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "dlt", extras = ["duckdb"], specifier = ">=1.20" }]
+requires-dist = [
+    { name = "dlt", extras = ["duckdb"], specifier = ">=1.20" },
+    { name = "pydantic", specifier = ">=2.11" },
+]
 
 [package.metadata.requires-dev]
 dbt = [
