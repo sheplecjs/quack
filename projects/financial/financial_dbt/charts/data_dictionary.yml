@@ -1,0 +1,370 @@
+title: Data Dictionary
+notes: |
+  Every concept behind the portfolio reports, grouped by category: what it means, its final type, where it comes
+  from, and how it's changed on the way from the source to the final models. Built on mart_data_dictionary, which
+  reads the dbt graph; concepts are the anchors in each domain's concept bank. Static: no variables, so it exports
+  as plain HTML alongside the other boards.
+
+source: analytics
+
+style:
+  frame:
+    width: 1440
+
+queries:
+  # ── The anchor ──────────────────────────────────────────────────────────
+  # One row per concept, summarising every place it's documented. Each category
+  # table below filters this, so they can't disagree on what a concept is.
+  concept_summary:
+    notes: One row per data concept (excluding the dictionary's own), with its origin, source-to-final changes and model use.
+    sql: |
+      WITH columns AS (
+        SELECT *
+        FROM mart_data_dictionary
+        WHERE concept_group <> 'Data dictionary'
+      ),
+
+      -- Raw inputs: source tables and seeds, where divergences are declared
+      inputs AS (
+        SELECT
+          concept,
+          resource_type,
+          -- "daily_prices.symbol": the source name adds nothing for a reader
+          CASE WHEN resource_type = 'source' THEN split_part(node_name, '.', 2) ELSE node_name END
+            || '.' || column_name AS input_column,
+          concat_ws('; ',
+            CASE WHEN is_renamed THEN 'renamed from ' || column_name END,
+            CASE WHEN is_retyped THEN 'cast from ' || lower(column_data_type) END,
+            CASE WHEN is_redescribed THEN 'source: ' || column_description END
+          ) AS change
+        FROM columns
+        WHERE resource_type IN ('source', 'seed')
+      ),
+
+      models AS (
+        SELECT
+          concept,
+          count(DISTINCT node_name) AS model_count,
+          -- Layers in pipeline order, e.g. "staging, marts"
+          string_agg(DISTINCT layer, ', ' ORDER BY CASE layer
+            WHEN 'staging' THEN 1 WHEN 'intermediate' THEN 2 WHEN 'marts' THEN 3 ELSE 4 END) AS layers,
+          -- The earliest model a derived concept appears in is where it's calculated
+          arg_min(node_name, CASE layer
+            WHEN 'staging' THEN 1 WHEN 'intermediate' THEN 2 WHEN 'marts' THEN 3 ELSE 4 END) AS first_model
+        FROM columns
+        WHERE resource_type = 'model'
+        GROUP BY concept
+      ),
+
+      concepts AS (
+        SELECT
+          concept,
+          any_value(concept_group) AS concept_group,
+          any_value(concept_description) AS definition,
+          any_value(concept_data_type) AS data_type
+        FROM columns
+        GROUP BY concept
+      ),
+
+      input_summary AS (
+        SELECT
+          concept,
+          string_agg(DISTINCT resource_type, ', ' ORDER BY resource_type DESC) AS origin,
+          string_agg(DISTINCT input_column, ', ' ORDER BY input_column) AS input_columns,
+          string_agg(DISTINCT nullif(change, ''), '; ') AS changes
+        FROM inputs
+        GROUP BY concept
+      )
+
+      SELECT
+        concepts.concept_group,
+        concepts.concept,
+        concepts.definition,
+        concepts.data_type,
+        coalesce(upper(left(input_summary.origin, 1)) || substr(input_summary.origin, 2), 'Derived') AS origin,
+        coalesce(input_summary.input_columns, 'calculated in ' || models.first_model) AS comes_from,
+        CASE
+          WHEN input_summary.concept IS NULL THEN 'Derived from other concepts'
+          ELSE coalesce(input_summary.changes, 'Unchanged')
+        END AS source_to_final,
+        models.layers || ' (' || models.model_count || CASE WHEN models.model_count = 1 THEN ' model)' ELSE ' models)' END
+          AS used_in
+      FROM concepts
+      LEFT JOIN input_summary ON input_summary.concept = concepts.concept
+      LEFT JOIN models ON models.concept = concepts.concept
+
+  # ── KPI rail ────────────────────────────────────────────────────────────
+  dictionary_kpis:
+    notes: Headline counts for the dictionary, excluding its own concepts.
+    sql: |
+      SELECT
+        count(DISTINCT concept) AS concepts,
+        count(DISTINCT concept_group) AS categories,
+        count(*) AS documented_columns,
+        count(DISTINCT node_id) AS tables,
+        count(*) FILTER (WHERE resource_type IN ('source', 'seed')) AS input_columns,
+        count(*) FILTER (WHERE resource_type IN ('source', 'seed') AND (is_renamed OR is_retyped OR is_redescribed))
+          AS changed_input_columns,
+        count(DISTINCT concept) FILTER (WHERE has_concept_conflict) AS conflicts
+      FROM mart_data_dictionary
+      WHERE concept_group <> 'Data dictionary'
+
+  # ── Charts ──────────────────────────────────────────────────────────────
+  concepts_by_category:
+    notes: How many concepts each category holds.
+    sql: |
+      SELECT concept_group AS category, count(*) AS concepts
+      FROM {{ queries.concept_summary }}
+      GROUP BY 1
+
+  input_changes:
+    notes: How source and seed columns change on the way to their final concepts; a column can change in several ways.
+    sql: |
+      SELECT change, columns
+      FROM (
+        SELECT
+          count(*) FILTER (WHERE is_renamed) AS "Renamed",
+          count(*) FILTER (WHERE is_retyped) AS "Cast to a new type",
+          count(*) FILTER (WHERE is_redescribed) AS "Source quirk declared",
+          count(*) FILTER (WHERE NOT (is_renamed OR is_retyped OR is_redescribed)) AS "Unchanged"
+        FROM mart_data_dictionary
+        WHERE resource_type IN ('source', 'seed') AND concept_group <> 'Data dictionary'
+      )
+      UNPIVOT (columns FOR change IN ("Renamed", "Cast to a new type", "Source quirk declared", "Unchanged"))
+
+  # ── Category tables: one per concept bank section, in bank order ────────
+  prices:
+    notes: Concepts in the Prices category.
+    sql: |
+      SELECT concept, definition, data_type, origin, comes_from, source_to_final, used_in
+      FROM {{ queries.concept_summary }}
+      WHERE concept_group = 'Prices'
+      ORDER BY concept
+
+  company_profile:
+    notes: Concepts in the Company profile category.
+    sql: |
+      SELECT concept, definition, data_type, origin, comes_from, source_to_final, used_in
+      FROM {{ queries.concept_summary }}
+      WHERE concept_group = 'Company profile'
+      ORDER BY concept
+
+  company_fundamentals:
+    notes: Concepts in the Company fundamentals category.
+    sql: |
+      SELECT concept, definition, data_type, origin, comes_from, source_to_final, used_in
+      FROM {{ queries.concept_summary }}
+      WHERE concept_group = 'Company fundamentals'
+      ORDER BY concept
+
+  economic_series:
+    notes: Concepts in the Economic series category.
+    sql: |
+      SELECT concept, definition, data_type, origin, comes_from, source_to_final, used_in
+      FROM {{ queries.concept_summary }}
+      WHERE concept_group = 'Economic series'
+      ORDER BY concept
+
+  derived:
+    notes: Concepts in the Derived category (calculated in intermediate and mart models).
+    sql: |
+      SELECT concept, definition, data_type, origin, comes_from, source_to_final, used_in
+      FROM {{ queries.concept_summary }}
+      WHERE concept_group = 'Derived'
+      ORDER BY concept
+
+  portfolio:
+    notes: Concepts in the Portfolio category.
+    sql: |
+      SELECT concept, definition, data_type, origin, comes_from, source_to_final, used_in
+      FROM {{ queries.concept_summary }}
+      WHERE concept_group = 'Portfolio'
+      ORDER BY concept
+
+  lineage:
+    notes: Concepts in the Lineage category (load time, record ids and versioning).
+    sql: |
+      SELECT concept, definition, data_type, origin, comes_from, source_to_final, used_in
+      FROM {{ queries.concept_summary }}
+      WHERE concept_group = 'Lineage'
+      ORDER BY concept
+
+charts:
+  # ── KPIs ────────────────────────────────────────────────────────────────
+  kpi_concepts:
+    type: kpi
+    query: dictionary_kpis
+    label: Concepts
+    notes: How many distinct data concepts the reports are built on.
+    value: concepts
+    style:
+      value:
+        format: integer
+    support:
+      value: categories
+      label: categories
+      format: integer
+
+  kpi_columns:
+    type: kpi
+    query: dictionary_kpis
+    label: Documented columns
+    notes: How many columns across all sources, seeds and models map to those concepts.
+    value: documented_columns
+    style:
+      value:
+        format: integer
+    support:
+      value: tables
+      label: tables and views
+      format: integer
+
+  kpi_changed_inputs:
+    type: kpi
+    query: dictionary_kpis
+    label: Source columns changed
+    notes: How many raw source and seed columns are renamed, cast or carry a declared quirk before becoming a concept.
+    value: changed_input_columns
+    style:
+      value:
+        format: integer
+    support:
+      value: input_columns
+      label: source and seed columns
+      format: integer
+
+  kpi_conflicts:
+    type: kpi
+    query: dictionary_kpis
+    label: Conflicting definitions
+    notes: Concepts that models define inconsistently; zero means every model uses each concept exactly as defined.
+    value: conflicts
+    style:
+      value:
+        format: integer
+
+  # ── Charts ──────────────────────────────────────────────────────────────
+  category_bar:
+    query: concepts_by_category
+    type: bar
+    title: Concepts by category
+    subtitle: Each category is a section of a domain's concept bank
+    notes: Where the dictionary's concepts sit.
+    x: category
+    y: concepts
+    style:
+      orientation: horizontal
+      axis_y:
+        labels:
+          format: integer
+
+  changes_bar:
+    query: input_changes
+    type: bar
+    title: From source to concept
+    subtitle: What happens to each raw source and seed column; one column can be both renamed and cast
+    notes: How much of the raw data is used as-is, and how much is renamed, cast or annotated.
+    x: change
+    y: columns
+    style:
+      orientation: horizontal
+      axis_y:
+        labels:
+          format: integer
+
+  # ── Category tables ─────────────────────────────────────────────────────
+  prices_table: &category_table
+    type: table
+    query: prices
+    title: Prices
+    subtitle: Daily price bars for each ticker
+    notes: Price concepts, from the daily prices source.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        concept:
+          label: Concept
+          width: 190
+        definition:
+          label: Definition
+        data_type:
+          label: Type
+          width: 110
+        origin:
+          label: Origin
+          width: 80
+        comes_from:
+          label: Comes from
+          width: 230
+        source_to_final:
+          label: Source to final
+          width: 280
+        used_in:
+          label: Used in
+          width: 180
+
+  company_profile_table:
+    <<: *category_table
+    query: company_profile
+    title: Company profile
+    subtitle: Who each company is
+    notes: Company profile concepts, from the company overviews source.
+
+  company_fundamentals_table:
+    <<: *category_table
+    query: company_fundamentals
+    title: Company fundamentals
+    subtitle: Valuation, profitability, growth, dividends and risk; text in the source, cast to numbers and dates
+    notes: Company fundamental concepts, from the company overviews source.
+
+  economic_series_table:
+    <<: *category_table
+    query: economic_series
+    title: Economic series
+    subtitle: US macroeconomic indicators; percent series are converted to fractions
+    notes: Economic series concepts, from the economic indicators source.
+
+  derived_table:
+    <<: *category_table
+    query: derived
+    title: Derived
+    subtitle: Calculated in the models, not loaded from a source
+    notes: Derived concepts and the model each is first calculated in.
+
+  portfolio_table:
+    <<: *category_table
+    query: portfolio
+    title: Portfolio
+    subtitle: Holdings, values and returns; dividends are estimates
+    notes: Portfolio concepts, from the holdings seed and the portfolio models.
+
+  lineage_table:
+    <<: *category_table
+    query: lineage
+    title: Lineage
+    subtitle: When each row was loaded, which record it is, and which version
+    notes: Lineage concepts, mapped from the loader's own columns.
+
+rows:
+- text: "[← Portfolio overview](portfolio.html)"
+- cols:
+  - width: "17%"
+    rows:
+    - kpi_concepts
+    - kpi_columns
+    - kpi_changed_inputs
+    - kpi_conflicts
+  - width: "43%"
+    rows:
+    - category_bar
+  - width: "40%"
+    rows:
+    - changes_bar
+- prices_table
+- company_profile_table
+- company_fundamentals_table
+- economic_series_table
+- derived_table
+- portfolio_table
+- lineage_table

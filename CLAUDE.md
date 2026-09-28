@@ -52,6 +52,21 @@ anchors:
 - **Anchor name = concept name = final column name.**
 - **Every concept has `name`, `description` and `data_type`.** Use DuckDB's own type names, not aliases:
   `varchar` not `text`/`string`, `double` not `float8`.
+- **Every concept carries its identity in `config.meta`:** `concept` (= its name) and `concept_group` (the bank
+  section heading it sits under, e.g. `Prices`). Anchors are resolved when the YAML is parsed, so this meta is
+  the only way a concept is visible in dbt's graph. The merge copies it onto every use, including renamed source
+  columns, and the data dictionary relies on it.
+
+  ```yaml
+  - &trade_volume
+    name: trade_volume
+    config:
+      meta:
+        concept: trade_volume
+        concept_group: Prices
+    description: Number of shares traded
+    data_type: bigint
+  ```
 - **Percentages are fractions** (0.041 = 4.1%), whatever scale the source uses. Staging converts 0-100 values,
   and the source override's description records the raw scale.
 - **Name concepts by meaning, not by source column.** Use `company_name` and `series_name`, not two concepts
@@ -253,9 +268,22 @@ For every strategy:
 - **Layout:** separate column entries with a blank line, and keep blank lines free of whitespace
   (yamllint's `trailing-spaces` rule rejects it).
 
-### Not yet enforced
+### Data dictionary
 
-Types are checked in both directions: source tables by `declared_types_match`, staging models by
-contracts. The placement rules for overrides are still conventions that nothing checks.
+`models/dictionary/marts/mart_data_dictionary.sql` walks dbt's graph at compile time and writes one row per
+documented column of every source, seed and model: its concept, domain, layer, node, lineage, tests, and
+whether it's renamed, retyped or redescribed relative to its concept. A concept's canonical definition is the
+most common one among the models using it. Rebuild the dictionary after changing any YAML documentation.
+
+### What's enforced
+
+- **Types:** source tables by `declared_types_match`; every model by its contract.
+- **Declared Divergence, by the data dictionary's tests:**
+  - every documented column is anchored to a concept (`concept` not null);
+  - every concept is used by at least one model (`concept_description` not null);
+  - models never rename, retype or redescribe a concept;
+  - models agree on each concept (`has_concept_conflict` is false).
+- **Not enforced:** that a source override actually differs from its concept. A redundant override looks the
+  same as a bare alias once the YAML is parsed.
 
 Check a change by hand against the rules above.

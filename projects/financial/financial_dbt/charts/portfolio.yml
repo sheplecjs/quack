@@ -329,6 +329,7 @@ charts:
           align: right
 
 rows:
+- text: "[Data dictionary →](data_dictionary.html): what every figure means and where it comes from"
 - cols:
   - width: "17%"
     rows:

@@ -6,36 +6,64 @@ anchors:
 
   - &ticker_symbol
     name: ticker_symbol
+    config:
+      meta:
+        concept: ticker_symbol
+        concept_group: Prices
     description: Ticker symbol
     data_type: varchar
 
   - &trading_date
     name: trading_date
+    config:
+      meta:
+        concept: trading_date
+        concept_group: Prices
     description: Trading day
     data_type: date
 
   - &open_price
     name: open_price
+    config:
+      meta:
+        concept: open_price
+        concept_group: Prices
     description: Opening price, in the listing currency
     data_type: double
 
   - &high_price
     name: high_price
+    config:
+      meta:
+        concept: high_price
+        concept_group: Prices
     description: Highest traded price of the day
     data_type: double
 
   - &low_price
     name: low_price
+    config:
+      meta:
+        concept: low_price
+        concept_group: Prices
     description: Lowest traded price of the day
     data_type: double
 
   - &close_price
     name: close_price
+    config:
+      meta:
+        concept: close_price
+        concept_group: Prices
     description: Closing price, not adjusted for splits or dividends
     data_type: double
 
   - &trade_volume
     name: trade_volume
+    config:
+      meta:
+        concept: trade_volume
+        concept_group: Prices
     description: Number of shares traded
     data_type: bigint
 
@@ -43,36 +71,64 @@ anchors:
 
   - &asset_type
     name: asset_type
+    config:
+      meta:
+        concept: asset_type
+        concept_group: Company profile
     description: Asset type, e.g. "Common Stock". ADRs are also reported as "Common Stock" (TSM, SONY, NVO)
     data_type: varchar
 
   - &company_name
     name: company_name
+    config:
+      meta:
+        concept: company_name
+        concept_group: Company profile
     description: Company name
     data_type: varchar
 
   - &business_description
     name: business_description
+    config:
+      meta:
+        concept: business_description
+        concept_group: Company profile
     description: Business description
     data_type: varchar
 
   - &central_index_key
     name: central_index_key
+    config:
+      meta:
+        concept: central_index_key
+        concept_group: Company profile
     description: SEC Central Index Key uniquely identifying entities
     data_type: varchar
 
   - &listing_exchange
     name: listing_exchange
+    config:
+      meta:
+        concept: listing_exchange
+        concept_group: Company profile
     description: Listing exchange where the asset is traded
     data_type: varchar
 
   - &currency
     name: currency
+    config:
+      meta:
+        concept: currency
+        concept_group: Company profile
     description: Currency used in associated price and valuation fields
     data_type: varchar
 
   - &country
     name: country
+    config:
+      meta:
+        concept: country
+        concept_group: Company profile
     description: >
       Market country assigned by Alpha Vantage: USA for every US-listed security, including foreign companies
       traded through ADRs (TSM, SONY, NVO all return USA). Says nothing about the company itself: not its
@@ -82,16 +138,28 @@ anchors:
 
   - &sector
     name: sector
+    config:
+      meta:
+        concept: sector
+        concept_group: Company profile
     description: Sector classification
     data_type: varchar
 
   - &industry
     name: industry
+    config:
+      meta:
+        concept: industry
+        concept_group: Company profile
     description: Industry classification
     data_type: varchar
 
   - &address
     name: address
+    config:
+      meta:
+        concept: address
+        concept_group: Company profile
     description: >
       Company address as reported by Alpha Vantage, in the format of the SEC-filed business address. Its
       country is the company's home country, including for foreign issuers (TSM: Taiwan), but may differ
@@ -100,16 +168,28 @@ anchors:
 
   - &official_site
     name: official_site
+    config:
+      meta:
+        concept: official_site
+        concept_group: Company profile
     description: Company website URL
     data_type: varchar
 
   - &fiscal_year_end
     name: fiscal_year_end
+    config:
+      meta:
+        concept: fiscal_year_end
+        concept_group: Company profile
     description: Month the fiscal year ends
     data_type: varchar
 
   - &latest_quarter
     name: latest_quarter
+    config:
+      meta:
+        concept: latest_quarter
+        concept_group: Company profile
     description: End date of the latest reported fiscal quarter
     data_type: date
 
@@ -117,206 +197,370 @@ anchors:
 
   - &market_capitalization
     name: market_capitalization
+    config:
+      meta:
+        concept: market_capitalization
+        concept_group: Company fundamentals
     description: Market capitalization, in the reporting currency
     data_type: bigint
 
   - &ebitda
     name: ebitda
+    config:
+      meta:
+        concept: ebitda
+        concept_group: Company fundamentals
     description: Earnings before interest, taxes, depreciation and amortization, trailing twelve months
     data_type: bigint
 
   - &pe_ratio
     name: pe_ratio
+    config:
+      meta:
+        concept: pe_ratio
+        concept_group: Company fundamentals
     description: Price-to-earnings ratio
     data_type: double
 
   - &peg_ratio
     name: peg_ratio
+    config:
+      meta:
+        concept: peg_ratio
+        concept_group: Company fundamentals
     description: Price/earnings-to-growth ratio
     data_type: double
 
   - &book_value
     name: book_value
+    config:
+      meta:
+        concept: book_value
+        concept_group: Company fundamentals
     description: Book value per share
     data_type: double
 
   - &dividend_per_share
     name: dividend_per_share
+    config:
+      meta:
+        concept: dividend_per_share
+        concept_group: Company fundamentals
     description: Dividends paid per share, trailing twelve months
     data_type: double
 
   - &dividend_yield
     name: dividend_yield
+    config:
+      meta:
+        concept: dividend_yield
+        concept_group: Company fundamentals
     description: Dividend yield as a decimal fraction (0.025 = 2.5%)
     data_type: double
 
   - &eps
     name: eps
+    config:
+      meta:
+        concept: eps
+        concept_group: Company fundamentals
     description: Earnings per share, trailing twelve months
     data_type: double
 
   - &revenue_per_share_ttm
     name: revenue_per_share_ttm
+    config:
+      meta:
+        concept: revenue_per_share_ttm
+        concept_group: Company fundamentals
     description: Revenue per share, trailing twelve months
     data_type: double
 
   - &profit_margin
     name: profit_margin
+    config:
+      meta:
+        concept: profit_margin
+        concept_group: Company fundamentals
     description: Net profit margin as a decimal fraction
     data_type: double
 
   - &operating_margin_ttm
     name: operating_margin_ttm
+    config:
+      meta:
+        concept: operating_margin_ttm
+        concept_group: Company fundamentals
     description: Operating margin as a decimal fraction, trailing twelve months
     data_type: double
 
   - &return_on_assets_ttm
     name: return_on_assets_ttm
+    config:
+      meta:
+        concept: return_on_assets_ttm
+        concept_group: Company fundamentals
     description: Return on assets as a decimal fraction, trailing twelve months
     data_type: double
 
   - &return_on_equity_ttm
     name: return_on_equity_ttm
+    config:
+      meta:
+        concept: return_on_equity_ttm
+        concept_group: Company fundamentals
     description: Return on equity as a decimal fraction, trailing twelve months
     data_type: double
 
   - &revenue_ttm
     name: revenue_ttm
+    config:
+      meta:
+        concept: revenue_ttm
+        concept_group: Company fundamentals
     description: Total revenue, trailing twelve months
     data_type: bigint
 
   - &gross_profit_ttm
     name: gross_profit_ttm
+    config:
+      meta:
+        concept: gross_profit_ttm
+        concept_group: Company fundamentals
     description: Gross profit, trailing twelve months
     data_type: bigint
 
   - &diluted_eps_ttm
     name: diluted_eps_ttm
+    config:
+      meta:
+        concept: diluted_eps_ttm
+        concept_group: Company fundamentals
     description: Diluted earnings per share, trailing twelve months
     data_type: double
 
   - &quarterly_earnings_growth_yoy
     name: quarterly_earnings_growth_yoy
+    config:
+      meta:
+        concept: quarterly_earnings_growth_yoy
+        concept_group: Company fundamentals
     description: Year-over-year growth in quarterly earnings as a decimal fraction
     data_type: double
 
   - &quarterly_revenue_growth_yoy
     name: quarterly_revenue_growth_yoy
+    config:
+      meta:
+        concept: quarterly_revenue_growth_yoy
+        concept_group: Company fundamentals
     description: Year-over-year growth in quarterly revenue as a decimal fraction
     data_type: double
 
   - &analyst_target_price
     name: analyst_target_price
+    config:
+      meta:
+        concept: analyst_target_price
+        concept_group: Company fundamentals
     description: Consensus analyst price target
     data_type: double
 
   - &analyst_rating_strong_buy
     name: analyst_rating_strong_buy
+    config:
+      meta:
+        concept: analyst_rating_strong_buy
+        concept_group: Company fundamentals
     description: Number of analysts rating the stock Strong Buy
     data_type: integer
 
   - &analyst_rating_buy
     name: analyst_rating_buy
+    config:
+      meta:
+        concept: analyst_rating_buy
+        concept_group: Company fundamentals
     description: Number of analysts rating the stock Buy
     data_type: integer
 
   - &analyst_rating_hold
     name: analyst_rating_hold
+    config:
+      meta:
+        concept: analyst_rating_hold
+        concept_group: Company fundamentals
     description: Number of analysts rating the stock Hold
     data_type: integer
 
   - &analyst_rating_sell
     name: analyst_rating_sell
+    config:
+      meta:
+        concept: analyst_rating_sell
+        concept_group: Company fundamentals
     description: Number of analysts rating the stock Sell
     data_type: integer
 
   - &analyst_rating_strong_sell
     name: analyst_rating_strong_sell
+    config:
+      meta:
+        concept: analyst_rating_strong_sell
+        concept_group: Company fundamentals
     description: Number of analysts rating the stock Strong Sell
     data_type: integer
 
   - &trailing_pe
     name: trailing_pe
+    config:
+      meta:
+        concept: trailing_pe
+        concept_group: Company fundamentals
     description: Price-to-earnings ratio on trailing twelve-month earnings
     data_type: double
 
   - &forward_pe
     name: forward_pe
+    config:
+      meta:
+        concept: forward_pe
+        concept_group: Company fundamentals
     description: Price-to-earnings ratio on forecast earnings
     data_type: double
 
   - &price_to_sales_ratio_ttm
     name: price_to_sales_ratio_ttm
+    config:
+      meta:
+        concept: price_to_sales_ratio_ttm
+        concept_group: Company fundamentals
     description: Price-to-sales ratio, trailing twelve months
     data_type: double
 
   - &price_to_book_ratio
     name: price_to_book_ratio
+    config:
+      meta:
+        concept: price_to_book_ratio
+        concept_group: Company fundamentals
     description: Price-to-book ratio
     data_type: double
 
   - &ev_to_revenue
     name: ev_to_revenue
+    config:
+      meta:
+        concept: ev_to_revenue
+        concept_group: Company fundamentals
     description: Enterprise value to revenue
     data_type: double
 
   - &ev_to_ebitda
     name: ev_to_ebitda
+    config:
+      meta:
+        concept: ev_to_ebitda
+        concept_group: Company fundamentals
     description: Enterprise value to EBITDA
     data_type: double
 
   - &beta
     name: beta
+    config:
+      meta:
+        concept: beta
+        concept_group: Company fundamentals
     description: Beta, the stock's volatility relative to the market
     data_type: double
 
   - &high_52_week
     name: high_52_week
+    config:
+      meta:
+        concept: high_52_week
+        concept_group: Company fundamentals
     description: Highest price in the last 52 weeks
     data_type: double
 
   - &low_52_week
     name: low_52_week
+    config:
+      meta:
+        concept: low_52_week
+        concept_group: Company fundamentals
     description: Lowest price in the last 52 weeks
     data_type: double
 
   - &moving_average_50_day
     name: moving_average_50_day
+    config:
+      meta:
+        concept: moving_average_50_day
+        concept_group: Company fundamentals
     description: 50-day moving average of the closing price
     data_type: double
 
   - &moving_average_200_day
     name: moving_average_200_day
+    config:
+      meta:
+        concept: moving_average_200_day
+        concept_group: Company fundamentals
     description: 200-day moving average of the closing price
     data_type: double
 
   - &shares_outstanding
     name: shares_outstanding
+    config:
+      meta:
+        concept: shares_outstanding
+        concept_group: Company fundamentals
     description: Total shares outstanding
     data_type: bigint
 
   - &shares_float
     name: shares_float
+    config:
+      meta:
+        concept: shares_float
+        concept_group: Company fundamentals
     description: Shares available for public trading
     data_type: bigint
 
   - &percent_insiders
     name: percent_insiders
+    config:
+      meta:
+        concept: percent_insiders
+        concept_group: Company fundamentals
     description: Fraction of shares held by insiders (0.04 = 4%)
     data_type: double
 
   - &percent_institutions
     name: percent_institutions
+    config:
+      meta:
+        concept: percent_institutions
+        concept_group: Company fundamentals
     description: Fraction of shares held by institutions (0.71 = 71%)
     data_type: double
 
   - &dividend_date
     name: dividend_date
+    config:
+      meta:
+        concept: dividend_date
+        concept_group: Company fundamentals
     description: Payment date of the latest dividend
     data_type: date
 
   - &ex_dividend_date
     name: ex_dividend_date
+    config:
+      meta:
+        concept: ex_dividend_date
+        concept_group: Company fundamentals
     description: Ex-dividend date of the latest dividend
     data_type: date
 
@@ -324,31 +568,55 @@ anchors:
 
   - &indicator
     name: indicator
+    config:
+      meta:
+        concept: indicator
+        concept_group: Economic series
     description: Alpha Vantage function name for the series, e.g. CPI or REAL_GDP
     data_type: varchar
 
   - &series_name
     name: series_name
+    config:
+      meta:
+        concept: series_name
+        concept_group: Economic series
     description: Full name of the series, e.g. "Consumer Price Index for all Urban Consumers"
     data_type: varchar
 
   - &series_interval
     name: series_interval
+    config:
+      meta:
+        concept: series_interval
+        concept_group: Economic series
     description: Period covered by each observation; one of annual, quarterly or monthly
     data_type: varchar
 
   - &series_unit
     name: series_unit
+    config:
+      meta:
+        concept: series_unit
+        concept_group: Economic series
     description: Unit of the observed value, e.g. "fraction" or "billions of dollars"
     data_type: varchar
 
   - &period_start_date
     name: period_start_date
+    config:
+      meta:
+        concept: period_start_date
+        concept_group: Economic series
     description: Start date of the period the observation covers
     data_type: date
 
   - &value
     name: value
+    config:
+      meta:
+        concept: value
+        concept_group: Economic series
     description: Observed value in the series unit (percentages as fractions, 0.041 = 4.1%); null where the API reported no value
     data_type: double
 
@@ -356,6 +624,10 @@ anchors:
 
   - &available_from_date
     name: available_from_date
+    config:
+      meta:
+        concept: available_from_date
+        concept_group: Derived
     description: >
       First date an economic observation is treated as available: the day after its period ends. Actual publication
       is usually later, and Alpha Vantage gives no release dates.
@@ -363,26 +635,46 @@ anchors:
 
   - &daily_return
     name: daily_return
+    config:
+      meta:
+        concept: daily_return
+        concept_group: Derived
     description: Close-to-close return from the ticker's previous trading day, as a fraction (0.012 = 1.2%); null on its first day
     data_type: double
 
   - &close_index
     name: close_index
+    config:
+      meta:
+        concept: close_index
+        concept_group: Derived
     description: Closing price rebased to 100 at the ticker's first trading day in the data, for comparing tickers on one axis
     data_type: double
 
   - &is_current
     name: is_current
+    config:
+      meta:
+        concept: is_current
+        concept_group: Derived
     description: Whether this is the current version of the record (valid_to is null)
     data_type: boolean
 
   - &price_record_id
     name: price_record_id
+    config:
+      meta:
+        concept: price_record_id
+        concept_group: Derived
     description: record_id of the daily price row, for tracing a mart row back to its source
     data_type: varchar
 
   - &indicator_record_id
     name: indicator_record_id
+    config:
+      meta:
+        concept: indicator_record_id
+        concept_group: Derived
     description: record_id of the economic observation in effect on the trading day
     data_type: varchar
 
@@ -390,41 +682,73 @@ anchors:
 
   - &shares_held
     name: shares_held
+    config:
+      meta:
+        concept: shares_held
+        concept_group: Portfolio
     description: Number of shares held in the position
     data_type: integer
 
   - &purchase_date
     name: purchase_date
+    config:
+      meta:
+        concept: purchase_date
+        concept_group: Portfolio
     description: Date the position was bought; the purchase price is the close of the first trading day on or after it
     data_type: date
 
   - &purchase_price
     name: purchase_price
+    config:
+      meta:
+        concept: purchase_price
+        concept_group: Portfolio
     description: Close on the position's first trading day on or after its purchase date
     data_type: double
 
   - &position_value
     name: position_value
+    config:
+      meta:
+        concept: position_value
+        concept_group: Portfolio
     description: shares_held x close_price on the trading day, in the listing currency
     data_type: double
 
   - &cost_basis
     name: cost_basis
+    config:
+      meta:
+        concept: cost_basis
+        concept_group: Portfolio
     description: shares_held x purchase_price
     data_type: double
 
   - &unrealized_gain
     name: unrealized_gain
+    config:
+      meta:
+        concept: unrealized_gain
+        concept_group: Portfolio
     description: position_value - cost_basis, excluding dividends
     data_type: double
 
   - &price_return
     name: price_return
+    config:
+      meta:
+        concept: price_return
+        concept_group: Portfolio
     description: Price-only return since purchase, as a fraction (close_price / purchase_price - 1)
     data_type: double
 
   - &estimated_dividends
     name: estimated_dividends
+    config:
+      meta:
+        concept: estimated_dividends
+        concept_group: Portfolio
     description: >
       ESTIMATED dividends accrued since purchase: shares_held x trailing-twelve-month dividend per share x days held / 365.
       Uses the company's current fundamentals; no payment history is loaded.
@@ -432,56 +756,100 @@ anchors:
 
   - &total_return
     name: total_return
+    config:
+      meta:
+        concept: total_return
+        concept_group: Portfolio
     description: Return since purchase including estimated dividends, as a fraction ((position_value + estimated_dividends) / cost_basis - 1)
     data_type: double
 
   - &portfolio_weight
     name: portfolio_weight
+    config:
+      meta:
+        concept: portfolio_weight
+        concept_group: Portfolio
     description: Share of the portfolio's value in this position on the trading day, as a fraction
     data_type: double
 
   - &position_count
     name: position_count
+    config:
+      meta:
+        concept: position_count
+        concept_group: Portfolio
     description: Number of positions held on the trading day
     data_type: bigint
 
   - &portfolio_value
     name: portfolio_value
+    config:
+      meta:
+        concept: portfolio_value
+        concept_group: Portfolio
     description: Sum of position_value across the portfolio on the trading day
     data_type: double
 
   - &portfolio_cost_basis
     name: portfolio_cost_basis
+    config:
+      meta:
+        concept: portfolio_cost_basis
+        concept_group: Portfolio
     description: Sum of cost_basis across the portfolio
     data_type: double
 
   - &portfolio_unrealized_gain
     name: portfolio_unrealized_gain
+    config:
+      meta:
+        concept: portfolio_unrealized_gain
+        concept_group: Portfolio
     description: portfolio_value - portfolio_cost_basis, excluding dividends
     data_type: double
 
   - &portfolio_price_return
     name: portfolio_price_return
+    config:
+      meta:
+        concept: portfolio_price_return
+        concept_group: Portfolio
     description: Price-only portfolio return since purchase, as a fraction, weighted by position size
     data_type: double
 
   - &portfolio_estimated_dividends
     name: portfolio_estimated_dividends
+    config:
+      meta:
+        concept: portfolio_estimated_dividends
+        concept_group: Portfolio
     description: Sum of estimated_dividends across the portfolio (an estimate, see estimated_dividends)
     data_type: double
 
   - &portfolio_total_return
     name: portfolio_total_return
+    config:
+      meta:
+        concept: portfolio_total_return
+        concept_group: Portfolio
     description: Portfolio return since purchase including estimated dividends, as a fraction
     data_type: double
 
   - &portfolio_daily_return
     name: portfolio_daily_return
+    config:
+      meta:
+        concept: portfolio_daily_return
+        concept_group: Portfolio
     description: Change in portfolio_value from the previous trading day, as a fraction; null on the first day
     data_type: double
 
   - &price_record_ids_hash
     name: price_record_ids_hash
+    config:
+      meta:
+        concept: price_record_ids_hash
+        concept_group: Portfolio
     description: "Audit hash of the price rows behind an aggregate: md5 of the sorted price_record_ids joined with ','"
     data_type: varchar
 
@@ -489,6 +857,10 @@ anchors:
 
   - &loaded_at
     name: loaded_at
+    config:
+      meta:
+        concept: loaded_at
+        concept_group: Lineage
     description: >
       Start time of the dlt load that last wrote the row. Upserted tables rewrite every re-fetched row;
       versioned (scd2) tables write a row only when its values change.
@@ -496,6 +868,10 @@ anchors:
 
   - &record_id
     name: record_id
+    config:
+      meta:
+        concept: record_id
+        concept_group: Lineage
     description: >
       dlt row identifier. Upserted tables: a hash of the primary key, stable across loads. Versioned (scd2)
       tables: a hash of the row's content, so it identifies the values, and repeats if values revert.
@@ -503,11 +879,19 @@ anchors:
 
   - &valid_from
     name: valid_from
+    config:
+      meta:
+        concept: valid_from
+        concept_group: Lineage
     description: When this version of the record became current (start of the dlt load that first saw it)
     data_type: timestamp with time zone
 
   - &valid_to
     name: valid_to
+    config:
+      meta:
+        concept: valid_to
+        concept_group: Lineage
     description: When this version was replaced by a newer one; null while it is the current version
     data_type: timestamp with time zone
 

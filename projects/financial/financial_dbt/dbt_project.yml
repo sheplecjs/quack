@@ -27,6 +27,11 @@ models:
         +materialized: table
         +contract:
           enforced: true
+    dictionary:
+      marts:
+        +materialized: table
+        +contract:
+          enforced: true
 
 # Tests warn rather than fail, and each one keeps its failing rows as a view in the
 # default audit schema (<target schema>_dbt_test__audit) for inspection

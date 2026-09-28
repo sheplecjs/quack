@@ -47,6 +47,8 @@ which is not committed.
    holdings.
 3. **Report:** a portfolio performance report with an overview and one page per holding, exported as linked
    static HTML.
+4. **Document:** a data dictionary model, built from dbt's graph, lists every column in the project with its
+   concept, lineage, tests and any declared divergence.
 
 Column documentation follows a **Declared Divergence** practice, described in [CLAUDE.md](CLAUDE.md): each
 concept is defined once, and any difference from it has to be declared explicitly.
