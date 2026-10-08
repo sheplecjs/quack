@@ -1,6 +1,6 @@
 import pytest
-from financial import sources
-from financial.config import AlphaVantageConfig
+from financial.ingestion.alpha_vantage import source as sources
+from financial.ingestion.alpha_vantage.config import AlphaVantageConfig
 
 KEY = "TESTKEY123SECRET"  # pragma: allowlist secret
 
@@ -42,6 +42,47 @@ def test_burst_limit_is_retried_once_per_backoff(settings, monkeypatch):
         sources._query(settings, "OVERVIEW", symbol="JNJ")
     # One initial attempt plus one retry per backoff entry
     assert len(calls) == 1 + len(settings.rate_limit_backoff)
+
+
+PREMIUM = {
+    "Information": "Thank you for using Alpha Vantage! This is a premium endpoint. You may subscribe "
+    "to any of the premium plans at https://www.alphavantage.co/premium/ to instantly unlock "
+    "all premium endpoints"
+}
+
+
+def test_premium_endpoint_skips_the_resource_with_a_warning(settings, monkeypatch):
+    warnings = []
+    monkeypatch.setattr(sources, "_get", lambda *a, **kw: PREMIUM)
+    monkeypatch.setattr(sources.logger, "warning", warnings.append)
+
+    assert list(sources.company_overviews(settings)) == []
+    assert len(warnings) == 1
+    assert "company_overviews" in warnings[0]
+
+
+def test_premium_endpoint_keeps_rows_already_loaded(settings, monkeypatch):
+    settings = settings.model_copy(update={"symbols": ("JNJ", "CVX")})
+    responses = iter([{"Symbol": "JNJ"}, PREMIUM])
+    monkeypatch.setattr(sources, "_get", lambda *a, **kw: next(responses))
+    monkeypatch.setattr(sources.logger, "warning", lambda message: None)
+
+    assert list(sources.company_overviews(settings)) == [{"Symbol": "JNJ"}]
+
+
+def test_daily_limit_still_fails_although_it_mentions_premium_plans(
+    settings, monkeypatch
+):
+    payload = {
+        "Information": f"We have detected your API key as {KEY} and our standard API rate limit "
+        "is 25 requests per day. Please subscribe to any of the premium plans at "
+        "https://www.alphavantage.co/premium/ to instantly remove all daily rate limits."
+    }
+    monkeypatch.setattr(sources, "_get", lambda *a, **kw: payload)
+
+    with pytest.raises(sources.AlphaVantageError) as excinfo:
+        sources._query(settings, "OVERVIEW", symbol="JNJ")
+    assert not isinstance(excinfo.value, sources.AlphaVantagePremiumError)
 
 
 def test_source_validates_config_before_any_request(monkeypatch):

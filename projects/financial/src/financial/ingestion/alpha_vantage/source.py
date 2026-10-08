@@ -3,15 +3,17 @@
 Docs: https://www.alphavantage.co/documentation/
 """
 
+import functools
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from typing import Any
 
 import dlt
+from dlt.common import logger
 from dlt.sources import DltResource
 from dlt.sources.helpers.requests import Client, RequestException
 
-from financial.config import AlphaVantageConfig
+from financial.ingestion.alpha_vantage.config import AlphaVantageConfig
 
 BASE_URL = "https://www.alphavantage.co/query"
 
@@ -21,6 +23,10 @@ _last_request_at = 0.0
 
 class AlphaVantageError(Exception):
     """Raised when Alpha Vantage returns an error, rate limit, or premium-only notice."""
+
+
+class AlphaVantagePremiumError(AlphaVantageError):
+    """Raised when an endpoint, or a parameter such as outputsize=full, needs a premium plan."""
 
 
 def _get(settings: AlphaVantageConfig, function: str, **params: str) -> dict[str, Any]:
@@ -63,8 +69,32 @@ def _query(
     for key in ("Error Message", "Information", "Note"):
         if key in payload:
             # Alpha Vantage echoes the API key in its rate-limit message
-            raise AlphaVantageError(settings.redact(f"{function}: {payload[key]}"))
+            message = settings.redact(f"{function}: {payload[key]}")
+            # Match the endpoint notice only: the daily-limit message also mentions
+            # "premium plans", and must still fail the load
+            if "premium endpoint" in payload[key]:
+                raise AlphaVantagePremiumError(message)
+            raise AlphaVantageError(message)
     return payload
+
+
+def _skip_if_premium[**P, T](
+    resource: Callable[P, Iterator[T]],
+) -> Callable[P, Iterator[T]]:
+    """Warn and end the resource on a premium-only notice, so the rest of the source still loads.
+
+    Rows yielded before the notice are kept. company_overviews is scd2 with a merge_key, so
+    a skipped or partial run retires no versions for the symbols it didn't load.
+    """
+
+    @functools.wraps(resource)
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Iterator[T]:
+        try:
+            yield from resource(*args, **kwargs)
+        except AlphaVantagePremiumError as e:
+            logger.warning(f"Skipping {wrapper.__name__}: {e}")
+
+    return wrapper
 
 
 def _to_float(value: str) -> float | None:
@@ -81,6 +111,7 @@ def _to_float(value: str) -> float | None:
     primary_key=("symbol", "date"),
     columns={"date": {"data_type": "date"}},
 )
+@_skip_if_premium
 def daily_prices(settings: AlphaVantageConfig) -> Iterator[list[dict[str, Any]]]:
     """Daily OHLCV bars per symbol."""
     for symbol in settings.symbols:
@@ -109,6 +140,7 @@ def daily_prices(settings: AlphaVantageConfig) -> Iterator[list[dict[str, Any]]]
     write_disposition={"disposition": "merge", "strategy": "scd2"},
     merge_key="symbol",
 )
+@_skip_if_premium
 def company_overviews(settings: AlphaVantageConfig) -> Iterator[dict[str, Any]]:
     """Company fundamentals, one row per symbol. Values are left as returned for dbt to type."""
     for symbol in settings.symbols:
@@ -124,6 +156,7 @@ def company_overviews(settings: AlphaVantageConfig) -> Iterator[dict[str, Any]]:
     primary_key=("indicator", "date"),
     columns={"date": {"data_type": "date"}},
 )
+@_skip_if_premium
 def economic_indicators(settings: AlphaVantageConfig) -> Iterator[list[dict[str, Any]]]:
     """US macro time series (GDP, CPI, rates, ...), one row per indicator per period."""
     for indicator in settings.indicators:

@@ -1,83 +1,22 @@
-"""Pipelines that load raw financial data into the project's DuckDB database."""
+"""The `financial-load` CLI: one subcommand per source, each loading into the project's DuckDB database."""
 
 import argparse
-import os
 from collections.abc import Sequence
-from pathlib import Path
 
-import dlt
-from dlt.common.pipeline import LoadInfo
+from financial.ingestion.alpha_vantage import pipeline as alpha_vantage
 
-from financial.sources import alpha_vantage_source
-
-DEFAULT_DUCKDB_PATH = (
-    Path(__file__).resolve().parents[4] / "data" / "financial" / "data.duckdb"
-)
+# Each source module registers its own subcommand
+SOURCES = (alpha_vantage,)
 
 
-def duckdb_path() -> Path:
-    return Path(os.environ.get("DUCKDB_PATH", DEFAULT_DUCKDB_PATH))
+def main(argv: Sequence[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Load raw financial data into DuckDB.")
+    subparsers = parser.add_subparsers(title="sources", required=True)
+    for source in SOURCES:
+        source.add_parser(subparsers)
+    args = parser.parse_args(argv)
 
-
-def create_pipeline(pipeline_name: str, dataset_name: str) -> dlt.Pipeline:
-    """A pipeline that writes `dataset_name` as a schema in the project's DuckDB file."""
-    path = duckdb_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    return dlt.pipeline(
-        pipeline_name=pipeline_name,
-        destination=dlt.destinations.duckdb(str(path)),
-        dataset_name=dataset_name,
-    )
-
-
-def load_alpha_vantage(
-    symbols: Sequence[str] | None = None,
-    resources: Sequence[str] | None = None,
-    refresh: bool = False,
-) -> LoadInfo:
-    """Load Alpha Vantage data into the `alpha_vantage` schema.
-
-    `symbols` overrides the list in .dlt/config.toml; `resources` limits the
-    run to a subset of the source's resources to save API quota. `refresh` drops
-    the selected resources' tables and state first, e.g. after a write-disposition change.
-    """
-    source = (
-        alpha_vantage_source(symbols=list(symbols))
-        if symbols
-        else alpha_vantage_source()
-    )
-    if resources:
-        source = source.with_resources(*resources)
-
-    pipeline = create_pipeline("alpha_vantage", dataset_name="alpha_vantage")
-    if refresh:
-        return pipeline.run(source, refresh="drop_resources")
-    return pipeline.run(source)
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Load Alpha Vantage data into DuckDB.")
-    parser.add_argument(
-        "--symbols", nargs="+", help="Ticker symbols (default: from config.toml)"
-    )
-    parser.add_argument(
-        "--resources",
-        nargs="+",
-        choices=["daily_prices", "company_overviews", "economic_indicators"],
-        help="Only load these resources (default: all)",
-    )
-    parser.add_argument(
-        "--refresh",
-        action="store_true",
-        help="Drop the selected resources' tables and state before loading",
-    )
-    args = parser.parse_args()
-
-    print(
-        load_alpha_vantage(
-            symbols=args.symbols, resources=args.resources, refresh=args.refresh
-        )
-    )
+    print(args.load(args))
 
 
 if __name__ == "__main__":

@@ -1,5 +1,8 @@
 import pytest
-from financial.config import AlphaVantageConfig, EconomicIndicator
+from financial.ingestion.alpha_vantage.config import (
+    AlphaVantageConfig,
+    EconomicIndicator,
+)
 from pydantic import ValidationError
 
 KEY = "TESTKEY123SECRET"  # pragma: allowlist secret

@@ -21,11 +21,12 @@
 quack/
 ├── projects/
 │   └── financial/              # Market and macroeconomic data project
-│       ├── src/financial/      # dlt source and pipeline (financial-load CLI)
+│       ├── src/financial/      # financial-load CLI and shared DuckDB destination
+│       │   └── ingestion/      # one dlt source per subpackage, e.g. alpha_vantage/
 │       ├── src/notebooks/      # marimo notebooks
 │       ├── tests/              # pytest suite for the pipeline
 │       ├── financial_dbt/      # dbt project
-│       │   ├── models/         # one folder per domain: staging/, intermediate/, marts/
+│       │   ├── models/         # one folder per domain (e.g. assets/): staging/, intermediate/, marts/
 │       │   ├── seeds/          # e.g. the portfolio holdings
 │       │   ├── tests/          # custom generic tests
 │       │   └── charts/         # dbt charts report boards
@@ -40,7 +41,7 @@ which is not committed.
 
 ## The financial project
 
-1. **Ingest:** `financial-load` pulls daily prices, company fundamentals (versioned over time) and US economic
+1. **Ingest:** `financial-load alpha-vantage` pulls daily prices, company fundamentals (versioned over time) and US economic
    indicators from Alpha Vantage into DuckDB.
 2. **Model:** dbt stages, types and tests the raw data. It then builds point-in-time marts: economic data is
    joined to trading days only once it would have been available. It also builds a portfolio of the configured

@@ -12,7 +12,7 @@ A uv workspace of analytics projects. Each project lives under `projects/`, e.g.
 Use this practice by default for all dbt properties YAML. The principle: **sameness is the default, and every
 difference is declared, in the layer that says what kind of difference it is.** An undeclared difference is a bug.
 
-Reference example: `projects/financial/financial_dbt/models/alpha_vantage/_alpha_vantage.yml`.
+Reference example: `projects/financial/financial_dbt/models/assets/_assets.yml`.
 
 ### File layout
 
@@ -243,7 +243,7 @@ For every strategy:
 - **Hashes are reproducible across builds and loads.** Neither strategy deletes rows, so every id a mart
   has stored still exists upstream. Incremental models may carry `record_id` and hashes derived from it.
 - **Changing a resource's strategy needs a reload of that resource:**
-  `uv run financial-load --resources <resource> --refresh` drops its table and state before loading.
+  `uv run financial-load alpha-vantage --resources <resource> --refresh` drops its table and state before loading.
 
 ### Why
 

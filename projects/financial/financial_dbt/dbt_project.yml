@@ -14,7 +14,7 @@ clean-targets:
 
 models:
   financial_dbt:
-    alpha_vantage:
+    assets:
       staging:
         +materialized: view
         +contract:
