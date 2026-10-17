@@ -1,0 +1,28 @@
+[project]
+name = "web"
+version = "0.1.0"
+description = "Web analytics on a dbt-core and DuckDB stack."
+readme = "README.md"
+authors = [
+    { name = "sheplecjs", email = "colin.shepley@pm.me" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "dlt[duckdb,sql-database]>=1.20",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.11",
+]
+
+[project.scripts]
+web-load = "web.pipelines:main"
+web-seeds = "web.seeds:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dbt = [
+    "dbt-core<2",
+    "dbt-duckdb>=1.11.0",
+]

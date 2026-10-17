@@ -1,0 +1,8 @@
+web:
+  target: local-dev
+  outputs:
+    local-dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', './data.duckdb') }}"
+      schema: main
+      threads: 4

@@ -1,0 +1,7 @@
+[runtime]
+log_level="WARNING"
+
+[sources.shynet]
+service_uuids = []
+initial_start_date = "2026-09-01"
+lookback_days = 3

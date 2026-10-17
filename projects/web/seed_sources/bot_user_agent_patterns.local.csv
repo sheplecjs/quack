@@ -1,0 +1,4 @@
+user_agent_pattern,bot_category,reason,example_user_agent
+^Java/,automation_tool,"Java's built-in HTTP client, which crawler-user-agents doesn't list",Java/17.0.2
+(?i)crawler|spider|scraper,generic,"Fallback for unlisted bots that call themselves a crawler, spider or scraper; first seen for osentix-crawler (Oct 2026), which crawler-user-agents doesn't list","Mozilla/5.0 (compatible; osentix-crawler/1.0; +https://osentix.com/bot)"
+(?i)[a-z]bot[/;)_-]|[a-z]bot$,generic,"Fallback for unlisted bots named ...bot followed by a version or separator. Can also match a few phone models whose names end in -bot (e.g. Cubot)","Mozilla/5.0 (compatible; ExampleBot/1.0; +https://example.com/bot)"

@@ -1,0 +1,50 @@
+name: web_dbt
+
+flags:
+  send_anonymous_usage_stats: false
+
+profile: web
+
+seed-paths: ["seeds"]
+model-paths: ["models"]
+macro-paths: ["macros"]
+vars:
+  # The Shynet server's TIME_ZONE setting (Shynet's default). Its API reports days in this zone, so
+  # session-level models use it to assign sessions to the same days.
+  shynet_time_zone: America/New_York
+  # How many Chrome releases (four weeks each) behind current a Chrome user agent can be before
+  # it counts as outdated. Real browsers update themselves; fixed old versions are a scraper tell.
+  outdated_chrome_releases: 12
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  web_dbt:
+    traffic:
+      staging:
+        +materialized: view
+        +contract:
+          enforced: true
+      intermediate:
+        +materialized: view
+        +contract:
+          enforced: true
+      marts:
+        +materialized: table
+        +contract:
+          enforced: true
+    dictionary:
+      marts:
+        +materialized: table
+        +contract:
+          enforced: true
+
+# Tests warn rather than fail, and each one keeps its failing rows as a view in the
+# default audit schema (<target schema>_dbt_test__audit) for inspection
+data_tests:
+  web_dbt:
+    +severity: warn
+    +store_failures: true
+    +store_failures_as: view
