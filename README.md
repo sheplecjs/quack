@@ -75,7 +75,7 @@ Project tasks take `PROJECT=<name>`, and prompt with a menu of projects when it'
 ```bash
 task pipeline PROJECT=web                         # ingest every source, dbt build, render reports
 task ingest PROJECT=web -- shynet-db --refresh    # one source, with its options
-task dbt:build PROJECT=web -- --select fct_sessions+
+task dbt:build PROJECT=web -- --select fct_sessions+   # also writes data/web/report/dbt_docs.html
 task profile:ingestion PROJECT=web                # the ingestion profile notebook
 ```
 

@@ -101,7 +101,8 @@ The two pattern lists are dbt seeds, and every row records where it came from (s
 
 `web_dbt/charts/` holds two [dbt charts](https://dbtcharts.com/) boards, rendered to static HTML in `data/web/report/`,
 with a PNG of the traffic board, by `task report PROJECT=web`. `task pipeline PROJECT=web` runs it after ingesting and
-building. `web_dbt/render_reports.sh` lists the boards and formats:
+building. `web_dbt/render_reports.sh` lists the boards and formats. `task dbt:build PROJECT=web` also writes dbt's
+static docs page there as `dbt_docs.html`, with the local project path removed:
 
 - `traffic.yml`, the landing page: the bot share of sessions overall and week by week, declared bots by kind, and
   hit volume over time, by weekday and by hour, humans and bots separately.

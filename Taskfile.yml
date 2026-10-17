@@ -142,10 +142,11 @@ tasks:
       - uv run {{.PROJECT}}-load {{default "all" .CLI_ARGS}}
 
   dbt:build:
-    desc: Run dbt build for a project (extra dbt arguments after --)
+    desc: Run dbt build for a project, then its static docs page (extra dbt build arguments after --)
     summary: |
       Builds projects/<PROJECT>/<PROJECT>_dbt against data/<PROJECT>/data.duckdb, (re)installing its dbt
-      packages first if they're missing or packages.yml / package-lock.yml changed.
+      packages first if they're missing or packages.yml / package-lock.yml changed. Then generates dbt's
+      static docs page as data/<PROJECT>/report/dbt_docs.html, with the local project path removed.
 
         task dbt:build PROJECT=web
         task dbt:build PROJECT=web -- --select fct_sessions+
@@ -161,6 +162,12 @@ tasks:
       - task: dbt:deps
         vars: {PROJECT: "{{.PROJECT}}"}
       - uv run dbt build {{.CLI_ARGS}}
+      - uv run dbt docs generate --static
+      # One self-contained page; seeds record the absolute project path, which shouldn't leave this machine
+      - mkdir -p {{.ROOT_DIR}}/data/{{.PROJECT}}/report
+      - >-
+        sed 's|"root_path": "'"$PWD"'"|"root_path": "."|g' target/static_index.html
+        > {{.ROOT_DIR}}/data/{{.PROJECT}}/report/dbt_docs.html
 
   dbt:deps:
     internal: true
