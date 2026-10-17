@@ -10,9 +10,10 @@ wheels/
 .venv
 
 # Local DuckDB data
-data/
 *.duckdb
 *.duckdb.wal
+data/*/*
+!data/*/report/
 
 # Caches
 .pytest_cache/
