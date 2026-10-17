@@ -389,6 +389,7 @@ rows:
 - cols:
   - width: "17%"
     rows:
+    - text: "[← Back to sire](index.html)"
     - kpi_bot_share
     - kpi_undeclared
     - kpi_human_share

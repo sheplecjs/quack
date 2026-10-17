@@ -333,7 +333,7 @@ rows:
 - cols:
   - width: "17%"
     rows:
-    - text: "[← Back](index.html)"
+    - text: "[← Back to sire](index.html)"
     - kpi_value
     - kpi_gain
     - kpi_total_return
