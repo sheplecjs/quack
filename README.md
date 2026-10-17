@@ -73,7 +73,7 @@ task ci       # lint, format, type check, YAML, secrets and tests
 Project tasks take `PROJECT=<name>`, and prompt with a menu of projects when it's missing and there's a terminal:
 
 ```bash
-task pipeline PROJECT=web                         # ingest every source, then dbt build
+task pipeline PROJECT=web                         # ingest every source, dbt build, render reports
 task ingest PROJECT=web -- shynet-db --refresh    # one source, with its options
 task dbt:build PROJECT=web -- --select fct_sessions+
 task profile:ingestion PROJECT=web                # the ingestion profile notebook

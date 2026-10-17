@@ -13,7 +13,7 @@ anchors:
       meta:
         concept: concept
         concept_group: Data dictionary
-    description: "The column's concept: the bank anchor it is defined by (meta.concept); null if it isn't anchored"
+    description: The concept the column represents; null if it isn't linked to one
     data_type: varchar
 
   - &concept_group
@@ -22,7 +22,7 @@ anchors:
       meta:
         concept: concept_group
         concept_group: Data dictionary
-    description: Section of the domain's concept bank the concept belongs to, e.g. Traffic or Audience
+    description: Category the concept belongs to
     data_type: varchar
 
   - &concept_description
@@ -31,7 +31,7 @@ anchors:
       meta:
         concept: concept_description
         concept_group: Data dictionary
-    description: The concept's canonical description, as the models using it carry it; null if no model uses the concept
+    description: Definition of the concept; null if no final or intermediate table uses it
     data_type: varchar
 
   - &concept_data_type
@@ -40,7 +40,7 @@ anchors:
       meta:
         concept: concept_data_type
         concept_group: Data dictionary
-    description: The concept's canonical data type, as the models using it carry it
+    description: Data type of the concept
     data_type: varchar
 
   - &domain
@@ -49,7 +49,7 @@ anchors:
       meta:
         concept: domain
         concept_group: Data dictionary
-    description: "Domain the column is documented in: the folder under models/ holding its properties"
+    description: Subject area the column is documented in
     data_type: varchar
 
   - &layer
@@ -58,7 +58,7 @@ anchors:
       meta:
         concept: layer
         concept_group: Data dictionary
-    description: "Where the column sits: source, seed, or the model layer (staging, intermediate, marts)"
+    description: Stage the column sits at, from raw input to final table
     data_type: varchar
 
   - &resource_type
@@ -67,7 +67,7 @@ anchors:
       meta:
         concept: resource_type
         concept_group: Data dictionary
-    description: "dbt resource type: source, seed, model or snapshot"
+    description: Kind of object the column belongs to
     data_type: varchar
 
   - &node_id
@@ -76,7 +76,7 @@ anchors:
       meta:
         concept: node_id
         concept_group: Data dictionary
-    description: dbt unique id of the source, seed or model
+    description: Unique identifier of the table the column belongs to
     data_type: varchar
 
   - &node_name
@@ -85,7 +85,7 @@ anchors:
       meta:
         concept: node_name
         concept_group: Data dictionary
-    description: Name of the source table (source.table), seed or model
+    description: Name of the table the column belongs to
     data_type: varchar
 
   - &node_relation
@@ -94,7 +94,7 @@ anchors:
       meta:
         concept: node_relation
         concept_group: Data dictionary
-    description: schema.table the column can be queried from
+    description: Where the column's table can be queried
     data_type: varchar
 
   - &node_description
@@ -103,7 +103,7 @@ anchors:
       meta:
         concept: node_description
         concept_group: Data dictionary
-    description: Description of the source table, seed or model
+    description: Description of the column's table
     data_type: varchar
 
   - &materialization
@@ -112,7 +112,7 @@ anchors:
       meta:
         concept: materialization
         concept_group: Data dictionary
-    description: "How the node is built: table, view or seed; source for source tables"
+    description: How the column's table is stored
     data_type: varchar
 
   - &upstream_nodes
@@ -121,7 +121,7 @@ anchors:
       meta:
         concept: upstream_nodes
         concept_group: Data dictionary
-    description: Comma-separated nodes this node is built from; null for sources and seeds
+    description: Tables the column's table is built from; null for a raw input
     data_type: varchar
 
   - &column_position
@@ -130,7 +130,7 @@ anchors:
       meta:
         concept: column_position
         concept_group: Data dictionary
-    description: Position of the column in the node's documentation, from 1
+    description: Position of the column in its table's documentation, from 1
     data_type: integer
 
   - &column_name
@@ -139,7 +139,7 @@ anchors:
       meta:
         concept: column_name
         concept_group: Data dictionary
-    description: Column name as it appears in the node
+    description: Name of the column
     data_type: varchar
 
   - &column_description
@@ -148,7 +148,7 @@ anchors:
       meta:
         concept: column_description
         concept_group: Data dictionary
-    description: Column description as documented on this node
+    description: Description of the column as documented in its table
     data_type: varchar
 
   - &column_data_type
@@ -157,7 +157,7 @@ anchors:
       meta:
         concept: column_data_type
         concept_group: Data dictionary
-    description: Column data type as documented on this node
+    description: Data type of the column as documented in its table
     data_type: varchar
 
   - &column_tests
@@ -166,7 +166,7 @@ anchors:
       meta:
         concept: column_tests
         concept_group: Data dictionary
-    description: Comma-separated data tests on the column, including composite-key tests it belongs to
+    description: Data tests that check the column
     data_type: varchar
 
   - &is_unique_key
@@ -175,9 +175,7 @@ anchors:
       meta:
         concept: is_unique_key
         concept_group: Data dictionary
-    description: >
-      Whether the column is, or is part of, a unique key (an unfiltered unique or unique-combination test). A node
-      can have several, e.g. its grain and record_id
+    description: Whether the column is, or is part of, a key that identifies each row of its table
     data_type: boolean
 
   - &is_renamed
@@ -186,7 +184,7 @@ anchors:
       meta:
         concept: is_renamed
         concept_group: Data dictionary
-    description: Whether the column's name differs from its concept, e.g. a raw source column renamed in staging
+    description: Whether the column's name differs from its concept's
     data_type: boolean
 
   - &is_retyped
@@ -195,7 +193,7 @@ anchors:
       meta:
         concept: is_retyped
         concept_group: Data dictionary
-    description: Whether the column's data type differs from its concept's, e.g. raw text cast in staging
+    description: Whether the column's data type differs from its concept's
     data_type: boolean
 
   - &is_redescribed
@@ -204,7 +202,7 @@ anchors:
       meta:
         concept: is_redescribed
         concept_group: Data dictionary
-    description: Whether the column's description differs from its concept's, e.g. a source quirk declared at the source
+    description: Whether the column's description differs from its concept's
     data_type: boolean
 
   - &has_concept_conflict
@@ -213,9 +211,7 @@ anchors:
       meta:
         concept: has_concept_conflict
         concept_group: Data dictionary
-    description: >
-      Whether the models using this column's concept disagree on its description or data type, a Declared
-      Divergence violation. The canonical definition is then the most common one.
+    description: Whether tables define the column's concept inconsistently
     data_type: boolean
 
 models:

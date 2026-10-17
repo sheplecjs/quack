@@ -190,8 +190,29 @@ tasks:
     cmds:
       - uv run {{.PROJECT}}-seeds update {{.CLI_ARGS}}
 
+  report:
+    desc: Render a project's dbt charts boards to data/<PROJECT>/report (HTML, plus a PNG of the landing board)
+    summary: |
+      Runs the project's render_reports.sh, which lists its boards and formats, against
+      data/<PROJECT>/data.duckdb. Build the project first so the marts are current.
+
+        task report PROJECT=web
+    requires: *requires_project
+    dir: "projects/{{.PROJECT}}/{{.PROJECT}}_dbt"
+    env:
+      DBT_PROFILES_DIR: ..
+      # Relative to the dbt project: dct joins the path onto the project folder, even an absolute one
+      DUCKDB_PATH: "../../../data/{{.PROJECT}}/data.duckdb"
+    preconditions:
+      - sh: test -f {{.ROOT_DIR}}/data/{{.PROJECT}}/data.duckdb
+        msg: "No local database for {{.PROJECT}}; run `task pipeline PROJECT={{.PROJECT}}` first"
+      - sh: test -f render_reports.sh
+        msg: "{{.PROJECT}} has no dbt charts reports (no render_reports.sh)"
+    cmds:
+      - uv run bash render_reports.sh {{.ROOT_DIR}}/data/{{.PROJECT}}/report
+
   pipeline:
-    desc: Ingest every source of a project, then build its dbt project
+    desc: Ingest every source of a project, build its dbt project, then render its reports
     requires: *requires_project
     cmds:
       # CLI_ARGS cleared: arguments for one step would be wrong for the other
@@ -199,6 +220,8 @@ tasks:
         vars: {PROJECT: "{{.PROJECT}}", CLI_ARGS: ""}
       - task: dbt:build
         vars: {PROJECT: "{{.PROJECT}}", CLI_ARGS: ""}
+      - task: report
+        vars: {PROJECT: "{{.PROJECT}}"}
 
   # --- Profiling -----------------------------------------------------------
 

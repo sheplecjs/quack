@@ -73,6 +73,10 @@ select
     landing_page_location,
     referrer_url,
     traffic_class,
+    case
+        when traffic_class in ('declared_bot', 'likely_bot', 'possible_bot') then 'bot'
+        else traffic_class
+    end as traffic_group,
     bot_signals,
     bot_category,
     network_category,

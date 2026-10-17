@@ -23,6 +23,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dbt = [
+    "dbt-charts>=0.8.0",
     "dbt-core<2",
     "dbt-duckdb>=1.11.0",
 ]

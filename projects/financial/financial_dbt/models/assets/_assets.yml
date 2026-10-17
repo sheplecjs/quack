@@ -28,7 +28,7 @@ anchors:
       meta:
         concept: open_price
         concept_group: Prices
-    description: Opening price, in the listing currency
+    description: Opening price
     data_type: double
 
   - &high_price
@@ -75,7 +75,7 @@ anchors:
       meta:
         concept: asset_type
         concept_group: Company profile
-    description: Asset type, e.g. "Common Stock". ADRs are also reported as "Common Stock" (TSM, SONY, NVO)
+    description: Type of security. Shares in foreign companies traded in the US count as common stock.
     data_type: varchar
 
   - &company_name
@@ -102,7 +102,7 @@ anchors:
       meta:
         concept: central_index_key
         concept_group: Company profile
-    description: SEC Central Index Key uniquely identifying entities
+    description: Identifier of the company in US securities filings
     data_type: varchar
 
   - &listing_exchange
@@ -111,7 +111,7 @@ anchors:
       meta:
         concept: listing_exchange
         concept_group: Company profile
-    description: Listing exchange where the asset is traded
+    description: Exchange the security is listed on
     data_type: varchar
 
   - &currency
@@ -120,7 +120,7 @@ anchors:
       meta:
         concept: currency
         concept_group: Company profile
-    description: Currency used in associated price and valuation fields
+    description: Currency of the security's prices and valuations
     data_type: varchar
 
   - &country
@@ -130,10 +130,8 @@ anchors:
         concept: country
         concept_group: Company profile
     description: >
-      Market country assigned by Alpha Vantage: USA for every US-listed security, including foreign companies
-      traded through ADRs (TSM, SONY, NVO all return USA). Says nothing about the company itself: not its
-      incorporation (CCL, Panama), headquarters or operations. Use address for the home country and SEC EDGAR
-      via cik for legal domicile.
+      Country of the market the security trades in, not of the company: a foreign company traded in the US
+      shows the US. Its address gives the company's home country.
     data_type: varchar
 
   - &sector
@@ -161,9 +159,8 @@ anchors:
         concept: address
         concept_group: Company profile
     description: >
-      Company address as reported by Alpha Vantage, in the format of the SEC-filed business address. Its
-      country is the company's home country, including for foreign issuers (TSM: Taiwan), but may differ
-      from where the company is run (MDT: Galway, Ireland).
+      Company's registered business address. Its country is the company's home country, which can differ
+      from where the company is run.
     data_type: varchar
 
   - &official_site
@@ -172,7 +169,7 @@ anchors:
       meta:
         concept: official_site
         concept_group: Company profile
-    description: Company website URL
+    description: Company website
     data_type: varchar
 
   - &fiscal_year_end
@@ -255,7 +252,7 @@ anchors:
       meta:
         concept: dividend_yield
         concept_group: Company fundamentals
-    description: Dividend yield as a decimal fraction (0.025 = 2.5%)
+    description: Dividend yield, as a fraction
     data_type: double
 
   - &eps
@@ -282,7 +279,7 @@ anchors:
       meta:
         concept: profit_margin
         concept_group: Company fundamentals
-    description: Net profit margin as a decimal fraction
+    description: Net profit margin, as a fraction
     data_type: double
 
   - &operating_margin_ttm
@@ -291,7 +288,7 @@ anchors:
       meta:
         concept: operating_margin_ttm
         concept_group: Company fundamentals
-    description: Operating margin as a decimal fraction, trailing twelve months
+    description: Operating margin, as a fraction, trailing twelve months
     data_type: double
 
   - &return_on_assets_ttm
@@ -300,7 +297,7 @@ anchors:
       meta:
         concept: return_on_assets_ttm
         concept_group: Company fundamentals
-    description: Return on assets as a decimal fraction, trailing twelve months
+    description: Return on assets, as a fraction, trailing twelve months
     data_type: double
 
   - &return_on_equity_ttm
@@ -309,7 +306,7 @@ anchors:
       meta:
         concept: return_on_equity_ttm
         concept_group: Company fundamentals
-    description: Return on equity as a decimal fraction, trailing twelve months
+    description: Return on equity, as a fraction, trailing twelve months
     data_type: double
 
   - &revenue_ttm
@@ -345,7 +342,7 @@ anchors:
       meta:
         concept: quarterly_earnings_growth_yoy
         concept_group: Company fundamentals
-    description: Year-over-year growth in quarterly earnings as a decimal fraction
+    description: Year-over-year growth in quarterly earnings, as a fraction
     data_type: double
 
   - &quarterly_revenue_growth_yoy
@@ -354,7 +351,7 @@ anchors:
       meta:
         concept: quarterly_revenue_growth_yoy
         concept_group: Company fundamentals
-    description: Year-over-year growth in quarterly revenue as a decimal fraction
+    description: Year-over-year growth in quarterly revenue, as a fraction
     data_type: double
 
   - &analyst_target_price
@@ -534,7 +531,7 @@ anchors:
       meta:
         concept: percent_insiders
         concept_group: Company fundamentals
-    description: Fraction of shares held by insiders (0.04 = 4%)
+    description: Fraction of shares held by insiders
     data_type: double
 
   - &percent_institutions
@@ -543,7 +540,7 @@ anchors:
       meta:
         concept: percent_institutions
         concept_group: Company fundamentals
-    description: Fraction of shares held by institutions (0.71 = 71%)
+    description: Fraction of shares held by institutions
     data_type: double
 
   - &dividend_date
@@ -572,7 +569,7 @@ anchors:
       meta:
         concept: indicator
         concept_group: Economic series
-    description: Alpha Vantage function name for the series, e.g. CPI or REAL_GDP
+    description: Code identifying the economic series
     data_type: varchar
 
   - &series_name
@@ -581,7 +578,7 @@ anchors:
       meta:
         concept: series_name
         concept_group: Economic series
-    description: Full name of the series, e.g. "Consumer Price Index for all Urban Consumers"
+    description: Full name of the economic series
     data_type: varchar
 
   - &series_interval
@@ -590,7 +587,7 @@ anchors:
       meta:
         concept: series_interval
         concept_group: Economic series
-    description: Period covered by each observation; one of annual, quarterly or monthly
+    description: How often the series is observed
     data_type: varchar
 
   - &series_unit
@@ -599,7 +596,7 @@ anchors:
       meta:
         concept: series_unit
         concept_group: Economic series
-    description: Unit of the observed value, e.g. "fraction" or "billions of dollars"
+    description: Unit of the observed value
     data_type: varchar
 
   - &period_start_date
@@ -608,7 +605,7 @@ anchors:
       meta:
         concept: period_start_date
         concept_group: Economic series
-    description: Start date of the period the observation covers
+    description: Start of the period an observation covers
     data_type: date
 
   - &value
@@ -617,7 +614,7 @@ anchors:
       meta:
         concept: value
         concept_group: Economic series
-    description: Observed value in the series unit (percentages as fractions, 0.041 = 4.1%); null where the API reported no value
+    description: Observed value of the series, in its unit, with percentages as fractions; null where none was reported
     data_type: double
 
   # --- Derived (intermediate and marts) -------------------------------------
@@ -629,8 +626,8 @@ anchors:
         concept: available_from_date
         concept_group: Derived
     description: >
-      First date an economic observation is treated as available: the day after its period ends. Actual publication
-      is usually later, and Alpha Vantage gives no release dates.
+      First day an observation counts as known: the day after its period ends. Actual publication is
+      usually later, so this is an optimistic assumption.
     data_type: date
 
   - &daily_return
@@ -639,7 +636,7 @@ anchors:
       meta:
         concept: daily_return
         concept_group: Derived
-    description: Close-to-close return from the ticker's previous trading day, as a fraction (0.012 = 1.2%); null on its first day
+    description: Return from the previous trading day's close, as a fraction; null on the first day
     data_type: double
 
   - &close_index
@@ -648,7 +645,7 @@ anchors:
       meta:
         concept: close_index
         concept_group: Derived
-    description: Closing price rebased to 100 at the ticker's first trading day in the data, for comparing tickers on one axis
+    description: Closing price rebased to 100 on the first trading day, for comparing securities on one scale
     data_type: double
 
   - &is_current
@@ -657,7 +654,7 @@ anchors:
       meta:
         concept: is_current
         concept_group: Derived
-    description: Whether this is the current version of the record (valid_to is null)
+    description: Whether this is the current version of the record
     data_type: boolean
 
   - &price_record_id
@@ -666,7 +663,7 @@ anchors:
       meta:
         concept: price_record_id
         concept_group: Derived
-    description: record_id of the daily price row, for tracing a mart row back to its source
+    description: Identifier of the daily price row this row comes from
     data_type: varchar
 
   - &indicator_record_id
@@ -675,7 +672,7 @@ anchors:
       meta:
         concept: indicator_record_id
         concept_group: Derived
-    description: record_id of the economic observation in effect on the trading day
+    description: Identifier of the economic observation in effect on the trading day
     data_type: varchar
 
   # --- Portfolio -----------------------------------------------------------
@@ -695,7 +692,7 @@ anchors:
       meta:
         concept: purchase_date
         concept_group: Portfolio
-    description: Date the position was bought; the purchase price is the close of the first trading day on or after it
+    description: Date the position was bought
     data_type: date
 
   - &purchase_price
@@ -704,7 +701,8 @@ anchors:
       meta:
         concept: purchase_price
         concept_group: Portfolio
-    description: Close on the position's first trading day on or after its purchase date
+    description: >
+      Price paid per share: the close on the first trading day on or after the purchase date
     data_type: double
 
   - &position_value
@@ -713,7 +711,7 @@ anchors:
       meta:
         concept: position_value
         concept_group: Portfolio
-    description: shares_held x close_price on the trading day, in the listing currency
+    description: Value of the position at the day's close, in the listing currency
     data_type: double
 
   - &cost_basis
@@ -722,7 +720,7 @@ anchors:
       meta:
         concept: cost_basis
         concept_group: Portfolio
-    description: shares_held x purchase_price
+    description: Amount paid for the position
     data_type: double
 
   - &unrealized_gain
@@ -731,7 +729,7 @@ anchors:
       meta:
         concept: unrealized_gain
         concept_group: Portfolio
-    description: position_value - cost_basis, excluding dividends
+    description: Gain in the position's value since purchase, excluding dividends
     data_type: double
 
   - &price_return
@@ -740,7 +738,7 @@ anchors:
       meta:
         concept: price_return
         concept_group: Portfolio
-    description: Price-only return since purchase, as a fraction (close_price / purchase_price - 1)
+    description: Return since purchase from the price alone, as a fraction
     data_type: double
 
   - &estimated_dividends
@@ -750,8 +748,8 @@ anchors:
         concept: estimated_dividends
         concept_group: Portfolio
     description: >
-      ESTIMATED dividends accrued since purchase: shares_held x trailing-twelve-month dividend per share x days held / 365.
-      Uses the company's current fundamentals; no payment history is loaded.
+      Estimated dividends earned since purchase, from the current yearly dividend per share and the days
+      held. An estimate, not actual payments.
     data_type: double
 
   - &total_return
@@ -760,7 +758,7 @@ anchors:
       meta:
         concept: total_return
         concept_group: Portfolio
-    description: Return since purchase including estimated dividends, as a fraction ((position_value + estimated_dividends) / cost_basis - 1)
+    description: Return since purchase including estimated dividends, as a fraction
     data_type: double
 
   - &portfolio_weight
@@ -769,7 +767,7 @@ anchors:
       meta:
         concept: portfolio_weight
         concept_group: Portfolio
-    description: Share of the portfolio's value in this position on the trading day, as a fraction
+    description: The position's share of the portfolio's value on the trading day, as a fraction
     data_type: double
 
   - &position_count
@@ -787,7 +785,7 @@ anchors:
       meta:
         concept: portfolio_value
         concept_group: Portfolio
-    description: Sum of position_value across the portfolio on the trading day
+    description: Total value of the portfolio on the trading day
     data_type: double
 
   - &portfolio_cost_basis
@@ -796,7 +794,7 @@ anchors:
       meta:
         concept: portfolio_cost_basis
         concept_group: Portfolio
-    description: Sum of cost_basis across the portfolio
+    description: Total amount paid for the portfolio
     data_type: double
 
   - &portfolio_unrealized_gain
@@ -805,7 +803,7 @@ anchors:
       meta:
         concept: portfolio_unrealized_gain
         concept_group: Portfolio
-    description: portfolio_value - portfolio_cost_basis, excluding dividends
+    description: Gain in the portfolio's value since purchase, excluding dividends
     data_type: double
 
   - &portfolio_price_return
@@ -814,7 +812,7 @@ anchors:
       meta:
         concept: portfolio_price_return
         concept_group: Portfolio
-    description: Price-only portfolio return since purchase, as a fraction, weighted by position size
+    description: Portfolio return since purchase from prices alone, as a fraction
     data_type: double
 
   - &portfolio_estimated_dividends
@@ -823,7 +821,7 @@ anchors:
       meta:
         concept: portfolio_estimated_dividends
         concept_group: Portfolio
-    description: Sum of estimated_dividends across the portfolio (an estimate, see estimated_dividends)
+    description: Estimated dividends earned across the portfolio. An estimate, not actual payments.
     data_type: double
 
   - &portfolio_total_return
@@ -841,7 +839,7 @@ anchors:
       meta:
         concept: portfolio_daily_return
         concept_group: Portfolio
-    description: Change in portfolio_value from the previous trading day, as a fraction; null on the first day
+    description: Change in the portfolio's value from the previous trading day, as a fraction; null on the first day
     data_type: double
 
   - &price_record_ids_hash
@@ -850,7 +848,7 @@ anchors:
       meta:
         concept: price_record_ids_hash
         concept_group: Portfolio
-    description: "Audit hash of the price rows behind an aggregate: md5 of the sorted price_record_ids joined with ','"
+    description: Fingerprint of the price rows combined into this one, for checking which rows went in
     data_type: varchar
 
   # --- Lineage ---------------------------------------------------------------
@@ -861,9 +859,7 @@ anchors:
       meta:
         concept: loaded_at
         concept_group: Lineage
-    description: >
-      Start time of the dlt load that last wrote the row. Upserted tables rewrite every re-fetched row;
-      versioned (scd2) tables write a row only when its values change.
+    description: When the row was last loaded. A record whose history is kept is reloaded only when its values change.
     data_type: timestamp with time zone
 
   - &record_id
@@ -872,9 +868,7 @@ anchors:
       meta:
         concept: record_id
         concept_group: Lineage
-    description: >
-      dlt row identifier. Upserted tables: a hash of the primary key, stable across loads. Versioned (scd2)
-      tables: a hash of the row's content, so it identifies the values, and repeats if values revert.
+    description: Identifier of the loaded row. For a record whose history is kept, it identifies one version's values.
     data_type: varchar
 
   - &valid_from
@@ -883,7 +877,7 @@ anchors:
       meta:
         concept: valid_from
         concept_group: Lineage
-    description: When this version of the record became current (start of the dlt load that first saw it)
+    description: When this version of the record became current
     data_type: timestamp with time zone
 
   - &valid_to
@@ -892,7 +886,7 @@ anchors:
       meta:
         concept: valid_to
         concept_group: Lineage
-    description: When this version was replaced by a newer one; null while it is the current version
+    description: When this version was replaced; null while it's current
     data_type: timestamp with time zone
 
 sources:

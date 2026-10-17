@@ -15,6 +15,8 @@ vars:
   # How many Chrome releases (four weeks each) behind current a Chrome user agent can be before
   # it counts as outdated. Real browsers update themselves; fixed old versions are a scraper tell.
   outdated_chrome_releases: 12
+  # How many of the most common visitor countries the country share mart keeps by name; the rest are Other
+  top_countries: 4
 
 clean-targets:
   - "target"

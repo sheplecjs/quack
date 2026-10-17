@@ -97,7 +97,24 @@ The two pattern lists are dbt seeds, and every row records where it came from (s
   (MIT) at a pinned commit, plus local patterns for what it misses: `task seeds:update PROJECT=web`.
 - `hosting_network_patterns.csv` is maintained by hand, with a source and a note on each row.
 
-Two variables in `dbt_project.yml` tune it: `shynet_time_zone` (the Shynet server's `TIME_ZONE`, so session days
+## Reports
+
+`web_dbt/charts/` holds two [dbt charts](https://dbtcharts.com/) boards, rendered to static HTML in `data/web/report/`,
+with a PNG of the traffic board, by `task report PROJECT=web`. `task pipeline PROJECT=web` runs it after ingesting and
+building. `web_dbt/render_reports.sh` lists the boards and formats:
+
+- `traffic.yml`, the landing page: the bot share of sessions overall and week by week, declared bots by kind, and
+  hit volume over time, by weekday and by hour, humans and bots separately.
+- `data_dictionary.yml`: every concept, its definition (including the bot classification's limitations), where it
+  comes from and how it changes on the way.
+
+The reports show **shares only, never counts**, so they can be shared without revealing traffic volumes. They read
+the share marts (`mart_session_class_share`, `mart_weekly_session_class_share`, `mart_declared_bot_category_share`,
+`mart_weekly_hit_share`, `mart_day_of_week_hit_share`, `mart_hour_of_day_hit_share`), which hold no counts either;
+a test checks that each set of shares sums to 1. Development sessions are left out of every share, and so is the day
+in progress. With a small site, a week's shares move in large steps: read the weekly charts as trends.
+
+Two variables in `dbt_project.yml` tune the classification: `shynet_time_zone` (the Shynet server's `TIME_ZONE`, so session days
 match the API's; a singular test checks they agree) and `outdated_chrome_releases`.
 
 ```bash
