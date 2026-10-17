@@ -1,0 +1,3 @@
+# Rendered reports (dbt charts boards and dbt docs) are build outputs. Marking them generated leaves them out
+# of GitHub's language statistics and collapses them in pull request diffs.
+data/*/report/** linguist-generated=true
