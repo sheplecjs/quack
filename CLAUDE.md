@@ -77,6 +77,30 @@ anchors:
   column's meaning or grain, add a new bank entry (e.g. `&weekly_trade_volume`); don't override an
   existing one.
 
+#### Writing concept descriptions
+
+A concept's description is read by people looking at reports and the data dictionary, not by the people
+maintaining the pipeline. Write for them:
+
+1. **Information, not implementation.** Say what the value means, not how it's produced. Leave out pipeline
+   terms, setting and variable names, file paths, URLs, code, and jargon a report reader doesn't need to
+   understand the figure. How it's produced belongs in model and seed descriptions, READMEs and this file.
+2. **Examples only for an important nuance.** Don't list or illustrate a column's possible values: allowed
+   values are for data tests (`accepted_values`). Give a description that stands alone, and add a specific
+   example only where it clears up a nuance that would otherwise mislead.
+3. **Simple and short.** Plain words and the shortest description that's still correct. Longer and more
+   complex text costs more to read and is easier to misread. Open with what the value is (or "Whether …" for a
+   boolean), then add only what isn't obvious: the unit or scale, what null means, the time zone, the grain, or
+   a caveat that changes how to read it.
+4. **System-agnostic.** Final concepts don't name source systems or tools (the analytics or market-data
+   provider, the loader, the warehouse). Name one only where the meaning truly depends on it. Source-specific
+   wording belongs in source overrides, where Declared Divergence records how a source differs.
+
+Also:
+
+- **State a caveat once**, in the concept it belongs to; don't repeat it in related concepts.
+- **One clause is a phrase without a closing full stop**; more than one is full sentences.
+
 #### 2. Sources: overrides record where the source system diverges
 
 ```yaml
@@ -202,8 +226,9 @@ md5(string_agg(record_id, ',' order by record_id)) as record_ids_hash
 
 - **Sort before hashing** (`order by record_id`). Without a sort the hash depends on row order and is
   not reproducible.
-- **Use the same function, separator and ordering everywhere**, and state them in the concept's
-  description. An auditor re-runs the grouping on the upstream model and compares hashes.
+- **Use the same function, separator and ordering everywhere:** the recipe above. It's documented here, not in
+  the concept's description, which says only what the hash is for. An auditor re-runs the grouping on the
+  upstream model and compares hashes.
 - **The hash confirms which rows went into an aggregate; it can't identify them.** To find the rows,
   re-run the grouping upstream.
 

@@ -1,0 +1,9 @@
+# dbt-generated files
+.user.yml
+
+# Caches
+__marimo__/
+
+# dlt secrets
+.dlt/secrets.toml
+.dlt/*.secrets.toml

@@ -1,0 +1,1505 @@
+user_agent_pattern,bot_category,user_agent_pattern_source,user_agent_pattern_note
+ DVbot,advertising,crawler-user-agents@9345a7ad9c49,DoubleVerify ad verification crawler
+(^| )PTST\/,monitoring,crawler-user-agents@9345a7ad9c49,WebPageTest web crawler for testing
+(^| )sentry\/,monitoring,crawler-user-agents@9345a7ad9c49,Sentry error tracking web crawler bot
+(sistrix|SISTRIX) [cC]rawler,seo_crawler,crawler-user-agents@9345a7ad9c49,SISTRIX SEO tool web crawler for analysis
+007ac9 Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,007ac9 web crawler for content discovery
+008\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO monitoring bot tracks keyword rankings across regions
+2ip bot,seo_crawler,crawler-user-agents@9345a7ad9c49,2IP web crawler for analysis
+2ip\.ru,seo_crawler,crawler-user-agents@9345a7ad9c49,2IP CMS detector web crawler bot
+360Spider,search_crawler,crawler-user-agents@9345a7ad9c49,360 search engine web crawler bot
+7Siters,search_crawler,crawler-user-agents@9345a7ad9c49,Russian web crawler for site indexing and analysis
+;Owler,advertising,crawler-user-agents@9345a7ad9c49,Owler competitive intelligence crawler
+A Patent Crawler,academic,crawler-user-agents@9345a7ad9c49,EPFL patent web crawler bot
+A360-Search,advertising,crawler-user-agents@9345a7ad9c49,Area360 real estate data crawler
+A6-Indexer,search_crawler,crawler-user-agents@9345a7ad9c49,A6 Corporation web crawler for indexing
+AASA-Bot,social_preview,crawler-user-agents@9345a7ad9c49,Apple's Universal Links file fetcher
+ABEvalBot,monitoring,crawler-user-agents@9345a7ad9c49,A/B testing evaluation and website analysis crawler bot
+ADmantX,advertising,crawler-user-agents@9345a7ad9c49,ADmantX semantic analyzer web crawler
+AGAKIDSBOT,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for indexing and data gathering
+AHC\/,automation_tool,crawler-user-agents@9345a7ad9c49,Async HTTP Client Java library for HTTP requests
+AI2Bot,ai_crawler,crawler-user-agents@9345a7ad9c49,Academic research crawler for NLP dataset creation
+AISearchBot,ai_crawler,crawler-user-agents@9345a7ad9c49,AI-powered search engine web crawler bot
+ALittle Client,automation_tool,crawler-user-agents@9345a7ad9c49,ALittle web crawler for content discovery
+AP3A\.240617\.008,security_scanner,crawler-user-agents@9345a7ad9c49,80legs web scraping service
+APIs-Google,search_crawler,crawler-user-agents@9345a7ad9c49,Google's APIs bot for crawling API documentation and services
+Aboundex,search_crawler,crawler-user-agents@9345a7ad9c49,Aboundex web crawler for content discovery
+AcademicBotRTU,academic,crawler-user-agents@9345a7ad9c49,Academic Bot RTU web crawler bot
+AccessStatus,monitoring,crawler-user-agents@9345a7ad9c49,HTTP status code monitoring bot
+Accessible Web Bot,monitoring,crawler-user-agents@9345a7ad9c49,Monitors websites for WCAG accessibility compliance violations
+Acquia optimize,monitoring,crawler-user-agents@9345a7ad9c49,Acquia website optimization monitoring
+ActiveComply,monitoring,crawler-user-agents@9345a7ad9c49,ActiveComply compliance monitoring bot
+AdagioBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analysis bot for performance and optimization
+AddSearchBot,search_crawler,crawler-user-agents@9345a7ad9c49,AddSearch web crawler for site search
+AddThis,social_preview,crawler-user-agents@9345a7ad9c49,AddThis social sharing web crawler bot
+Adidxbot,search_crawler,crawler-user-agents@9345a7ad9c49,Bing's advertising index web crawler bot
+AdkernelTopicCrawler,advertising,crawler-user-agents@9345a7ad9c49,Adkernel ad tech solutions crawler
+AdminLabs,seo_crawler,crawler-user-agents@9345a7ad9c49,Web scraping tool for data collection and analysis
+AdsBot-Google([^-]|$),advertising,crawler-user-agents@9345a7ad9c49,Google's Ads bot for checking web page ad quality
+AdsBot-Google-Mobile,advertising,crawler-user-agents@9345a7ad9c49,Google's mobile Ads bot for crawling mobile pages to serve targeted ads
+AdsBot-IAB,advertising,crawler-user-agents@9345a7ad9c49,IAB technology crawler verifying ads.txt files for programmatic advertising
+AdsTxtCrawler,advertising,crawler-user-agents@9345a7ad9c49,AdsTxt web crawler for ads.txt validation
+AdvBot,advertising,crawler-user-agents@9345a7ad9c49,AdvBot web crawler for advertising analysis
+Adventurer,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for indexing content and analysis
+AgencyAnalyticsBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO audit bot for performance and backlink analysis
+Ahrefs(Bot|SiteAudit),seo_crawler,crawler-user-agents@9345a7ad9c49,Ahrefs SEO tool web crawler for link analysis
+AkismetBot,security_scanner,crawler-user-agents@9345a7ad9c49,Spam filtering service for WordPress and CMS
+AlertSite,monitoring,crawler-user-agents@9345a7ad9c49,SmartBear's synthetic monitoring service
+AlexandriaOrgBot,search_crawler,crawler-user-agents@9345a7ad9c49,Alexandria web crawler for discovery
+Algolia Crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Hosted search engine and site search crawler
+AliyunSecBot,security_scanner,crawler-user-agents@9345a7ad9c49,Alibaba Aliyun security web crawler bot
+AllAfrica,feed_reader,crawler-user-agents@9345a7ad9c49,AllAfrica news aggregation crawler
+AlphaBot,seo_crawler,crawler-user-agents@9345a7ad9c49,AlphaBot SEO web crawler for analysis
+Amazing-SearchBot,advertising,crawler-user-agents@9345a7ad9c49,Amazing e-commerce platform search crawler
+Amazon CloudFront,automation_tool,crawler-user-agents@9345a7ad9c49,Amazon CloudFront web crawler bot
+Amazon-Bedrock-AgentCore-Browser,automation_tool,crawler-user-agents@9345a7ad9c49,AWS cloud browser for AI agents
+AmazonAdBot,advertising,crawler-user-agents@9345a7ad9c49,Ad verification bot for delivery and impressions
+AmazonBuyForMe,automation_tool,crawler-user-agents@9345a7ad9c49,Amazon bot for Buy For Me service purchases
+AmazonProductDiscovery,search_crawler,crawler-user-agents@9345a7ad9c49,Amazon product discovery web crawler
+AmazonSellerInitiatedListing,search_crawler,crawler-user-agents@9345a7ad9c49,Amazon seller listing web crawler
+Amazonbot,search_crawler,crawler-user-agents@9345a7ad9c49,Amazon web crawler for product discovery
+Amzn-SearchBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Amazon's AI search indexer for Alexa
+Amzn-User,ai_crawler,crawler-user-agents@9345a7ad9c49,Amazon AI assistant for Alexa queries
+Anchor Browser,automation_tool,crawler-user-agents@9345a7ad9c49,Anchor's cloud-hosted browser for AI agents
+AndersPinkBot,seo_crawler,crawler-user-agents@9345a7ad9c49,AndersPink web crawler for content discovery
+Anomura,ai_crawler,crawler-user-agents@9345a7ad9c49,Direqt's AI search indexer
+AnyEvent,automation_tool,crawler-user-agents@9345a7ad9c49,AnyEvent Perl HTTP web crawler library
+Apercite,seo_crawler,crawler-user-agents@9345a7ad9c49,Apercite web crawler for content analysis
+ApifyBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Apify's web scraping and data extraction
+ApifyWebsiteContentCrawler,ai_crawler,crawler-user-agents@9345a7ad9c49,Apify's full website content extractor
+AppEngine-Google,search_crawler,crawler-user-agents@9345a7ad9c49,Google App Engine web crawler bot
+AppInsights,monitoring,crawler-user-agents@9345a7ad9c49,Microsoft AppInsights web crawler bot
+AppSiteAssociation,seo_crawler,crawler-user-agents@9345a7ad9c49,Verifies app connection to website domains
+Applebot,search_crawler,crawler-user-agents@9345a7ad9c49,Apple's web crawler for Siri and search
+Aragog\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for indexing and data collection
+Aranea,academic,crawler-user-agents@9345a7ad9c49,Automated web crawler for content aggregation
+Aranet-SearchBot,ai_crawler,crawler-user-agents@9345a7ad9c49,AI-powered search engine and content indexing crawler bot
+Archive-It,archiver,crawler-user-agents@9345a7ad9c49,Internet Archive's web preservation crawler
+ArchiveBot,archiver,crawler-user-agents@9345a7ad9c49,Archive Team web crawler for preservation
+ArchiveBox,archiver,crawler-user-agents@9345a7ad9c49,Web archiving tool for long-term content preservation
+Arquivo-web-crawler,archiver,crawler-user-agents@9345a7ad9c49,Portuguese web archive for digital heritage
+ArquivoBot,archiver,crawler-user-agents@9345a7ad9c49,Preserves Portuguese websites historical content
+ArtemisBot,security_scanner,crawler-user-agents@9345a7ad9c49,Vulnerability scanning and cybersecurity research bot
+Asana\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Work management platform metadata retriever bot
+AspiegelBot,search_crawler,crawler-user-agents@9345a7ad9c49,Aspiegel web crawler for content discovery
+AtVowBot,monitoring,crawler-user-agents@9345a7ad9c49,Brand monitoring and reputation management web crawler
+Atom Feed Robot,feed_reader,crawler-user-agents@9345a7ad9c49,RSSMicro atom feed web crawler bot
+Attracta,seo_crawler,crawler-user-agents@9345a7ad9c49,Attracta SEO optimization crawler
+AudigentAdBot,advertising,crawler-user-agents@9345a7ad9c49,Audigent targeted advertising crawler
+Audisto Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Audisto SEO web crawler for analysis
+AudistoBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Technical SEO and website audit bot
+Authory,archiver,crawler-user-agents@9345a7ad9c49,Automated content archiving for journalists
+Autoconfig Test from USTC,academic,crawler-user-agents@9345a7ad9c49,USTC university research crawler for web analysis
+Automaton|Newsify Feed Fetcher,monitoring,crawler-user-agents@9345a7ad9c49,Automaton feed fetcher monitoring
+AwarioBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Awario web crawler for monitoring
+AwarioRendererBot,advertising,crawler-user-agents@9345a7ad9c49,Awario social media monitoring crawler
+AwarioRssBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Awario RSS feed web crawler bot
+AwarioSmartBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Awario smart web crawler bot
+AzureAI-SearchBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Microsoft's Azure AI search indexer
+B2B Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,B2B web crawler for business discovery
+BDBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for data aggregation and analysis
+BDCbot,seo_crawler,crawler-user-agents@9345a7ad9c49,BigDataCorp web crawler for data collection
+BDFetch,seo_crawler,crawler-user-agents@9345a7ad9c49,Brand protection bot for unauthorized use detection
+BIGLOTRON,search_crawler,crawler-user-agents@9345a7ad9c49,Biglotron search engine web crawler bot
+BLEXBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,WebMeUp BLEX web crawler bot
+BLP_bbot,seo_crawler,crawler-user-agents@9345a7ad9c49,BLP web crawler for content discovery
+BTWebClient,automation_tool,crawler-user-agents@9345a7ad9c49,µTorrent BitTorrent Client
+BUbiNG,academic,crawler-user-agents@9345a7ad9c49,BUbiNG web crawler framework for research
+BW\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Technology profiling crawler for web analytics
+Bad Neighborhood Header Detector,security_scanner,crawler-user-agents@9345a7ad9c49,Website security risk analysis for link quality
+Baidu-YunGuanCe,monitoring,crawler-user-agents@9345a7ad9c49,Baidu Cloud Watch
+BaiduAdsBot,advertising,crawler-user-agents@9345a7ad9c49,Baidu ad verification and tracking bot
+Baiduspider,search_crawler,crawler-user-agents@9345a7ad9c49,Baidu search engine web crawler bot
+Bark[rR]owler,seo_crawler,crawler-user-agents@9345a7ad9c49,Barkrowler web crawler for content discovery
+BazQux,feed_reader,crawler-user-agents@9345a7ad9c49,BazQux RSS reader web crawler bot
+BeeperBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for aggregation and business intelligence
+BehloolBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Behlool web crawler for content analysis
+BestChange,feed_reader,crawler-user-agents@9345a7ad9c49,BestChange exchange rate monitoring crawler
+Better Uptime Bot,monitoring,crawler-user-agents@9345a7ad9c49,Better Uptime web crawler for monitoring
+BetterUptimeBot,monitoring,crawler-user-agents@9345a7ad9c49,Website uptime and performance monitoring service
+Bibliotheque Nacional de France Crawler,archiver,crawler-user-agents@9345a7ad9c49,French National Library web archiving and preservation bot
+BigUpDataBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Analytics crawler for SEO and metric tracking
+BinaryCanary,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring for servers and services
+BingPreview\/,social_preview,crawler-user-agents@9345a7ad9c49,Bing preview web crawler bot
+BitBot,seo_crawler,crawler-user-agents@9345a7ad9c49,BitBot web crawler for content discovery
+BitSightBot\/,security_scanner,crawler-user-agents@9345a7ad9c49,BitSight web crawler for security
+Bitbucket-Webhooks,seo_crawler,crawler-user-agents@9345a7ad9c49,Webhook notifications for CI/CD pipeline automation
+BlackDuck-FD,security_scanner,crawler-user-agents@9345a7ad9c49,Vulnerability scanner for application security testing
+Blackboard,academic,crawler-user-agents@9345a7ad9c49,Blackboard SafeAssign web crawler bot
+Blackbox Exporter\/,monitoring,crawler-user-agents@9345a7ad9c49,Prometheus monitoring crawler checking endpoint health
+Bling ERP,monitoring,crawler-user-agents@9345a7ad9c49,Brazilian ERP system data synchronization and integration crawler
+BlingERP,feed_reader,crawler-user-agents@9345a7ad9c49,Bling ERP data synchronization crawler
+Blockaid,monitoring,crawler-user-agents@9345a7ad9c49,Blockaid security monitoring
+BlogTraffic\/\d\.\d+ Feed-Fetcher,feed_reader,crawler-user-agents@9345a7ad9c49,BlogTraffic feed fetcher web crawler
+BlogVault,monitoring,crawler-user-agents@9345a7ad9c49,WordPress backup and monitoring service
+Bloglines,feed_reader,crawler-user-agents@9345a7ad9c49,Bloglines RSS feed reader
+Blogtrottr,feed_reader,crawler-user-agents@9345a7ad9c49,Email subscription service for blog and feed updates
+BlueskyPreviewBot,social_preview,crawler-user-agents@9345a7ad9c49,Bluesky social platform link preview fetcher
+Bluesky\/,social_preview,crawler-user-agents@9345a7ad9c49,Bluesky link preview service
+BnFBot,archiver,crawler-user-agents@9345a7ad9c49,French national library archiving cultural content
+BoardGamePricesBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Board game price comparison and availability tracker
+BomboraBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Bombora web crawler for business intelligence
+BotPoke,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for data aggregation and analysis
+Bot\.AraTurka\.com,search_crawler,crawler-user-agents@9345a7ad9c49,AraTurka web crawler for content discovery
+BoxcarBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Boxcar web crawler for notifications
+BrandONbot,seo_crawler,crawler-user-agents@9345a7ad9c49,BrandON web crawler for brand monitoring
+BrandVerity,seo_crawler,crawler-user-agents@9345a7ad9c49,BrandVerity web crawler for brand monitoring
+Brandwatch,seo_crawler,crawler-user-agents@9345a7ad9c49,Social listening and sentiment analysis platform
+BraveBot,search_crawler,crawler-user-agents@9345a7ad9c49,Privacy-focused search engine indexing crawler
+BrightEdge Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,BrightEdge web crawler for SEO
+Brightbot,ai_crawler,crawler-user-agents@9345a7ad9c49,Bright Data's AI-ready data collector
+BrowserBot-Observer,security_scanner,crawler-user-agents@9345a7ad9c49,Observer third-party risk security scanner
+BublupBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Bublup web crawler for content discovery
+Buck\/,monitoring,crawler-user-agents@9345a7ad9c49,Hypefactors media monitoring web crawler
+BuddyBot,monitoring,crawler-user-agents@9345a7ad9c49,Social networking and content aggregation service crawler bot
+BufferLinkPreviewBot,social_preview,crawler-user-agents@9345a7ad9c49,Buffer social media link preview bot
+Bugsnag,monitoring,crawler-user-agents@9345a7ad9c49,Bugsnag JavaScript source fetcher
+Bushbaby,seo_crawler,crawler-user-agents@9345a7ad9c49,Content aggregation and market intelligence crawler
+Butterfly,seo_crawler,crawler-user-agents@9345a7ad9c49,Experimental data collection crawler
+Buttondown,feed_reader,crawler-user-agents@9345a7ad9c49,Buttondown RSS to email converter
+Bytespider,ai_crawler,crawler-user-agents@9345a7ad9c49,ByteDance Bytespider web crawler bot
+CC Metadata Scaper,archiver,crawler-user-agents@9345a7ad9c49,Creative Commons metadata web crawler
+CCBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Common Crawl web crawler for indexing
+CDSCbot,academic,crawler-user-agents@9345a7ad9c49,Academic research crawler for Fediverse decentralized social networks
+CERT PL,security_scanner,crawler-user-agents@9345a7ad9c49,Polish cybersecurity vulnerability and threat scanner
+CISPA Webcrawler,academic,crawler-user-agents@9345a7ad9c49,CISPA web crawler for vulnerability
+CLASSLA-web,academic,crawler-user-agents@9345a7ad9c49,Linguistic research data crawler for NLP
+CMSChecker,seo_crawler,crawler-user-agents@9345a7ad9c49,CMS Checker web crawler for detection
+CXK_Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and SEO analysis crawler
+CaliberBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Market research and analytics crawler
+Caliperbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Conductor Caliperbot web crawler for analysis
+CapitalOneBot,feed_reader,crawler-user-agents@9345a7ad9c49,Capital One dealer website crawler
+CapitalOneShopping,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce price comparison and shopping bot
+CapsuleChecker,monitoring,crawler-user-agents@9345a7ad9c49,Capsule web crawler for link checking
+CapterraBot,monitoring,crawler-user-agents@9345a7ad9c49,Capterra software review platform data collection crawler bot
+Catchpoint,monitoring,crawler-user-agents@9345a7ad9c49,Digital experience and performance monitoring bot
+CensysInspect\/,security_scanner,crawler-user-agents@9345a7ad9c49,Censys web crawler for security scanning
+CentComBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Content indexing and dataset building crawler tool
+Centro Ads\.txt Crawler,advertising,crawler-user-agents@9345a7ad9c49,Advertising transparency ads.txt file verification crawler bot
+CertChief,security_scanner,crawler-user-agents@9345a7ad9c49,CertChief SSL certificate monitoring bot
+Channel3Bot,ai_crawler,crawler-user-agents@9345a7ad9c49,Channel3's universal product catalog indexer
+ChargeBeeBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Subscription billing verification and integration bot
+Charlotte,seo_crawler,crawler-user-agents@9345a7ad9c49,Financial institution and robot-friendly crawler
+ChatGLM-Spider,ai_crawler,crawler-user-agents@9345a7ad9c49,AI model training data collection crawler
+ChatGPT-User,ai_crawler,crawler-user-agents@9345a7ad9c49,ChatGPT user web crawler bot
+Chatwork LinkPreview,social_preview,crawler-user-agents@9345a7ad9c49,Collaboration platform URL preview fetcher
+CheckHost,monitoring,crawler-user-agents@9345a7ad9c49,Website uptime and performance monitoring bot
+CheckMarkNetwork\/,monitoring,crawler-user-agents@9345a7ad9c49,CheckMark Network web crawler bot
+Checkly,monitoring,crawler-user-agents@9345a7ad9c49,Checkly web crawler for monitoring
+Chirp|gotosocial,monitoring,crawler-user-agents@9345a7ad9c49,Binary Canary uptime monitoring bot
+Chrome Privacy Preserving Prefetch Proxy,seo_crawler,crawler-user-agents@9345a7ad9c49,Chrome browser resource prefetching with privacy protection
+Chrome-Lighthouse,monitoring,crawler-user-agents@9345a7ad9c49,Chrome Lighthouse web crawler for audits
+Cincraw,seo_crawler,crawler-user-agents@9345a7ad9c49,Cincraw web crawler for data collection
+CirrusExplorer,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for indexing and competitive analysis
+Citoid,academic,crawler-user-agents@9345a7ad9c49,Wikipedia citation generator extracting metadata for automatic reference creation
+ClarityBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analytics crawler providing optimization insights
+Claude-SearchBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Anthropic Claude search web crawler bot
+Claude-User,ai_crawler,crawler-user-agents@9345a7ad9c49,Anthropic Claude user web crawler bot
+Claude-Web,ai_crawler,crawler-user-agents@9345a7ad9c49,Anthropic Claude web crawler bot
+Clearscopebot,seo_crawler,crawler-user-agents@9345a7ad9c49,Content optimization and keyword performance analysis
+ClickUpLinkUnfurler,social_preview,crawler-user-agents@9345a7ad9c49,ClickUp link preview generator
+Clickagy,advertising,crawler-user-agents@9345a7ad9c49,Clickagy intelligence web crawler bot
+Cliqzbot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Cliqz search engine web crawler bot
+CloudFlare-AlwaysOnline,monitoring,crawler-user-agents@9345a7ad9c49,CloudFlare always online web crawler
+CloudFlare-Prefetch,seo_crawler,crawler-user-agents@9345a7ad9c49,CloudFlare prefetch web crawler bot
+Cloudflare-AutoRAG,ai_crawler,crawler-user-agents@9345a7ad9c49,Cloudflare's RAG service indexer
+Cloudflare-Custom-Error-Page-Crawler,monitoring,crawler-user-agents@9345a7ad9c49,Custom error page validation and testing
+Cloudflare-Custom-Hostname-Verification,seo_crawler,crawler-user-agents@9345a7ad9c49,Cloudflare hostname verification crawler
+Cloudflare-Healthchecks,monitoring,crawler-user-agents@9345a7ad9c49,CloudFlare health checks web crawler
+Cloudflare-Radar-Scanner,security_scanner,crawler-user-agents@9345a7ad9c49,URL scanning for traffic and threat intelligence
+Cloudflare-SSLDetector,security_scanner,crawler-user-agents@9345a7ad9c49,CloudFlare SSL detector web crawler
+Cloudflare-SpeedTest,monitoring,crawler-user-agents@9345a7ad9c49,Website performance and latency testing bot
+Cloudflare-Stream-Hook,seo_crawler,crawler-user-agents@9345a7ad9c49,Video lifecycle event notifications and management
+Cloudflare-Stream-Webhook,seo_crawler,crawler-user-agents@9345a7ad9c49,Cloudflare Stream webhook crawler
+Cloudflare-Traffic-Manager,monitoring,crawler-user-agents@9345a7ad9c49,CloudFlare traffic manager web crawler
+Cloudflare-Validator,monitoring,crawler-user-agents@9345a7ad9c49,Cloudflare security and performance validation
+CloudflareRadarURLScanner,monitoring,crawler-user-agents@9345a7ad9c49,Cloudflare URL security scanner
+Cloudtrellis,seo_crawler,crawler-user-agents@9345a7ad9c49,Cloudtrellis website audit crawler
+Cocolyzebot,seo_crawler,crawler-user-agents@9345a7ad9c49,Cocolyze web crawler for analysis
+CodaBot,social_preview,crawler-user-agents@9345a7ad9c49,Coda document collaboration platform link preview crawler bot
+Code\/1\.,automation_tool,crawler-user-agents@9345a7ad9c49,GitHub Copilot AI coding agent
+Collapsify,feed_reader,crawler-user-agents@9345a7ad9c49,Cloudflare error page caching service
+CommaFeed,feed_reader,crawler-user-agents@9345a7ad9c49,RSS feed aggregator and reader bot
+Companybook-Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Companybook networking web crawler
+ContextAd Bot,advertising,crawler-user-agents@9345a7ad9c49,ContextAd web crawler for advertising
+ContextualBot[\s\S]*outcomes\.net,advertising,crawler-user-agents@9345a7ad9c49,Mobian contextual intelligence crawler
+Convermax,seo_crawler,crawler-user-agents@9345a7ad9c49,Convermax auto parts search indexer
+CookieHub Bot,security_scanner,crawler-user-agents@9345a7ad9c49,Cookie consent and privacy compliance auditor
+CookieHubScan,security_scanner,crawler-user-agents@9345a7ad9c49,CookieHub web crawler for cookie scanning
+CookieHubVerify,security_scanner,crawler-user-agents@9345a7ad9c49,CookieHub consent banner verification scanner
+CookieYesbot,security_scanner,crawler-user-agents@9345a7ad9c49,CookieYes consent compliance scanner
+Cookiebot,security_scanner,crawler-user-agents@9345a7ad9c49,Cookiebot web crawler for cookie scanning
+Corporama matcher,monitoring,crawler-user-agents@9345a7ad9c49,Corporate data matching and business intelligence crawler bot
+Cotoyogi,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content and data aggregation
+Coveobot,search_crawler,crawler-user-agents@9345a7ad9c49,Enterprise search and content indexing platform
+Cozi-iCalendar-FeedReader,feed_reader,crawler-user-agents@9345a7ad9c49,Co-parenting platform crawler fetching shared content metadata
+Crawlson,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for auditing and monitoring
+CrawlyProjectCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Crawly Project web crawler framework
+Crazy Egg,monitoring,crawler-user-agents@9345a7ad9c49,Crazy Egg analytics monitoring bot
+CriteoBot,advertising,crawler-user-agents@9345a7ad9c49,Criteo web crawler for advertising
+Critical CSS Bot,monitoring,crawler-user-agents@9345a7ad9c49,Extracts critical CSS for web performance optimization tools
+Criticalcss\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Critical CSS extraction for performance optimization
+Cronless,monitoring,crawler-user-agents@9345a7ad9c49,Dynamic task execution crawler without fixed scheduling
+CrystalSemanticsBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Crystal Semantics web crawler bot
+Current[\s\S]*RSS Reader,feed_reader,crawler-user-agents@9345a7ad9c49,Current RSS reader application
+CustomAsyncHttpClient,automation_tool,crawler-user-agents@9345a7ad9c49,Custom async HTTP client web crawler
+Cutbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Cutbot web crawler for content discovery
+CybaaBot,advertising,crawler-user-agents@9345a7ad9c49,Cybaa advertising and marketing analytics web crawler bot
+CyberFindCrawler,search_crawler,crawler-user-agents@9345a7ad9c49,Web search engine crawler for content discovery indexing
+CyberPatrol,security_scanner,crawler-user-agents@9345a7ad9c49,CyberPatrol web content filtering bot
+CyotekWebCopy,archiver,crawler-user-agents@9345a7ad9c49,Website copying and offline browsing tool crawler bot
+DF Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and competitive analysis
+DMBrowser,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring browser checking website performance and availability
+DNSScanner,security_scanner,crawler-user-agents@9345a7ad9c49,DNS and network infrastructure security scanning crawler bot
+DareBoost,monitoring,crawler-user-agents@9345a7ad9c49,"Bot to test, Analyze and Optimize website"
+Dark Visitor,monitoring,crawler-user-agents@9345a7ad9c49,Bot analytics and AI agent tracking service crawler
+DaspeedBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and analytics crawler
+DataForSeoBot,seo_crawler,crawler-user-agents@9345a7ad9c49,DataForSEO web crawler for analysis
+Datadog Agent,monitoring,crawler-user-agents@9345a7ad9c49,Datadog infrastructure monitoring and synthetic testing agent bot
+Datadog Synthetic,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring bot testing website APIs and collecting uptime performance data
+DatadogSynthetics,monitoring,crawler-user-agents@9345a7ad9c49,Datadog synthetics web crawler bot
+Datafeedwatch,seo_crawler,crawler-user-agents@9345a7ad9c49,Datafeedwatch web crawler for feed analysis
+Datanyze,seo_crawler,crawler-user-agents@9345a7ad9c49,Datanyze web crawler for technology detection
+Dataprovider\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Dataprovider web crawler for data collection
+Daum\/,search_crawler,crawler-user-agents@9345a7ad9c49,Daum search engine web crawler bot
+Dazzle BlueSky Bot,social_preview,crawler-user-agents@9345a7ad9c49,BlueSky social network link preview and content crawler
+Dead Link Checker,seo_crawler,crawler-user-agents@9345a7ad9c49,Broken link detection and website maintenance bot
+DeepCrawl,seo_crawler,crawler-user-agents@9345a7ad9c49,Lumar enterprise SEO platform crawler
+DeepSeekBot,ai_crawler,crawler-user-agents@9345a7ad9c49,DeepSeek AI model training and data collection crawler
+Deskyobot,seo_crawler,crawler-user-agents@9345a7ad9c49,Website content indexing and SEO analysis
+Detectify,security_scanner,crawler-user-agents@9345a7ad9c49,Vulnerability and attack surface scanning bot
+Determ,monitoring,crawler-user-agents@9345a7ad9c49,Media monitoring and brand reputation tracking web crawler
+DeuSu\/,search_crawler,crawler-user-agents@9345a7ad9c49,DeuSu web crawler for search indexing
+Devin,ai_crawler,crawler-user-agents@9345a7ad9c49,AI-driven browser automation and content extraction
+Diffbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Diffbot web crawler for content extraction
+Digg Deeper,seo_crawler,crawler-user-agents@9345a7ad9c49,Digg web crawler for content discovery
+DigiCert DCV,security_scanner,crawler-user-agents@9345a7ad9c49,DigiCert domain validation scanner
+Digincore bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Digincore web crawler for content analysis
+DingTalkBot-LinkService,social_preview,crawler-user-agents@9345a7ad9c49,Alibaba DingTalk link preview and metadata fetcher
+Discordbot,social_preview,crawler-user-agents@9345a7ad9c49,Discord web crawler for link previews
+Discourse Forum Onebox,social_preview,crawler-user-agents@9345a7ad9c49,Forum link preview and embed content fetcher
+Disqus,seo_crawler,crawler-user-agents@9345a7ad9c49,validate and quality check pages.
+Dlc\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Link checking crawler auditing broken URLs across websites
+Dmbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for data aggregation and SEO
+DnBCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Business data analytics crawler gathering company information insights
+DnyzBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Dnyz web crawler for content discovery
+Do Not Track Verifier,security_scanner,crawler-user-agents@9345a7ad9c49,Privacy practices and security protocol analyzer
+DomCopBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Domain research crawler analyzing website metrics and SEO data
+Domain Re-Animator Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Domain Re-Animator web crawler for domain analysis
+DomainStatsBot,seo_crawler,crawler-user-agents@9345a7ad9c49,DomainStats web crawler for domain analysis
+Domains Project\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Domains Project web crawler bot
+DominicBot,monitoring,crawler-user-agents@9345a7ad9c49,Vanylla social network content indexing and discovery crawler
+Dotcom-Monitor,monitoring,crawler-user-agents@9345a7ad9c49,Doctom website monitoring
+Dow Jones Searchbot,monitoring,crawler-user-agents@9345a7ad9c49,Dow Jones news and financial content aggregation crawler
+Download Ninja,automation_tool,crawler-user-agents@9345a7ad9c49,File download manager and web content fetching tool
+DowntimeDetector\/,monitoring,crawler-user-agents@9345a7ad9c49,Availability monitor detecting and reporting website downtime incidents
+Dragonbot,seo_crawler,crawler-user-agents@9345a7ad9c49,DragonMetrics web crawler for analysis
+DrataAutopilot,monitoring,crawler-user-agents@9345a7ad9c49,Drata compliance monitoring
+Dratabot,security_scanner,crawler-user-agents@9345a7ad9c49,Compliance automation crawler auditing security controls and documentation
+DreamHost Data Team,monitoring,crawler-user-agents@9345a7ad9c49,DreamHost hosting monitoring bot
+Drupalbot,monitoring,crawler-user-agents@9345a7ad9c49,Drupal CMS community website crawler and content indexer
+Dubbotbot,monitoring,crawler-user-agents@9345a7ad9c49,Dubbot web crawler for content discovery
+DuckAssistBot,ai_crawler,crawler-user-agents@9345a7ad9c49,DuckDuckGo assistant bot for web crawling and search
+DuckDuckBot,search_crawler,crawler-user-agents@9345a7ad9c49,DuckDuckGo search engine web crawler bot
+DuckDuckGo-Favicons-Bot,search_crawler,crawler-user-agents@9345a7ad9c49,DuckDuckGo favicon web crawler bot
+EZID,seo_crawler,crawler-user-agents@9345a7ad9c49,EZID link checker web crawler bot
+EasyBib AutoCite,academic,crawler-user-agents@9345a7ad9c49,Citation generator fetching metadata for bibliography and reference creation
+EasyCron\/,monitoring,crawler-user-agents@9345a7ad9c49,Cron job service executing scheduled HTTP requests and monitoring endpoints
+EchoboxBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Social media automation crawler fetching content for publishing optimization
+EcoVadisSustainabilityBot,advertising,crawler-user-agents@9345a7ad9c49,EcoVadis sustainability ratings crawler
+EdgeWatch,monitoring,crawler-user-agents@9345a7ad9c49,Performance monitoring and security assessment bot
+EmailWolf,security_scanner,crawler-user-agents@9345a7ad9c49,Email address extraction and contact scraping crawler bot
+Embedly,social_preview,crawler-user-agents@9345a7ad9c49,Embedly web crawler for content embedding
+EpivozCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Content scraping and indexing crawler
+EvernoteRichLinkBot,social_preview,crawler-user-agents@9345a7ad9c49,Evernote rich link preview bot
+EveryoneSocialBot,social_preview,crawler-user-agents@9345a7ad9c49,EveryoneSocial web crawler for sharing
+EvoUptimeBot,monitoring,crawler-user-agents@9345a7ad9c49,Uptime and performance monitoring service
+ExodusMovement,seo_crawler,crawler-user-agents@9345a7ad9c49,Web scraping and data extraction bot
+Expanse,security_scanner,crawler-user-agents@9345a7ad9c49,Palo Alto Networks Expanse bot for internet asset discovery
+Experibot,monitoring,crawler-user-agents@9345a7ad9c49,Experibot web crawler for testing
+ExtLinksBot,seo_crawler,crawler-user-agents@9345a7ad9c49,ExtLinks web crawler for link analysis
+ExteContextCrawl,ai_crawler,crawler-user-agents@9345a7ad9c49,AI context extraction and content understanding web crawler
+Eyeotabot,advertising,crawler-user-agents@9345a7ad9c49,Eyeota web crawler for audience data
+EzLynx,advertising,crawler-user-agents@9345a7ad9c49,Ezoic website optimization crawler
+Ezgif,seo_crawler,crawler-user-agents@9345a7ad9c49,GIF and image fetching and editing bot
+EzoicBot,advertising,crawler-user-agents@9345a7ad9c49,Ezoic ad monetization platform crawler
+FAST Enterprise Crawler,search_crawler,crawler-user-agents@9345a7ad9c49,FAST enterprise-grade web crawler for search
+FAST-WebCrawler,search_crawler,crawler-user-agents@9345a7ad9c49,FAST search engine web crawler for indexing
+FDL Stats Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Firebase dynamic link analytics and validation
+FacebookBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Meta's AI speech recognition training crawler
+Facebot,social_preview,crawler-user-agents@9345a7ad9c49,Facebook's web crawler for social sharing
+FastDAST,monitoring,crawler-user-agents@9345a7ad9c49,Black Duck security testing bot
+FastmailUA,social_preview,crawler-user-agents@9345a7ad9c49,Email link preview and image proxy fetcher
+FedReporter Bot for FFIEC,monitoring,crawler-user-agents@9345a7ad9c49,Federal financial institution regulatory compliance data crawler bot
+FedReporterDataBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Financial and regulatory filing data aggregator
+FediDB,monitoring,crawler-user-agents@9345a7ad9c49,Fediverse instance database and statistics collection crawler bot
+FediIndex,search_crawler,crawler-user-agents@9345a7ad9c49,Fediverse server indexing and discovery service web crawler
+FediList Agent,monitoring,crawler-user-agents@9345a7ad9c49,Fediverse instance directory and listing service crawler bot
+Fedicabot,seo_crawler,crawler-user-agents@9345a7ad9c49,Social media analytics and link preview bot
+Fedineko,academic,crawler-user-agents@9345a7ad9c49,Fediverse network mapping and analysis research crawler tool
+Feed Image Audit,security_scanner,crawler-user-agents@9345a7ad9c49,Image validation and compliance auditing
+FeedBurner,feed_reader,crawler-user-agents@9345a7ad9c49,RSS feed distribution and subscriber management
+FeedFlow,feed_reader,crawler-user-agents@9345a7ad9c49,FeedFlow RSS reader application
+FeedValidator,monitoring,crawler-user-agents@9345a7ad9c49,Feed validator web crawler for RSS validation
+Feedbin,feed_reader,crawler-user-agents@9345a7ad9c49,Feedbin feed reader web crawler bot
+Feeder \/,feed_reader,crawler-user-agents@9345a7ad9c49,Feeder RSS reader app
+Feedfetcher-Google,feed_reader,crawler-user-agents@9345a7ad9c49,Google's feed fetcher bot for fetching RSS and Atom feeds for Google services
+Feedly,feed_reader,crawler-user-agents@9345a7ad9c49,Feedly Fetcher is how Feedly grabs RSS or Atom feeds when users choose to add them to their Feedly or any of the other applications built on top of the feedly cloud.
+Feedpresso Content Index Bot,feed_reader,crawler-user-agents@9345a7ad9c49,News aggregation platform content indexer
+Feedsearch Bot,feed_reader,crawler-user-agents@9345a7ad9c49,RSS and feed discovery search engine crawler bot
+Feedsearch-Crawler,feed_reader,crawler-user-agents@9345a7ad9c49,Python library for RSS feed detection and extraction
+Feedspot,feed_reader,crawler-user-agents@9345a7ad9c49,Feedspot web crawler for feed discovery
+Feedwind,feed_reader,crawler-user-agents@9345a7ad9c49,Dynamic content aggregation widget fetcher
+FemtosearchBot,search_crawler,crawler-user-agents@9345a7ad9c49,Femtosearch web crawler for content discovery
+Fetch\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Fetch web crawler for CMS detection
+Fever,feed_reader,crawler-user-agents@9345a7ad9c49,Fever feed reader web crawler bot
+FindFiles\.net,search_crawler,crawler-user-agents@9345a7ad9c49,FindFiles.net search engine crawler
+FindITAnswersbot,seo_crawler,crawler-user-agents@9345a7ad9c49,FindITAnswers web crawler for discovery
+FirecrawlAgent,ai_crawler,crawler-user-agents@9345a7ad9c49,Firecrawl's LLM data extraction crawler
+FirmoGraph,seo_crawler,crawler-user-agents@9345a7ad9c49,Business data collection and analytics crawler
+Flamingo_SearchEngine,search_crawler,crawler-user-agents@9345a7ad9c49,Flamingo search engine web crawler bot
+FleebsBot,search_crawler,crawler-user-agents@9345a7ad9c49,Web content aggregation and discovery service crawler bot
+FlipboardProxy,social_preview,crawler-user-agents@9345a7ad9c49,"a proxy service to fetch, validate, and prepare certain elements of websites for presentation through the Flipboard Application"
+FlipboardRSS,feed_reader,crawler-user-agents@9345a7ad9c49,Social magazine content aggregation and curation
+Fluid,automation_tool,crawler-user-agents@9345a7ad9c49,Site-specific browser application for web content access
+Flyriverbot,ai_crawler,crawler-user-agents@9345a7ad9c49,AI content source verification and attribution checking crawler
+Foregenix,security_scanner,crawler-user-agents@9345a7ad9c49,Cybersecurity vulnerability and weakness scanner
+FreeWebMonitoring SiteChecker,monitoring,crawler-user-agents@9345a7ad9c49,FreeWebMonitoring site checker web crawler
+Freespoke\/,search_crawler,crawler-user-agents@9345a7ad9c49,Privacy-focused search engine indexing web content for results
+FreshRSS,feed_reader,crawler-user-agents@9345a7ad9c49,FreshRSS feed reader web crawler bot
+Freshbot,monitoring,crawler-user-agents@9345a7ad9c49,European web content monitoring and freshness checking crawler
+FreshpingBot,monitoring,crawler-user-agents@9345a7ad9c49,Freshping web crawler for monitoring
+Friendica,social_preview,crawler-user-agents@9345a7ad9c49,Friendica social network web crawler bot
+Friendly testing bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Testing crawler verifying website functionality and response behavior
+FriendlyCrawler\/,seo_crawler,crawler-user-agents@9345a7ad9c49,General web crawler indexing content for data collection purposes
+FullStoryBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Analytics platform crawler collecting session and behavioral data
+Funnelback,search_crawler,crawler-user-agents@9345a7ad9c49,Enterprise search crawler indexing content for internal search platforms
+FuseonBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Link affinity crawler indexing web content for SEO analysis
+FyndSearchEngine-Crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Fynd search engine indexing crawler
+FyndSearchEngine-ReCrawler,search_crawler,crawler-user-agents@9345a7ad9c49,Fynd search engine re-indexing crawler
+Fyrebot,seo_crawler,crawler-user-agents@9345a7ad9c49,Fyre web crawler for content discovery
+G2 Web Services,seo_crawler,crawler-user-agents@9345a7ad9c49,G2 web services web crawler bot
+GG PeekBot,social_preview,crawler-user-agents@9345a7ad9c49,Polish messaging platform crawler generating link previews for users
+GIFTEDVISITOR SCAN,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content indexing and analysis
+GPTBot,ai_crawler,crawler-user-agents@9345a7ad9c49,OpenAI GPT web crawler bot
+GTmetrix,monitoring,crawler-user-agents@9345a7ad9c49,Performance testing tool analyzing page speed and optimization recommendations
+Gabanzabot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Search engine crawler indexing websites for Gabanza search results
+Gaisbot,academic,crawler-user-agents@9345a7ad9c49,Academic research web crawler from Taiwan university project
+GarlikCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Garlik web crawler for content discovery
+GeedoBot,search_crawler,crawler-user-agents@9345a7ad9c49,Geedo web crawler for content discovery
+GeedoProductSearch,search_crawler,crawler-user-agents@9345a7ad9c49,Geedo product search web crawler bot
+GeedoShopProductFinder,search_crawler,crawler-user-agents@9345a7ad9c49,"GeedoShopProductFinder is the automated crawler used by Geedo, a global product-search engine specialized in online retail."
+Gemini-Deep-Research,ai_crawler,crawler-user-agents@9345a7ad9c49,Google Gemini deep research web crawler
+Genieo,seo_crawler,crawler-user-agents@9345a7ad9c49,Genieo web filter web crawler bot
+GenomeCrawlerd,monitoring,crawler-user-agents@9345a7ad9c49,Nokia web content analysis and data collection crawler
+Ghost Inspector,automation_tool,crawler-user-agents@9345a7ad9c49,Browser testing service automating UI tests and monitoring website changes
+Gigablast,search_crawler,crawler-user-agents@9345a7ad9c49,Gigablast open-source search engine crawler
+Gigabot,search_crawler,crawler-user-agents@9345a7ad9c49,Gigablast search engine web crawler bot
+GingerCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Ginger Software's language assistant web crawler
+GlobalWebSearch,search_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for global search engine results
+Gluten Free Crawler\/,search_crawler,crawler-user-agents@9345a7ad9c49,Gluten Free Pleasure web crawler bot
+GnowitNewsbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Gnowit news web crawler bot
+Go-http-client,automation_tool,crawler-user-agents@9345a7ad9c49,Go programming language HTTP client library
+GoParserBot,automation_tool,crawler-user-agents@9345a7ad9c49,Go-based web content parsing and extraction crawler bot
+GoPay,seo_crawler,crawler-user-agents@9345a7ad9c49,Payment gateway service verifying merchant websites and payment endpoints
+Golfe\/,search_crawler,crawler-user-agents@9345a7ad9c49,UAE-based search engine crawler indexing web content for search
+Goodreads,social_preview,crawler-user-agents@9345a7ad9c49,Goodreads book preview fetcher
+Goodzer,seo_crawler,crawler-user-agents@9345a7ad9c49,Discord bot enhancement and server functionality crawler
+Google Favicon,search_crawler,crawler-user-agents@9345a7ad9c49,Google favicon web crawler bot
+Google Trust Services,monitoring,crawler-user-agents@9345a7ad9c49,Google SSL certificate validation
+Google Web Preview,social_preview,crawler-user-agents@9345a7ad9c49,Google web preview web crawler bot
+Google-AdWords-Express,advertising,crawler-user-agents@9345a7ad9c49,Google Ads Express fetching advertiser landing pages for review
+Google-Ads-Conversions,advertising,crawler-user-agents@9345a7ad9c49,Google Ads conversions web crawler
+Google-Adwords-Instant,advertising,crawler-user-agents@9345a7ad9c49,Google AdWords instant web crawler bot
+Google-Agent,automation_tool,crawler-user-agents@9345a7ad9c49,Google's user-triggered agent for web navigation
+Google-Apps-Script,seo_crawler,crawler-user-agents@9345a7ad9c49,Google scripting platform fetching URLs for automation workflows
+Google-Area120,seo_crawler,crawler-user-agents@9345a7ad9c49,Google Area 120 experimental tool fetching privacy policies from websites
+Google-Certificates-Bridge,search_crawler,crawler-user-agents@9345a7ad9c49,Google certificates bridge web crawler
+Google-CloudVertexBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Google Vertex AI crawler indexing content for enterprise search solutions
+Google-Extended,ai_crawler,crawler-user-agents@9345a7ad9c49,Google extended web crawler bot
+Google-Gemini-CLI,automation_tool,crawler-user-agents@9345a7ad9c49,Google's AI coding agent for terminal
+Google-InspectionTool,search_crawler,crawler-user-agents@9345a7ad9c49,Google's inspection tool bot for testing and debugging search indexing
+Google-NotebookLM,ai_crawler,crawler-user-agents@9345a7ad9c49,Google's AI research and note-taking assistant
+Google-PhysicalWeb,search_crawler,crawler-user-agents@9345a7ad9c49,Google physical web web crawler bot
+Google-Read-Aloud,search_crawler,crawler-user-agents@9345a7ad9c49,Google read aloud web crawler bot
+Google-Safety,search_crawler,crawler-user-agents@9345a7ad9c49,Google safety web crawler bot
+Google-Site-Verification,search_crawler,crawler-user-agents@9345a7ad9c49,Google site verification web crawler bot
+Google-Structured-Data-Testing-Tool,search_crawler,crawler-user-agents@9345a7ad9c49,Google structured data testing web crawler
+Google-Trust-Services\/,security_scanner,crawler-user-agents@9345a7ad9c49,Google PKI service validating SSL certificates and checking revocation status
+GoogleAgent-Mariner,automation_tool,crawler-user-agents@9345a7ad9c49,Google's AI agent for browser-based tasks
+GoogleAssociationService$,seo_crawler,crawler-user-agents@9345a7ad9c49,Google service verifying digital asset link associations between platforms
+GoogleAssociationService\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Google service verifying digital asset links between apps and websites
+GoogleDocs,seo_crawler,crawler-user-agents@9345a7ad9c49,Google Docs crawler fetching web content for spreadsheet import functions
+GoogleImageProxy,social_preview,crawler-user-agents@9345a7ad9c49,Google image proxy fetching and caching images for Gmail display
+GoogleOther,search_crawler,crawler-user-agents@9345a7ad9c49,Google's other bots and services for various Google search features
+GoogleProducer,search_crawler,crawler-user-agents@9345a7ad9c49,Google user-triggered fetcher retrieving content for Google products
+GoogleStackdriverMonitoring,monitoring,crawler-user-agents@9345a7ad9c49,Google Cloud monitoring service performing uptime checks on endpoints
+Googlebot-IA\/,search_crawler,crawler-user-agents@9345a7ad9c49,Google Scholar crawler indexing academic papers and library content
+Googlebot-Image,search_crawler,crawler-user-agents@9345a7ad9c49,Google's image-specific web crawling bot for image search indexing
+Googlebot-Mobile,search_crawler,crawler-user-agents@9345a7ad9c49,Google's legacy mobile crawler for Google Search indexing
+Googlebot-News,search_crawler,crawler-user-agents@9345a7ad9c49,Google's news-specific web crawling bot for Google News indexing
+Googlebot-Video,search_crawler,crawler-user-agents@9345a7ad9c49,Google's video crawler for video-related Google Search features
+Googlebot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Google's main web crawling bot for search indexing
+GotSiteMonitor\.com,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring service tracking uptime and alerting on downtime
+Gowikibot,seo_crawler,crawler-user-agents@9345a7ad9c49,GoWiki web crawler for content discovery
+Grammarly\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Writing assistant crawler fetching web content for grammar analysis
+GrapeshotCrawler,advertising,crawler-user-agents@9345a7ad9c49,Grapeshot web crawler for content analysis
+Greppr Web Crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Greppr unfiltered search engine crawler
+Grobbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Grob web crawler for content analysis
+GroovinaAdsbot\/,advertising,crawler-user-agents@9345a7ad9c49,Advertising platform crawler indexing products and pricing for campaigns
+GroupHigh\/,seo_crawler,crawler-user-agents@9345a7ad9c49,GroupHigh web crawler for influencer marketing
+GroupMeBot,social_preview,crawler-user-agents@9345a7ad9c49,GroupMe web crawler for messaging
+Grover\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Anonymous web crawler likely used for research or content scraping
+GuestpostsBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Guest posting platform crawler discovering and indexing blog opportunities
+Gulper Web Bot,academic,crawler-user-agents@9345a7ad9c49,Academic web crawler collecting data for research and link analysis
+Gwene,feed_reader,crawler-user-agents@9345a7ad9c49,Gwene RSS to news gateway web crawler
+HIFIBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for search and information aggregation
+HTTP Banner Detection,security_scanner,crawler-user-agents@9345a7ad9c49,IPIP HTTP banner detection web crawler
+HTTrack,automation_tool,crawler-user-agents@9345a7ad9c49,HTTrack website copier for offline browsing
+HaloBot,monitoring,crawler-user-agents@9345a7ad9c49,Haloscan comment system integration and content fetching bot
+HanaleiBot,monitoring,crawler-user-agents@9345a7ad9c49,Testing and integration verification web crawler bot
+HappyWing,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for data aggregation and analysis
+Hardenize,security_scanner,crawler-user-agents@9345a7ad9c49,Hardenize security configuration scanner
+Hatena,social_preview,crawler-user-agents@9345a7ad9c49,Hatena web services web crawler bot
+HawaiiBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler gathering content for data aggregation and indexing
+HeadOnlyScraper,monitoring,crawler-user-agents@9345a7ad9c49,HTTP HEAD request metadata collection and validation crawler
+HeadlessChrome,automation_tool,crawler-user-agents@9345a7ad9c49,Headless Chrome web crawler for testing
+Hello World,seo_crawler,crawler-user-agents@9345a7ad9c49,Test crawler sending generic requests to verify web server responses
+HelloworkJobPostingBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Job board crawler indexing employment listings and posting data
+HenkBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Valyu AI content analysis and data collection crawler
+HetrixTools,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring bot checking server availability and alerting downtime
+Hlidam\.to robot,seo_crawler,crawler-user-agents@9345a7ad9c49,Czech job listing crawler indexing employment offers and postings
+Honeybadger Uptime Check,monitoring,crawler-user-agents@9345a7ad9c49,Error monitoring service checking website availability and health
+HoneybadgerBot,monitoring,crawler-user-agents@9345a7ad9c49,Honeybadger error monitoring bot
+HostTracker\/,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring service checking availability from multiple global locations
+Hotjar,seo_crawler,crawler-user-agents@9345a7ad9c49,Analytics platform crawler collecting heatmap and behavior tracking data
+HttpUrlConnection,automation_tool,crawler-user-agents@9345a7ad9c49,Java HttpUrlConnection HTTP client
+HubSpot,seo_crawler,crawler-user-agents@9345a7ad9c49,HubSpot web crawler for marketing automation
+Huckabot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce SEO crawler analyzing product pages for optimization insights
+Hydrozen\.io,monitoring,crawler-user-agents@9345a7ad9c49,Hydrozen web crawler for monitoring
+Hype Machine\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Music blog aggregator crawler indexing tracks and artist content
+IAS crawler,advertising,crawler-user-agents@9345a7ad9c49,"Bot of Integral Ad Science, Inc."
+IBM Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,IBM enterprise crawler indexing content for Watson and cloud services
+ICBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Ideas and Code web crawler bot
+ICC-Crawler,academic,crawler-user-agents@9345a7ad9c49,ICC web crawler for language research
+IDG\/EU,seo_crawler,crawler-user-agents@9345a7ad9c49,Semantic data and business intelligence crawler
+IFTTT\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Automation platform crawler fetching feeds for conditional workflow triggers
+INETDEX-BOT,search_crawler,crawler-user-agents@9345a7ad9c49,INETDEX web crawler for indexing
+IRLbot,academic,crawler-user-agents@9345a7ad9c49,Texas A&M University academic research web crawler bot
+ISSCyberRiskCrawler\/,security_scanner,crawler-user-agents@9345a7ad9c49,Cybersecurity risk crawler scanning websites for vulnerabilities and exposures
+IbouBot,search_crawler,crawler-user-agents@9345a7ad9c49,Ibou web graph search crawler
+Iframely,social_preview,crawler-user-agents@9345a7ad9c49,Iframely web crawler for embeds
+ImageFetcher\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Image proxy service fetching and caching images for web applications
+ImageMind,ai_crawler,crawler-user-agents@9345a7ad9c49,Image analysis crawler collecting visual data for AI training purposes
+ImagesiftBot,search_crawler,crawler-user-agents@9345a7ad9c49,Imagesift bot for image search and indexing
+Impact\.com Agent,advertising,crawler-user-agents@9345a7ad9c49,Impact.com affiliate marketing and partnership tracking crawler bot
+IndeedBot,search_crawler,crawler-user-agents@9345a7ad9c49,Indeed job search web crawler bot
+IndeedJobBot,search_crawler,crawler-user-agents@9345a7ad9c49,Job search engine crawler indexing employment listings and company pages
+Indy Library,seo_crawler,crawler-user-agents@9345a7ad9c49,Payment processor crawler verifying merchant sites and payment flow transactions
+Innguma\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Content fetcher crawler gathering web data for information extraction
+Innologica,feed_reader,crawler-user-agents@9345a7ad9c49,Innologica content fetcher
+Instapaper\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Read-later service crawler fetching articles for offline reading storage
+Integromat\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Automation platform crawler fetching web data for workflow integration
+InterfaxScanBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Interfax scan web crawler bot
+InternetMeasurement,academic,crawler-user-agents@9345a7ad9c49,Internet Measurement bot for network research and analysis
+IonCrawl,seo_crawler,crawler-user-agents@9345a7ad9c49,IONOS IonCrawl web crawler bot
+Irokez\.cz monitoring,monitoring,crawler-user-agents@9345a7ad9c49,Czech web monitoring service tracking availability and performance metrics
+IsDownBot\/,monitoring,crawler-user-agents@9345a7ad9c49,Downtime monitoring bot checking website and service availability status
+IsonSearchBot,search_crawler,crawler-user-agents@9345a7ad9c49,"IsonSearchBot is the web crawler of Ison Search, a search engine run from Indonesia. It indexes public pages for search results and cited answers that link back to the source; content is not used to train AI models."
+IstellaBot,search_crawler,crawler-user-agents@9345a7ad9c49,Istella web crawler for search indexing
+James BOT,seo_crawler,crawler-user-agents@9345a7ad9c49,CognitiveSEO James web crawler bot
+Jamie's Spider,seo_crawler,crawler-user-agents@9345a7ad9c49,Jamie Brown's personal web crawler bot
+Jetslide,social_preview,crawler-user-agents@9345a7ad9c49,Jetslide web crawler for content discovery
+Jetty,automation_tool,crawler-user-agents@9345a7ad9c49,Jetty web server HTTP client library
+JobboerseBot,search_crawler,crawler-user-agents@9345a7ad9c49,Jobboerse web crawler for job discovery
+Jooblebot,search_crawler,crawler-user-agents@9345a7ad9c49,Jooble job search web crawler bot
+Jugendschutzprogramm-Crawler,security_scanner,crawler-user-agents@9345a7ad9c49,Jugendschutzprogramm web crawler bot
+Jumio,seo_crawler,crawler-user-agents@9345a7ad9c49,Identity and KYC verification service web content analyzer
+K7MLWCBot,security_scanner,crawler-user-agents@9345a7ad9c49,Virus scanner
+KStandBot,seo_crawler,crawler-user-agents@9345a7ad9c49,KStand web crawler for classification
+Kagibot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Privacy-focused search engine crawler indexing content for rankings
+Kangaroo Bot,ai_crawler,crawler-user-agents@9345a7ad9c49,Australian AI model training crawler
+KangarooBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Data scraping and content aggregation crawler mimicking human behavior
+KargoBot-Artemis,advertising,crawler-user-agents@9345a7ad9c49,Ad-tech crawler analyzing pages for contextual targeting and brand safety
+Kemvibot,seo_crawler,crawler-user-agents@9345a7ad9c49,Kemvi web crawler for content discovery
+KendraBot,ai_crawler,crawler-user-agents@9345a7ad9c49,AI-powered enterprise search crawler for documents
+KeybaseBot,social_preview,crawler-user-agents@9345a7ad9c49,Keybase web crawler for link previews
+Keydrop\.io,security_scanner,crawler-user-agents@9345a7ad9c49,Keydrop gaming marketplace security scanning and monitoring crawler
+Klaviyo\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Marketing automation bot fetching product data for email campaigns
+Known Agent,monitoring,crawler-user-agents@9345a7ad9c49,Known Agents test and development bot
+KomodiaBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Komodia web crawler for classification
+Konturbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Russian business intelligence and analytics crawler
+KosmioBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Kosmio web crawler for content discovery
+KrawlerBot,security_scanner,crawler-user-agents@9345a7ad9c49,Krawler web scraping service bot
+Kukei\.eu-Bot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing and analyzing page content for search purposes
+KunatoCrawler,ai_crawler,crawler-user-agents@9345a7ad9c49,AI training data collection and web scraping crawler
+LAC_IAHarvester,archiver,crawler-user-agents@9345a7ad9c49,Canadian library web archiving bot preserving government websites
+LMArenaUnfurlBot,social_preview,crawler-user-agents@9345a7ad9c49,LM Arena link preview bot
+Landau-Media-Spider,seo_crawler,crawler-user-agents@9345a7ad9c49,Landau Media web crawler bot
+Laserlikebot,seo_crawler,crawler-user-agents@9345a7ad9c49,Laserlike web crawler for content discovery
+LastModBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler detecting page freshness by analyzing last modified headers
+LegalMonster,security_scanner,crawler-user-agents@9345a7ad9c49,Compliance monitoring scanner detecting cookies and tracking consent
+Leikibot,seo_crawler,crawler-user-agents@9345a7ad9c49,Leiki web crawler for content discovery
+Lemmy,social_preview,crawler-user-agents@9345a7ad9c49,Lemmy social network web crawler bot
+Let's Encrypt,security_scanner,crawler-user-agents@9345a7ad9c49,SSL certificate validation bot verifying domain control for TLS certs
+Level9SearchBot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Search and OSINT crawler indexing public content for search purposes
+Library Of Congress Web Archiving,archiver,crawler-user-agents@9345a7ad9c49,US Library of Congress web preservation archiving crawler
+LightspeedSystemsCrawler,security_scanner,crawler-user-agents@9345a7ad9c49,Lightspeed Systems web crawler bot
+LinerBot\/,ai_crawler,crawler-user-agents@9345a7ad9c49,AI workspace crawler indexing web content for search and discovery
+Linespider,social_preview,crawler-user-agents@9345a7ad9c49,LINE Linespider web crawler bot
+Linguee Bot,search_crawler,crawler-user-agents@9345a7ad9c49,Linguee translation web crawler bot
+LinkAce\/,archiver,crawler-user-agents@9345a7ad9c49,Self-hosted bookmark archive crawler preserving web content
+LinkArchiver,archiver,crawler-user-agents@9345a7ad9c49,LinkArchiver web crawler for archiving
+LinkCheckerBot,seo_crawler,crawler-user-agents@9345a7ad9c49,LinkChecker broken link bot
+LinkTiger,seo_crawler,crawler-user-agents@9345a7ad9c49,Broken link detection crawler auditing website link integrity
+LinkWalker\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Automated web crawler for content and data collection purposes
+LinkedInBot,social_preview,crawler-user-agents@9345a7ad9c49,LinkedIn's bot for crawling professional content and profiles
+LinkisBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Linkis web crawler for link sharing
+LinkpadBot,monitoring,crawler-user-agents@9345a7ad9c49,Linkpad bookmark management and link discovery crawler bot
+LinksIndexerBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO crawler indexing backlinks and submitting URLs for search engines
+LinkupBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Linkup's enterprise AI search crawler
+ListGemBot,social_preview,crawler-user-agents@9345a7ad9c49,"ListGemBot is the link unfurler for ListGem, a structured curation platform. When a user adds a URL to one of their lists, it fetches that single page to read its public metadata for the preview."
+Livelap[bB]ot,seo_crawler,crawler-user-agents@9345a7ad9c49,Livelap web crawler for content discovery
+LogicMonitor,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring bot checking website and API availability
+LoomlyBot,social_preview,crawler-user-agents@9345a7ad9c49,Social media management metadata fetcher for link previews
+Luminator-robots,seo_crawler,crawler-user-agents@9345a7ad9c49,Luminator web crawler for content discovery
+MADBbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler gathering data for analytics and research purposes
+MB-LinkChecker,seo_crawler,crawler-user-agents@9345a7ad9c49,Website crawler for structure analysis and metadata collection
+MBCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Monitor Backlinks web crawler bot
+MJ12bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Majestic-12 search engine web crawler bot
+MRGbot\/,security_scanner,crawler-user-agents@9345a7ad9c49,Security testing lab crawler for anti-fraud control evaluation
+MTRobot,seo_crawler,crawler-user-agents@9345a7ad9c49,Metrics Tools web crawler for analysis
+MaCoCu,academic,crawler-user-agents@9345a7ad9c49,MaCoCu web crawler for language research
+Macrobondbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Financial data crawler gathering macroeconomic time-series data
+Magellan,seo_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and competitive analysis crawler tool
+MagiBot,search_crawler,crawler-user-agents@9345a7ad9c49,Peak Labs information extraction crawler
+Magnet\.me-web\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Graduate recruitment platform crawling job postings and employer data
+MagnetmeBot,monitoring,crawler-user-agents@9345a7ad9c49,Job board and recruitment platform web scraping crawler
+MagpieRSS,feed_reader,crawler-user-agents@9345a7ad9c49,MagpieRSS PHP feed parser
+Magus Bot,monitoring,crawler-user-agents@9345a7ad9c49,Web content analysis and data extraction crawler bot
+MailChimp,feed_reader,crawler-user-agents@9345a7ad9c49,Mailchimp email campaign content fetcher
+Mail\.RU_Bot,search_crawler,crawler-user-agents@9345a7ad9c49,Mail.RU search engine web crawler bot
+MainWP\/,seo_crawler,crawler-user-agents@9345a7ad9c49,WordPress management platform crawler auditing child site health
+Make\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Automation platform crawler validating endpoints and collecting metadata
+ManageWP,seo_crawler,crawler-user-agents@9345a7ad9c49,WordPress dashboard scanner verifying site availability and health
+Manus-User,automation_tool,crawler-user-agents@9345a7ad9c49,Butterfly Effect's AI agent for web tasks
+MarketGoo\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO audit spider evaluating technical search engine optimization signals
+MarketingMiner,seo_crawler,crawler-user-agents@9345a7ad9c49,Digital marketing analytics crawler gathering SEO and performance data
+Mastodon,social_preview,crawler-user-agents@9345a7ad9c49,Mastodon social network web crawler bot
+MatchorySearch,search_crawler,crawler-user-agents@9345a7ad9c49,Search engine and content discovery indexing crawler bot
+Mattermost-Bot\/,social_preview,crawler-user-agents@9345a7ad9c49,Team communication platform fetching URLs for preview and automation
+MauiBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Maui web crawler for content discovery
+Mavifinds,seo_crawler,crawler-user-agents@9345a7ad9c49,Shopping discovery crawler indexing product prices and availability
+McontextualBot,advertising,crawler-user-agents@9345a7ad9c49,MContextual advertising targeting crawler
+MediaMonitoringBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,OSINT crawler harvesting mentions from news blogs and forums
+MedialogiaBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Media monitoring crawler tracking news and brand mentions online
+Mediapartners \(Googlebot\),advertising,crawler-user-agents@9345a7ad9c49,Google's Mediapartners bot variant for AdSense and AdMob crawling
+Mediapartners-Google,advertising,crawler-user-agents@9345a7ad9c49,Google's Mediapartners bot for AdSense and AdMob crawling
+Mediatoolkitbot,monitoring,crawler-user-agents@9345a7ad9c49,Mediatoolkit web crawler for monitoring
+MediavineMetadataParser\/,advertising,crawler-user-agents@9345a7ad9c49,Ad network metadata extractor gathering schema and preview data
+Mediumbot-MetaTagFetcher,social_preview,crawler-user-agents@9345a7ad9c49,Medium link preview meta tag fetcher
+MegaIndex,seo_crawler,crawler-user-agents@9345a7ad9c49,MegaIndex SEO tool web crawler for analysis
+MeltwaterNews,seo_crawler,crawler-user-agents@9345a7ad9c49,Meltwater news monitoring web crawler
+MergadoBot,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce product data feed optimization and aggregation crawler
+Meta-ExternalHit\/,social_preview,crawler-user-agents@9345a7ad9c49,Meta platform bot fetching link previews and metadata for sharing
+MetaIAB Facebook,social_preview,crawler-user-agents@9345a7ad9c49,Facebook link preview fetcher
+MetaInspector,seo_crawler,crawler-user-agents@9345a7ad9c49,MetaInspector web crawler for metadata
+MetaJobBot,seo_crawler,crawler-user-agents@9345a7ad9c49,MetaJob web crawler for job discovery
+MetaURI,seo_crawler,crawler-user-agents@9345a7ad9c49,MetaURI API web crawler for metadata
+Metorik,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce analytics platform crawler for WooCommerce and Shopify stores
+MgidBot,advertising,crawler-user-agents@9345a7ad9c49,Native advertising platform crawler analyzing pages for targeting
+MicrosoftPreview\/,social_preview,crawler-user-agents@9345a7ad9c49,Microsoft preview web crawler bot
+Miniature\.io\/,archiver,crawler-user-agents@9345a7ad9c49,Web page archiving and thumbnail generation bot tool
+Miniflux\/,feed_reader,crawler-user-agents@9345a7ad9c49,Miniflux is a minimalist and opinionated feed reader.
+Minoru's Fediverse Crawler,monitoring,crawler-user-agents@9345a7ad9c49,Fediverse network node discovery and mapping crawler tool
+MirrorWebCrawler,archiver,crawler-user-agents@9345a7ad9c49,Enterprise web archiving and compliance preservation crawler bot
+MissinglettrBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Social media automation platform crawler for blog and feed indexing
+MistralAI-User,ai_crawler,crawler-user-agents@9345a7ad9c49,Mistral AI web crawler bot for content indexing
+MixnodeCache\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Mixnode cache web crawler bot
+MixrankBot,advertising,crawler-user-agents@9345a7ad9c49,MixRank business intelligence crawler
+ModatScanner,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring and change detection service crawler bot
+ModernizeBot,seo_crawler,crawler-user-agents@9345a7ad9c49,ModernizeYourWebsite analysis crawler
+ModularConnector\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Distributed modular crawler framework for content processing
+MojeekBot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Mojeek search engine web crawler bot
+Mollie HTTP client,seo_crawler,crawler-user-agents@9345a7ad9c49,Payment service provider verifying merchant sites and compliance
+MonSpark\/,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring service bot checking uptime and performance
+MonTools\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for scanning and indexing website pages
+Monibot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for competitive analysis and price monitoring
+MonitoRSS\/,feed_reader,crawler-user-agents@9345a7ad9c49,Discord bot crawler fetching RSS feeds for channel notifications
+Monsidobot,monitoring,crawler-user-agents@9345a7ad9c49,Monsido web crawler for website monitoring
+MontasticMonitor,monitoring,crawler-user-agents@9345a7ad9c49,Montastic uptime monitoring
+MoodleBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Moodle web crawler for learning platforms
+Moreover,seo_crawler,crawler-user-agents@9345a7ad9c49,Moreover news aggregation web crawler
+MotoMinerBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Automotive marketplace crawler indexing vehicle listings and prices
+MuckRack,seo_crawler,crawler-user-agents@9345a7ad9c49,MuckRack journalist database web crawler
+Multiviewbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Multiview web crawler for content discovery
+MxToolbox,monitoring,crawler-user-agents@9345a7ad9c49,Email delivery and reputation monitoring for organizations
+MyBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for indexing and data aggregation purposes
+NAVER Blog Rssbot,feed_reader,crawler-user-agents@9345a7ad9c49,Naver blog RSS web crawler bot
+NETVIGIE,monitoring,crawler-user-agents@9345a7ad9c49,European performance and uptime monitoring synthetic crawler
+NING\/,social_preview,crawler-user-agents@9345a7ad9c49,Ning web crawler for content discovery
+NINJA bot,security_scanner,crawler-user-agents@9345a7ad9c49,NINJA web crawler for content discovery
+NIXStatsbot,monitoring,crawler-user-agents@9345a7ad9c49,NIXStats web crawler for monitoring
+NLNZ_IAHarvester,archiver,crawler-user-agents@9345a7ad9c49,New Zealand library digital preservation and archiving bot
+NLUX_IAHarvester,archiver,crawler-user-agents@9345a7ad9c49,Luxembourg National Library web archiving and harvesting crawler
+NTENTbot,search_crawler,crawler-user-agents@9345a7ad9c49,NTENT web crawler for search results
+NanoInteractive,advertising,crawler-user-agents@9345a7ad9c49,Nano Interactive ad targeting crawler
+NapBot,search_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and search engine crawler bot
+NaverBot,search_crawler,crawler-user-agents@9345a7ad9c49,Naver Korean search engine web indexing crawler bot
+Neevabot,search_crawler,crawler-user-agents@9345a7ad9c49,Neeva search engine web crawler bot
+NerdByNature\.Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,NerdByNature web crawler for content indexing
+Nessus,security_scanner,crawler-user-agents@9345a7ad9c49,Nessus vulnerability scanner web crawler
+NestDaddybot,search_crawler,crawler-user-agents@9345a7ad9c49,NestDaddy search engine crawler
+NetAPI,seo_crawler,crawler-user-agents@9345a7ad9c49,Automated crawler interacting with websites for data collection
+NetSeer crawler,advertising,crawler-user-agents@9345a7ad9c49,NetSeer intelligence gathering crawler
+NetShelter ContentScan,advertising,crawler-user-agents@9345a7ad9c49,Media network crawler categorizing content for ad targeting
+NetSystemsResearch,security_scanner,crawler-user-agents@9345a7ad9c49,NetSystemsResearch web crawler bot
+Netcraft SSL Server Survey,security_scanner,crawler-user-agents@9345a7ad9c49,Netcraft SSL certificate intelligence scanner
+Netcraft Web Server Survey,advertising,crawler-user-agents@9345a7ad9c49,Netcraft web server survey crawler
+NetcraftSurveyAgent,security_scanner,crawler-user-agents@9345a7ad9c49,Netcraft survey web crawler bot
+Neticle Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Neticle web crawler for content analysis
+NetpeakCheckerBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analysis crawler identifying technical issues and metrics
+Netumo|netumo,monitoring,crawler-user-agents@9345a7ad9c49,Netumo uptime monitoring bot
+Netvibes,feed_reader,crawler-user-agents@9345a7ad9c49,Netvibes web crawler for content aggregation
+New York Times Newsgathering,monitoring,crawler-user-agents@9345a7ad9c49,News media content aggregation and research crawler bot
+NewRelicSynthetics,monitoring,crawler-user-agents@9345a7ad9c49,New Relic synthetic monitoring
+NewRelicbot\/,monitoring,crawler-user-agents@9345a7ad9c49,Application monitoring bot for uptime and performance checking
+NewsBlur,feed_reader,crawler-user-agents@9345a7ad9c49,NewsBlur feed reader web crawler bot
+NewsNow\/,seo_crawler,crawler-user-agents@9345a7ad9c49,UK news aggregation platform crawler for content discovery
+NewsRoom\.BI,advertising,crawler-user-agents@9345a7ad9c49,Marfeel publisher analytics crawler
+NextCloud,feed_reader,crawler-user-agents@9345a7ad9c49,NextCloud news reader web crawler bot
+Nicecrawler,search_crawler,crawler-user-agents@9345a7ad9c49,Nicecrawler web crawler for discovery
+NicheIndex,feed_reader,crawler-user-agents@9345a7ad9c49,Niche market RSS feed harvesting and indexing crawler
+Nikto,security_scanner,crawler-user-agents@9345a7ad9c49,Nikto web server security scanner bot
+Nimbostratus-Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Nimbostratus web crawler for cloud analysis
+Nitro-,seo_crawler,crawler-user-agents@9345a7ad9c49,NitroPack speed optimization crawler
+NitroBot,seo_crawler,crawler-user-agents@9345a7ad9c49,NitroPack SEO optimization bot
+Nmap Scripting Engine,security_scanner,crawler-user-agents@9345a7ad9c49,Nmap NSE web crawler for security scanning
+NoahBot,monitoring,crawler-user-agents@9345a7ad9c49,News aggregation and content discovery service crawler bot
+NodePing,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring service performing uptime checks globally
+Noibu,monitoring,crawler-user-agents@9345a7ad9c49,Noibu ecommerce error monitoring
+Nooshub\/,seo_crawler,crawler-user-agents@9345a7ad9c49,AI feed platform crawler indexing content and RSS feeds
+NostoCrawlerBot,advertising,crawler-user-agents@9345a7ad9c49,Nosto ecommerce personalization crawler
+Notabot,seo_crawler,crawler-user-agents@9345a7ad9c49,Content aggregation and metadata extraction crawler bot
+Notion\/,social_preview,crawler-user-agents@9345a7ad9c49,Notion workspace crawler fetching URLs for link previews
+Novaact\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for data aggregation and analysis purposes
+Novellum,ai_crawler,crawler-user-agents@9345a7ad9c49,AI data collection crawler for model training and enrichment
+NsToolsBot\/,security_scanner,crawler-user-agents@9345a7ad9c49,Network and security analysis tool crawler gathering server data
+Nutch,search_crawler,crawler-user-agents@9345a7ad9c49,Apache Nutch open-source web crawler framework
+Nuzzel,seo_crawler,crawler-user-agents@9345a7ad9c49,Nuzzel web crawler for news discovery
+OAI-SearchBot,ai_crawler,crawler-user-agents@9345a7ad9c49,OpenAI search web crawler bot
+OICrawler,search_crawler,crawler-user-agents@9345a7ad9c49,OpenIndex web crawler for indexing
+OWLer-W,monitoring,crawler-user-agents@9345a7ad9c49,Business intelligence and company data collection crawler bot
+ObservePoint,monitoring,crawler-user-agents@9345a7ad9c49,ObservePoint web crawler for monitoring
+Ocarinabot,seo_crawler,crawler-user-agents@9345a7ad9c49,Ocarina web crawler for content discovery
+Odin;,seo_crawler,crawler-user-agents@9345a7ad9c49,Automated crawler for data collection and indexing purposes
+OdklBot\/,social_preview,crawler-user-agents@9345a7ad9c49,Odnoklassniki web crawler for sharing
+Offline Explorer,archiver,crawler-user-agents@9345a7ad9c49,Website downloader tool for offline archival and content analysis
+OhDear\/,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring bot scanning uptime and TLS certificate validity
+Omnisend\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Ecommerce marketing automation crawler fetching campaign URLs metadata
+OnCrawl\/,seo_crawler,crawler-user-agents@9345a7ad9c49,OnCrawl SEO web crawler for analysis
+OneTrust,monitoring,crawler-user-agents@9345a7ad9c49,OneTrust consent management scanner
+Online Domain Tools,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analysis crawler identifying technical issues and metrics
+OnlineOrNot\.com_bot,monitoring,crawler-user-agents@9345a7ad9c49,Web crawler for systematic content browsing and indexing
+OpenGraphCheck,seo_crawler,crawler-user-agents@9345a7ad9c49,OpenGraphCheck web crawler for metadata
+OpenGraph\.io\/,social_preview,crawler-user-agents@9345a7ad9c49,Open Graph metadata extractor for link preview generation
+OpenHoseBot,search_crawler,crawler-user-agents@9345a7ad9c49,OpenHose web crawler for content analysis
+OpenRSS,feed_reader,crawler-user-agents@9345a7ad9c49,Feed discovery crawler converting websites into RSS feeds
+OpenTheBoxBot,search_crawler,crawler-user-agents@9345a7ad9c49,Content discovery and web indexing service crawler bot
+OpenVAS,security_scanner,crawler-user-agents@9345a7ad9c49,Vulnerability scanner crawler identifying security weaknesses
+Operator\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Automated crawler performing repetitive internet tasks
+Optimizer\),seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analysis and website optimization crawler
+OrangeBot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Orange search engine web crawler bot
+Orbbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for SEO and analysis
+Orlo-LinkPreview\/,social_preview,crawler-user-agents@9345a7ad9c49,Social platform link preview and metadata fetcher
+OutclicksBot,advertising,crawler-user-agents@9345a7ad9c49,Outclicks web crawler for link tracking
+OutsellURLValidator,seo_crawler,crawler-user-agents@9345a7ad9c49,Digital marketing crawler validating campaign link health
+Overcast\/,feed_reader,crawler-user-agents@9345a7ad9c49,Podcast platform crawler discovering and refreshing feeds
+Owler \(ows\.eu,search_crawler,crawler-user-agents@9345a7ad9c49,European open search crawler for decentralized indexing
+PDF24 URL To PDF,seo_crawler,crawler-user-agents@9345a7ad9c49,PDF conversion crawler capturing web pages as documents
+PR-CY\.RU,seo_crawler,crawler-user-agents@9345a7ad9c49,PR-CY web crawler for SEO analysis
+PRTG Network Monitor,monitoring,crawler-user-agents@9345a7ad9c49,PRTG HTTP Transaction Sensor
+PRTGCloudBot\/,monitoring,crawler-user-agents@9345a7ad9c49,Paessler cloud monitoring bot checking uptime and health
+PS_Daily\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for data collection and analysis
+PWABuilderHttpAgent,seo_crawler,crawler-user-agents@9345a7ad9c49,Microsoft PWA readiness evaluation crawler tool
+PagePeeker\/,seo_crawler,crawler-user-agents@9345a7ad9c49,PagePeeker web crawler for screenshots
+PageThing,seo_crawler,crawler-user-agents@9345a7ad9c49,PageThing web crawler for content discovery
+Pagespeed\/,monitoring,crawler-user-agents@9345a7ad9c49,Performance analysis crawler assessing web page metrics
+Pandalytics,seo_crawler,crawler-user-agents@9345a7ad9c49,Pandalytics web crawler for domain analysis
+PanguBot,search_crawler,crawler-user-agents@9345a7ad9c49,Chinese search engine crawler indexing websites
+Panopta,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring bot verifying uptime and transactions
+PaperLiBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Paper.li web crawler for content curation
+Paqlebot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler gathering data for analytics and research
+ParselySharesBot,monitoring,crawler-user-agents@9345a7ad9c49,Parse.ly content analytics crawler
+PayPal\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Payment processor bot validating endpoints and compliance
+Pcore-HTTP,automation_tool,crawler-user-agents@9345a7ad9c49,Pcore HTTP web crawler library
+Penthouse Critical Path CSS Generator,seo_crawler,crawler-user-agents@9345a7ad9c49,CSS above-the-fold extractor generating critical path stylesheets
+Perplexity-User,ai_crawler,crawler-user-agents@9345a7ad9c49,Perplexity user web crawler bot
+PerplexityBot\/,ai_crawler,crawler-user-agents@9345a7ad9c49,Perplexity AI web crawler for search
+PerplexityUser,ai_crawler,crawler-user-agents@9345a7ad9c49,Perplexity AI web crawler bot
+PetalBot,search_crawler,crawler-user-agents@9345a7ad9c49,Petal search engine web crawler bot
+PhantomJS,automation_tool,crawler-user-agents@9345a7ad9c49,PhantomJS headless browser web crawler
+PhindBot,ai_crawler,crawler-user-agents@9345a7ad9c49,AI-powered developer answer engine crawler
+PhxBot,search_crawler,crawler-user-agents@9345a7ad9c49,Phoenix web crawler for content discovery
+PingAdmin\.Ru\/,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring service bot checking website availability
+PiplBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Pipl web crawler for people search
+Pixalate\.com,advertising,crawler-user-agents@9345a7ad9c49,Pixalate ad fraud detection and brand safety crawler
+PlagAwareBot,monitoring,crawler-user-agents@9345a7ad9c49,Plagiarism detection and content originality checking crawler bot
+PlayStore-Google,search_crawler,crawler-user-agents@9345a7ad9c49,Google Play Store crawler indexing apps and content
+Playwright,automation_tool,crawler-user-agents@9345a7ad9c49,Playwright browser automation web crawler
+Plesk screenshot bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Hosting platform management crawler for website auditing
+PocketCasts\/,feed_reader,crawler-user-agents@9345a7ad9c49,Podcast platform crawler parsing feeds and episodes
+PocketParser,seo_crawler,crawler-user-agents@9345a7ad9c49,Pocket web crawler for content parsing
+PodchaserParser,feed_reader,crawler-user-agents@9345a7ad9c49,Podchaser podcast database crawler
+Podimo,feed_reader,crawler-user-agents@9345a7ad9c49,Podimo podcast streaming platform bot
+Poduptime,monitoring,crawler-user-agents@9345a7ad9c49,Fediverse pod uptime monitoring and availability checker crawler
+Poggio-Citations,ai_crawler,crawler-user-agents@9345a7ad9c49,Poggio's AI sales enablement data collector
+Pomothy-Bot,monitoring,crawler-user-agents@9345a7ad9c49,Web content monitoring and change detection crawler bot
+Potions\/,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce personalization crawler ingesting catalogs
+PressEngineBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Press release aggregation crawler for content syndication
+PriEcoBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content aggregation and analysis
+PricedroneShoppingBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Price comparison crawler aggregating product pricing
+Primalbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Primal web crawler for content discovery
+PrintFriendly\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Print optimization crawler converting pages to printable format
+PrivacyAwareBot,seo_crawler,crawler-user-agents@9345a7ad9c49,PrivacyAware web crawler for privacy analysis
+Pro-Sitemaps\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Sitemap generation crawler discovering and indexing URLs
+ProbelySPDR\/,security_scanner,crawler-user-agents@9345a7ad9c49,Security testing crawler identifying web vulnerabilities
+ProjectShield-UrlCheck,security_scanner,crawler-user-agents@9345a7ad9c49,Google DDoS protection bot validating customer origins
+Protopage\/,feed_reader,crawler-user-agents@9345a7ad9c49,Start page and RSS reader crawler aggregating content
+PulsePoint-Crawler,advertising,crawler-user-agents@9345a7ad9c49,PulsePoint programmatic advertising and ad verification crawler bot
+Pulsepoint ,advertising,crawler-user-agents@9345a7ad9c49,Pulsepoint web crawler for content discovery
+Puppeteer,automation_tool,crawler-user-agents@9345a7ad9c49,Puppeteer browser automation web crawler
+Python-urllib,automation_tool,crawler-user-agents@9345a7ad9c49,Python's built-in URL library for HTTP requests
+Pywikibot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,MediaWiki crawler indexing wiki content for search and analysis
+QualifiedBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Conversational sales platform crawler inventorying site URLs
+Qualys,monitoring,crawler-user-agents@9345a7ad9c49,Qualys security scanning
+Quantcastbot\/,advertising,crawler-user-agents@9345a7ad9c49,Audience analytics crawler for ad measurement and targeting
+Quora-Bot,social_preview,crawler-user-agents@9345a7ad9c49,Quora link preview crawler
+Qwantbot,search_crawler,crawler-user-agents@9345a7ad9c49,Qwant privacy-focused search crawler
+Qwantify,search_crawler,crawler-user-agents@9345a7ad9c49,Qwant search engine web crawler bot
+Qwarrybot,advertising,crawler-user-agents@9345a7ad9c49,Qwarry contextual advertising crawler
+RED\/,monitoring,crawler-user-agents@9345a7ad9c49,HTTP response testing and validation analyzer
+RSSAPI\/,feed_reader,crawler-user-agents@9345a7ad9c49,RSS and Atom feed crawler for content aggregation
+RSS\.Social,feed_reader,crawler-user-agents@9345a7ad9c49,RSS.Social feed automation bot
+RSSingBot,feed_reader,crawler-user-agents@9345a7ad9c49,RSSing RSS reader web crawler bot
+RSiteAuditor,seo_crawler,crawler-user-agents@9345a7ad9c49,DataForSEO on-page audit crawler
+Rackspace Monitoring\/,monitoring,crawler-user-agents@9345a7ad9c49,Cloud infrastructure monitoring bot checking endpoint availability
+Rakuten Image extraction bot,monitoring,crawler-user-agents@9345a7ad9c49,E-commerce product image extraction and indexing crawler bot
+RankActiveLinkBot,seo_crawler,crawler-user-agents@9345a7ad9c49,RankActive web crawler for link analysis
+RankurBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Social media and reputation monitoring crawler collecting data
+RavenCrawler\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO auditing crawler analyzing website optimization signals
+Readable\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Content analysis crawler computing readability and metrics
+Recurly Webhooks\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Billing platform webhook validation and monitoring bot
+Reelevant\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Personalization platform fetching URLs for email and content
+Refindbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Refind web crawler for content discovery
+RegionStuttgartBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Region Stuttgart web crawler bot
+RepoLookoutBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Repository and web content lookup crawler
+ResearchBot,academic,crawler-user-agents@9345a7ad9c49,Academic research data collection and analysis crawler bot
+Retool\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Internal tools platform fetching page metadata and content
+RetrevoPageAnalyzer,seo_crawler,crawler-user-agents@9345a7ad9c49,Retrevo page analyzer web crawler bot
+RetroListeCOM\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Directory and price comparison crawler indexing listings
+ReverseEngineeringBot,security_scanner,crawler-user-agents@9345a7ad9c49,Torus reverse engineering web crawler
+RevvimGort\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO optimization crawler detecting performance issues
+RidderBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Ridder web crawler for content discovery
+Riddler \(http:\/\/riddler\.io,security_scanner,crawler-user-agents@9345a7ad9c49,Internet scanning crawler gathering domain and IP metadata
+Rigor\),monitoring,crawler-user-agents@9345a7ad9c49,Splunk synthetic monitoring for performance checks
+Rivva,seo_crawler,crawler-user-agents@9345a7ad9c49,Rivva blog search web crawler bot
+RobotsChecker\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Website health monitoring and content indexing crawler
+RssReaderBot,feed_reader,crawler-user-agents@9345a7ad9c49,RSS feed aggregator indexing content updates
+RuxitSynthetic,monitoring,crawler-user-agents@9345a7ad9c49,Dynatrace Ruxit synthetic web crawler
+RyteBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Ryte web crawler for site analysis
+SBIntuitionsBot\/,ai_crawler,crawler-user-agents@9345a7ad9c49,SB Intuitions web crawler bot
+SBL-BOT,security_scanner,crawler-user-agents@9345a7ad9c49,Bot of SoftByte BlackWidow
+SEBot-WA,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO audit crawler performing technical analysis
+SENTINEL-LinkCheck,monitoring,crawler-user-agents@9345a7ad9c49,Sentinel link validation and broken link detection crawler
+SEOkicks,seo_crawler,crawler-user-agents@9345a7ad9c49,SEOkicks web crawler for SEO analysis
+SEOlizer,seo_crawler,crawler-user-agents@9345a7ad9c49,SEOlizer web crawler for SEO analysis
+SERPtimizerBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analysis crawler gathering data for optimization
+SERankingBacklinksBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SEranking backlinks web crawler bot
+SFDC-Callout\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Salesforce platform crawler fetching web resources
+SMTnetPMBot,search_crawler,crawler-user-agents@9345a7ad9c49,SMTnet electronics manufacturing search crawler
+SQWatcher,monitoring,crawler-user-agents@9345a7ad9c49,Software quality compliance monitoring and testing crawler bot
+SSL Labs \(https:\/\/www\.ssllabs\.com,security_scanner,crawler-user-agents@9345a7ad9c49,TLS certificate and encryption configuration analyzer
+SSL Labs$,security_scanner,crawler-user-agents@9345a7ad9c49,Qualys SSL Labs scanner testing TLS configuration and certificate grades
+SSSSBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content indexing and analysis
+SWIMGBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SWIMG web crawler for image discovery
+S[eE][mM]rushBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Semrush SEO tool web crawler for analysis
+SafeDNSBot,security_scanner,crawler-user-agents@9345a7ad9c49,SafeDNS web crawler for security analysis
+SafeSearch microdata crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Avira SafeSearch web crawler for safety
+Salesforce\.com,automation_tool,crawler-user-agents@9345a7ad9c49,Salesforce HTTP callout user agent
+SandobaCrawler\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for data aggregation and indexing
+Sansec Security Monitor\/,security_scanner,crawler-user-agents@9345a7ad9c49,E-commerce malware detection scanner for skimmers
+Schema-Markup-Validator,seo_crawler,crawler-user-agents@9345a7ad9c49,Structured data validation crawler for schema compliance
+Scoop\.it\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Content curation platform crawler discovering relevant content
+Scope3,advertising,crawler-user-agents@9345a7ad9c49,Scope3 content classification and brand safety
+ScourRSSBot\/,feed_reader,crawler-user-agents@9345a7ad9c49,RSS feed discovery and monitoring crawler bot
+ScoutJet,seo_crawler,crawler-user-agents@9345a7ad9c49,ScoutJet web crawler for content discovery
+ScrapeheroBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web scraping service crawler for data extraction
+Scrapy,automation_tool,crawler-user-agents@9345a7ad9c49,Scrapy Python web crawler framework
+Screaming Frog SEO Spider,seo_crawler,crawler-user-agents@9345a7ad9c49,Screaming Frog SEO tool web crawler
+Scrubby,search_crawler,crawler-user-agents@9345a7ad9c49,Scrub the Web business directory crawler
+Scrunchbot,monitoring,crawler-user-agents@9345a7ad9c49,Scrunch AI brand visibility tracker
+SearchAtlas,seo_crawler,crawler-user-agents@9345a7ad9c49,SearchAtlas SEO web crawler for analysis
+SearchExpress,search_crawler,crawler-user-agents@9345a7ad9c49,Search engine crawler gathering website information
+Searcherweb,search_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for search engines
+Searcherxweb,search_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for indexing and data collection
+SecurityHeaders,security_scanner,crawler-user-agents@9345a7ad9c49,HTTP security headers analyzer and evaluator
+Seekport,search_crawler,crawler-user-agents@9345a7ad9c49,Seekport web crawler for content discovery
+Selenium,automation_tool,crawler-user-agents@9345a7ad9c49,Selenium browser automation web crawler
+SemanticScholarBot,academic,crawler-user-agents@9345a7ad9c49,Semantic Scholar web crawler for academic content
+SendGrid Event API,seo_crawler,crawler-user-agents@9345a7ad9c49,Email service crawler scanning links in messages
+SentiBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SentiBot web crawler for sentiment analysis
+SentryUptimeBot\/,monitoring,crawler-user-agents@9345a7ad9c49,Application monitoring bot verifying URL availability
+SenutoBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Senuto web crawler for SEO analysis
+SeoSiteCheckup,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO site analysis crawler evaluating search performance
+SeobilityBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Seobility web crawler for SEO analysis
+SeoulBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for SEO and competitive analysis
+SequelWP,monitoring,crawler-user-agents@9345a7ad9c49,SequelWP hosting uptime monitoring
+SerendeputyBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Serendeputy web crawler for content discovery
+Server Density Service Monitoring,monitoring,crawler-user-agents@9345a7ad9c49,Cloud monitoring bot checking uptime and performance
+ServerDensity,monitoring,crawler-user-agents@9345a7ad9c49,Server Density infrastructure monitoring
+ServerHunterSpider\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Hosting and VPS price comparison crawler
+SeznamBot,search_crawler,crawler-user-agents@9345a7ad9c49,Seznam search engine web crawler bot
+SeznamHomepageCrawler\/,search_crawler,crawler-user-agents@9345a7ad9c49,Czech search engine crawler indexing web pages
+ShapBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Parallel's AI agent web context provider
+Shopify-Captain-Hook,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce platform crawler for webhook verification
+ShortPixel,feed_reader,crawler-user-agents@9345a7ad9c49,ShortPixel image optimization service
+Shortwave Image Fetcher,social_preview,crawler-user-agents@9345a7ad9c49,Email client image proxy and link preview fetcher
+Sidetrade indexer bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Financial analytics crawler gathering business data
+Silktide,monitoring,crawler-user-agents@9345a7ad9c49,Silktide website quality monitoring
+SimpleCrawler,automation_tool,crawler-user-agents@9345a7ad9c49,Simple Crawler web crawler framework
+SimplePie,feed_reader,crawler-user-agents@9345a7ad9c49,SimplePie PHP feed parser web crawler
+SimpleScraper,seo_crawler,crawler-user-agents@9345a7ad9c49,Simple Scraper web scraping tool
+SinceraSyntheticUser\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web data aggregation and analytics crawler
+Sindup,monitoring,crawler-user-agents@9345a7ad9c49,Sindup competitive intelligence and market monitoring crawler bot
+SirdataBot,advertising,crawler-user-agents@9345a7ad9c49,Contextual advertising and semantic content analysis crawler bot
+Site24x7,monitoring,crawler-user-agents@9345a7ad9c49,Cloud monitoring service checking website health
+SiteAuditBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Website SEO auditing and link checking crawler
+SiteCheck-sitecrawl,seo_crawler,crawler-user-agents@9345a7ad9c49,Digital governance platform auditing web quality
+SiteCheckerBotCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,SiteChecker web crawler for analysis
+SiteLock,monitoring,crawler-user-agents@9345a7ad9c49,SiteLock security monitoring
+SiteScoreBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Website performance and security evaluation crawler
+SiteSearch360\/,search_crawler,crawler-user-agents@9345a7ad9c49,On-site search platform crawler building indices
+SiteSucker,archiver,crawler-user-agents@9345a7ad9c49,macOS website downloading and offline browsing tool crawler
+SiteUptime\.com,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring service checking website availability
+Siteimprove\.com,monitoring,crawler-user-agents@9345a7ad9c49,Siteimprove web crawler for site analysis
+SitesOverPagesBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Website structure analysis and sitemap generation crawler bot
+Skroutz ImageBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Greek price comparison platform crawler fetching product images
+SkroutzBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Price comparison platform crawler aggregating products
+SkypeUriPreview,social_preview,crawler-user-agents@9345a7ad9c49,Skype's URI preview web crawler bot
+SkyworkSpider,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content indexing and analysis
+SlaccaleBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Slaccale web crawler bot
+Slack-ImgProxy,social_preview,crawler-user-agents@9345a7ad9c49,Slack's image proxy web crawler bot
+Slackbot,social_preview,crawler-user-agents@9345a7ad9c49,Slack's link expansion web crawler bot
+SleepBot,monitoring,crawler-user-agents@9345a7ad9c49,Web content monitoring and tracking service crawler bot
+SlickBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Content recommendation and search indexing crawler
+Slurp,search_crawler,crawler-user-agents@9345a7ad9c49,Yahoo's web crawling bot for Yahoo search indexing
+SmarshBot,archiver,crawler-user-agents@9345a7ad9c49,Smarsh's compliance archiving bot
+SmartologyBot\/,advertising,crawler-user-agents@9345a7ad9c49,Contextual advertising crawler for brand safety
+Snacktory,seo_crawler,crawler-user-agents@9345a7ad9c49,Snacktory web crawler for content extraction
+Snap URL Preview Service,social_preview,crawler-user-agents@9345a7ad9c49,Snapchat URL preview web crawler
+SnapURLPreview\/,social_preview,crawler-user-agents@9345a7ad9c49,Social platform URL preview and metadata fetcher
+SnapchatAds\/,advertising,crawler-user-agents@9345a7ad9c49,Advertising platform crawler for ad verification
+Snipcart\/,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce shopping cart crawler validating products
+SocialRankIOBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SocialRank web crawler for social analysis
+Software-Security-Research,security_scanner,crawler-user-agents@9345a7ad9c49,Ruhr University CDN security research crawler
+Sogou,search_crawler,crawler-user-agents@9345a7ad9c49,Sogou search engine web crawler bot
+Sonic,seo_crawler,crawler-user-agents@9345a7ad9c49,Sonic web crawler for ranking analysis
+Sora POS\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Point-of-sale system crawler for transaction data
+Sosospider,search_crawler,crawler-user-agents@9345a7ad9c49,Chinese search engine web indexing and crawling bot
+SottopopNone,feed_reader,crawler-user-agents@9345a7ad9c49,UpContent content curation crawler
+SparkPost,seo_crawler,crawler-user-agents@9345a7ad9c49,Email service crawler validating links and tracking
+SparkShipping,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce data crawler normalizing product catalogs
+Spawning-AI,ai_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for AI models
+Specificfeeds,feed_reader,crawler-user-agents@9345a7ad9c49,Content aggregation crawler for personalized feeds
+Spectate\/,monitoring,crawler-user-agents@9345a7ad9c49,Content monitoring and uptime checking crawler
+SpiderLing,academic,crawler-user-agents@9345a7ad9c49,Linguistic research crawler building language corpora
+Spider[\s\S]*spider\.com,ai_crawler,crawler-user-agents@9345a7ad9c49,AI project web data crawler
+Splunk,monitoring,crawler-user-agents@9345a7ad9c49,Splunk monitoring and analytics
+SpringserveBot,advertising,crawler-user-agents@9345a7ad9c49,Springserve ad server and video advertising platform crawler
+Stape\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Server-side tagging platform tag verification bot
+StartpagePrivateImageProxy\/,search_crawler,crawler-user-agents@9345a7ad9c49,Privacy-focused search engine crawler indexing pages
+Statabot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Analytics and market intelligence web crawler
+StatistikAustria\/,seo_crawler,crawler-user-agents@9345a7ad9c49,National statistics office crawler for price data
+StatsDroneBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Affiliate marketing link validation and monitoring bot
+StatusCake,monitoring,crawler-user-agents@9345a7ad9c49,StatusCake uptime monitoring web crawler
+StatusNestBacklinkSpider,seo_crawler,crawler-user-agents@9345a7ad9c49,StatusNest backlink tracking crawler
+Storebot-Google,search_crawler,crawler-user-agents@9345a7ad9c49,Google's Storebot for crawling product and e-commerce pages
+StorygizeBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Storygize web crawler for content analysis
+StractBot,search_crawler,crawler-user-agents@9345a7ad9c49,Stract search engine web crawler bot
+Streamline3Bot\/,monitoring,crawler-user-agents@9345a7ad9c49,Streamline3 web crawler for monitoring
+Stripe\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Payment processor crawler verifying merchant sites and collecting metadata signals
+Sucuri,security_scanner,crawler-user-agents@9345a7ad9c49,Security scanner identifying malware blacklist status and checking plugin vulnerability compliance
+SummalyBot,social_preview,crawler-user-agents@9345a7ad9c49,Summaly web crawler for content summarization
+Supabase Paired Crawler,social_preview,crawler-user-agents@9345a7ad9c49,Supabase database platform link preview and metadata crawler
+Superfeedr,feed_reader,crawler-user-agents@9345a7ad9c49,Superfeedr feed reader web crawler bot
+SurdotlyBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Surly web crawler for link shortening
+SurveyBot,seo_crawler,crawler-user-agents@9345a7ad9c49,DomainTools survey web crawler bot
+SustainabilityCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,ESG and sustainability rating data collection
+Svix-Webhooks\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Webhooks infrastructure provider crawler cataloging vendor sites and delivery practices
+Swiftbot,search_crawler,crawler-user-agents@9345a7ad9c49,Swiftype site search engine indexing and crawling bot
+SwifteqLinkChecker,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler verifying link availability status redirects and basic page content validation
+Swisscows,search_crawler,crawler-user-agents@9345a7ad9c49,Privacy-focused search engine crawler indexing web pages without storing personal data
+Synapse,social_preview,crawler-user-agents@9345a7ad9c49,Matrix Synapse web crawler bot
+SynthesiBot,monitoring,crawler-user-agents@9345a7ad9c49,Content synthesis and data aggregation crawler bot
+Sysomos,seo_crawler,crawler-user-agents@9345a7ad9c49,Sysomos web crawler for social media analysis
+TLS tester,security_scanner,crawler-user-agents@9345a7ad9c49,SSL/TLS security testing and vulnerability scanning crawler bot
+TSM-turingos,ai_crawler,crawler-user-agents@9345a7ad9c49,TuringOS AI-powered content analysis and monitoring crawler
+TSMbot,monitoring,crawler-user-agents@9345a7ad9c49,TSM brand monitoring and content tracking crawler bot
+TTD-Content,advertising,crawler-user-agents@9345a7ad9c49,Ad network content crawler analyzing pages for contextual advertising and brand safety
+Taboolabot,advertising,crawler-user-agents@9345a7ad9c49,Taboola web crawler for content discovery
+TactiScout\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Data collection crawler gathering competitive intelligence and monitoring market trends analysis
+TangibleeBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Tangiblee web crawler for visual search
+TaraGroup Intelligent Bot,ai_crawler,crawler-user-agents@9345a7ad9c49,TaraGroup AI-powered web intelligence and analysis crawler
+TavilyBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Tavily's real-time AI agent data crawler
+TelegramBot,social_preview,crawler-user-agents@9345a7ad9c49,Telegram web crawler for link previews
+Teoma,search_crawler,crawler-user-agents@9345a7ad9c49,Ask Jeeves Teoma search engine web crawler
+Termly,monitoring,crawler-user-agents@9345a7ad9c49,Privacy policy and compliance scanning service crawler bot
+TerraCotta,ai_crawler,crawler-user-agents@9345a7ad9c49,Ceramic Network decentralized data indexing and crawling bot
+Test Certificate Info,security_scanner,crawler-user-agents@9345a7ad9c49,SSL TLS certificate analyzer assessing website security encryption and expiration status
+TestLocally\/,automation_tool,crawler-user-agents@9345a7ad9c49,Development testing bot simulating user interactions and verifying website functionality behavior
+TestURI,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler testing performance security compliance and assessing website configuration
+Testcrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Testing crawler evaluating website performance security vulnerabilities and SEO optimization
+TextRazor,seo_crawler,crawler-user-agents@9345a7ad9c49,NLP service crawler collecting web data for text analysis entity extraction processing
+The Knowledge AI,ai_crawler,crawler-user-agents@9345a7ad9c49,AI data collection crawler indexing content and enhancing machine learning models
+TheInternetSearchx,search_crawler,crawler-user-agents@9345a7ad9c49,Search engine crawler indexing websites and improving search result database coverage
+Thinkbot,ai_crawler,crawler-user-agents@9345a7ad9c49,Experimental AI thinking and reasoning web crawler bot
+Thinklab,academic,crawler-user-agents@9345a7ad9c49,Thinklab web crawler for research
+ThousandEyes,monitoring,crawler-user-agents@9345a7ad9c49,ThousandEyes network monitoring
+TikTokSpider,ai_crawler,crawler-user-agents@9345a7ad9c49,TikTok web crawler for content discovery
+Timpibot,search_crawler,crawler-user-agents@9345a7ad9c49,Timpi web crawler for content discovery
+TinEye,seo_crawler,crawler-user-agents@9345a7ad9c49,TinEye reverse image search web crawler
+Tiny Tiny RSS,feed_reader,crawler-user-agents@9345a7ad9c49,Tiny Tiny RSS reader web crawler bot
+TombaPublicWebCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Tomba web crawler for email discovery
+ToutiaoSpider,search_crawler,crawler-user-agents@9345a7ad9c49,Toutiao news platform web crawler bot
+Traackr\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Traackr influencer marketing web crawler
+Trae\/,automation_tool,crawler-user-agents@9345a7ad9c49,ByteDance's AI coding agent
+Trellis-Services,seo_crawler,crawler-user-agents@9345a7ad9c49,Content scraper and fetching service crawler for programmatic large-scale web page retrieval
+TrendsmapResolver,seo_crawler,crawler-user-agents@9345a7ad9c49,Trendsmap web crawler for trend analysis
+Trove,archiver,crawler-user-agents@9345a7ad9c49,Trove web crawler for content discovery
+Trustly\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Open banking crawler automating user sessions for account data and payment initiation
+Tumblr\/,social_preview,crawler-user-agents@9345a7ad9c49,Tumblr social blogging platform crawler fetching link previews
+Turnitin,academic,crawler-user-agents@9345a7ad9c49,Turnitin plagiarism detection web crawler
+Tweakers,seo_crawler,crawler-user-agents@9345a7ad9c49,Dutch technology website crawler aggregating product reviews and IT content data
+TweetmemeBot,social_preview,crawler-user-agents@9345a7ad9c49,TweetMeme web crawler for social content
+TwilioProxy\/,social_preview,crawler-user-agents@9345a7ad9c49,Communication platform fetcher retrieving media links and previews for messaging services
+TwinAgent,automation_tool,crawler-user-agents@9345a7ad9c49,Twin's automated worker for workflow execution
+TwinWaveScanner,security_scanner,crawler-user-agents@9345a7ad9c49,Security threat analysis and phishing detection bot
+Twingly,seo_crawler,crawler-user-agents@9345a7ad9c49,Twingly blog search web crawler bot
+Twitterbot,social_preview,crawler-user-agents@9345a7ad9c49,Twitter web crawler for link previews
+Twurly,seo_crawler,crawler-user-agents@9345a7ad9c49,Twurly Ruby web crawler framework
+UASlinkChecker\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Link checking crawler validating URL availability and HTTP status across websites
+UGAResearchAgent,academic,crawler-user-agents@9345a7ad9c49,University of Georgia academic network research crawler bot
+URLSuMaBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler systematically indexing and collecting data from websites for analysis
+UT-Dorkbot,security_scanner,crawler-user-agents@9345a7ad9c49,University of Texas security web crawler
+Unshorten\.It\!,security_scanner,crawler-user-agents@9345a7ad9c49,URL expansion crawler revealing shortened link destinations for cybersecurity threat intelligence
+Upflow,seo_crawler,crawler-user-agents@9345a7ad9c49,Upflow web crawler for content analysis
+Uptime-Kuma,monitoring,crawler-user-agents@9345a7ad9c49,Uptime Kuma web crawler for monitoring
+UptimeBot\/,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring service verifying website availability and response latency
+UptimeRobot,monitoring,crawler-user-agents@9345a7ad9c49,UptimeRobot website monitoring web crawler
+UptimeStatistics,monitoring,crawler-user-agents@9345a7ad9c49,UptimeStatistics monitoring service
+Uptime\/,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring bot verifying site availability and transaction health globally
+Uptimebot\.org,monitoring,crawler-user-agents@9345a7ad9c49,Uptimebot website monitoring web crawler
+Uptimia,monitoring,crawler-user-agents@9345a7ad9c49,Platform crawler monitoring website performance uptime and simulating user interactions
+UrlBeeBot,security_scanner,crawler-user-agents@9345a7ad9c49,URL analysis and threat detection security crawler bot
+UrlSuMa\.de crawler,monitoring,crawler-user-agents@9345a7ad9c49,URL summarization and content preview generation crawler bot
+Urlcheckr\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Dead link checker scanner identifying broken hyperlinks and inaccessible web pages
+UsineNouvelleCrawler,search_crawler,crawler-user-agents@9345a7ad9c49,Usine Nouvelle news site web crawler
+VKRobot,social_preview,crawler-user-agents@9345a7ad9c49,VK social network web crawler bot
+Vagabondo\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Legacy Dutch web crawler indexing mobile pages for regional search and content
+Validator\.nu,monitoring,crawler-user-agents@9345a7ad9c49,Validator.nu HTML validator web crawler
+Valve\/Steam,social_preview,crawler-user-agents@9345a7ad9c49,Steam web crawler for link previews
+VaultPress,security_scanner,crawler-user-agents@9345a7ad9c49,WordPress backup and security scanner performing malware scanning and integrity
+VelenPublicWebCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Velen web crawler for content discovery
+Veoozbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Veooz web crawler for marketing analysis
+Vercelbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Vercel web crawler for deployment
+Verispider,security_scanner,crawler-user-agents@9345a7ad9c49,Verispider spam and security scanner
+Verity\/,advertising,crawler-user-agents@9345a7ad9c49,Contextual advertising crawler analyzing page content for brand safety
+Viber,social_preview,crawler-user-agents@9345a7ad9c49,Viber messaging web crawler bot
+Vigil\/,monitoring,crawler-user-agents@9345a7ad9c49,Vigil web crawler for monitoring
+VoluumDSP-content-bot,advertising,crawler-user-agents@9345a7ad9c49,Voluum DSP web crawler for advertising
+VsuSearchSpider\/,search_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing and gathering information from websites for search purposes
+W3C-checklink,monitoring,crawler-user-agents@9345a7ad9c49,W3C checklink web crawler for link validation
+W3C-mobileOK,monitoring,crawler-user-agents@9345a7ad9c49,W3C mobile OK web crawler bot
+W3C_CSS_Validator,monitoring,crawler-user-agents@9345a7ad9c49,W3C CSS validator web crawler bot
+W3C_I18n-Checker,monitoring,crawler-user-agents@9345a7ad9c49,W3C internationalization web crawler
+W3C_Unicorn,monitoring,crawler-user-agents@9345a7ad9c49,W3C Unicorn validator web crawler bot
+W3C_Validator,monitoring,crawler-user-agents@9345a7ad9c49,W3C HTML validator web crawler bot
+WARDBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web automation crawler extracting website data for reconnaissance and analysis
+WEDOS OnLine,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring service checking availability DNS and SSL certificate status
+WISEbot,monitoring,crawler-user-agents@9345a7ad9c49,Cision media monitoring and PR analytics crawler bot
+WJHRO\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Payment platform crawler testing integrations and verifying checkout flow functionality
+WOVN Crawler,monitoring,crawler-user-agents@9345a7ad9c49,Website translation and localization service crawler bot
+WP Time Capsule,seo_crawler,crawler-user-agents@9345a7ad9c49,WordPress backup service crawler detecting changes and performing incremental backups
+WPMU DEV Broken Link Checker,seo_crawler,crawler-user-agents@9345a7ad9c49,Link auditor identifying dead links bad anchors and HTTP errors for maintenance
+WPMU DEV Hub,monitoring,crawler-user-agents@9345a7ad9c49,WPMU DEV WordPress management bot
+WPMUDEV Uptime Monitor,monitoring,crawler-user-agents@9345a7ad9c49,HTTP probe checking website availability status codes and SSL certificate health
+WPScan,security_scanner,crawler-user-agents@9345a7ad9c49,WPScan WordPress security scanner bot
+WPSec\/,security_scanner,crawler-user-agents@9345a7ad9c49,WordPress security scanner identifying vulnerabilities outdated plugins and misconfigurations
+WPUmbrella,monitoring,crawler-user-agents@9345a7ad9c49,WordPress monitor scanner assessing availability and tracking plugin updates
+WRTNBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for data aggregation and market analysis purposes
+WSM\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web scraper crawler for content collection and data aggregation purposes
+WTotem,security_scanner,crawler-user-agents@9345a7ad9c49,WTotem malware detection scanner
+WadooBot,search_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and search engine crawler bot
+WanscannerBot,security_scanner,crawler-user-agents@9345a7ad9c49,Network security scanning and vulnerability detection crawler bot
+WatchForBot,monitoring,crawler-user-agents@9345a7ad9c49,"WatchFor uptime monitoring agent — scheduled availability, SSL, DNS and performance checks of customer-configured endpoints"
+WatchMouse,monitoring,crawler-user-agents@9345a7ad9c49,Web performance monitoring tool assessing website availability from global testing locations
+Watchbot monitoring robot,monitoring,crawler-user-agents@9345a7ad9c49,Watchbot SSL and uptime monitoring
+Watchful,monitoring,crawler-user-agents@9345a7ad9c49,Watchful website monitoring
+Wayback,archiver,crawler-user-agents@9345a7ad9c49,Internet Archive Wayback web crawler bot
+WeSEE:Search,search_crawler,crawler-user-agents@9345a7ad9c49,WeSEE search engine web crawler bot
+Web Measure\/,academic,crawler-user-agents@9345a7ad9c49,Web analytics crawler gathering data for performance optimization and competitive analysis
+Web Screen Service By hyperhost,seo_crawler,crawler-user-agents@9345a7ad9c49,Web screenshot service capturing page visuals for hosting platform
+WebCEO Online\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO platform crawler analyzing keywords and backlinks
+WebCapture,archiver,crawler-user-agents@9345a7ad9c49,Website screenshot and page capture archiving tool crawler
+WebCopier,archiver,crawler-user-agents@9345a7ad9c49,Website copying and offline browsing tool crawler bot
+WebDataStats,seo_crawler,crawler-user-agents@9345a7ad9c49,WebDataStats web crawler for data analysis
+WebSniffer\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web analyzer retrieving HTTP headers and HTML content for diagnostic purposes
+WebZIP,archiver,crawler-user-agents@9345a7ad9c49,Website downloading and offline browsing tool crawler bot
+Webflow,seo_crawler,crawler-user-agents@9345a7ad9c49,Platform crawler rendering and indexing Webflow hosted websites for optimization
+Website-info\.net-Robot,seo_crawler,crawler-user-agents@9345a7ad9c49,Website information and analytics data collection crawler bot
+WebsiteOps,monitoring,crawler-user-agents@9345a7ad9c49,Web crawling client monitoring uptime changes and analyzing website data
+WebwikiBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Directory crawler collecting website metadata and content for comprehensive indexing
+WellKnownBot,seo_crawler,crawler-user-agents@9345a7ad9c49,WellKnown web crawler for discovery
+WepchSearchEngine,search_crawler,crawler-user-agents@9345a7ad9c49,Wepch search engine development crawler
+WhatWeb\/,security_scanner,crawler-user-agents@9345a7ad9c49,Web technology scanner identifying frameworks servers and CMS configurations
+WhatsApp,social_preview,crawler-user-agents@9345a7ad9c49,WhatsApp's web crawler for link previews
+WhatsMyIP\.org,seo_crawler,crawler-user-agents@9345a7ad9c49,IP address analysis tool gathering network configuration and geolocation data
+Wheregoes\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,URL redirect analyzer mapping redirect chains and HTTP forwarding paths
+WikiDo,search_crawler,crawler-user-agents@9345a7ad9c49,Wiki content aggregation and search engine crawler bot
+WireReaderBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for data aggregation and competitive analysis
+WordCountBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Content analysis tool computing word counts keyword density and readability
+WordPress\/,seo_crawler,crawler-user-agents@9345a7ad9c49,WordPress web crawler for site discovery
+Wordup-1,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing and analyzing content for search and data analytics
+WordupInfoSearch,search_crawler,crawler-user-agents@9345a7ad9c49,Wordup info search web crawler bot
+WorldBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Behavioral analytics and audience segmentation crawler
+WormlyBot,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring crawler testing site APIs and measuring uptime performance
+WovnCrawler\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Localization platform crawler extracting content and generating translated versions
+XML Sitemaps Generator,seo_crawler,crawler-user-agents@9345a7ad9c49,XML sitemap generation and website structure mapping crawler
+XY-Archive-Compliance,archiver,crawler-user-agents@9345a7ad9c49,Archiving compliance crawler collecting content for legal retention and eDiscovery
+Xenu Link Sleuth,seo_crawler,crawler-user-agents@9345a7ad9c49,Xenu link checker web crawler tool
+Xing Bot,social_preview,crawler-user-agents@9345a7ad9c49,Xing professional network link preview and content crawler
+XoviOnpageCrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,XOVI SEO suite on-page crawler
+Y!J,search_crawler,crawler-user-agents@9345a7ad9c49,Yahoo Japan search engine web crawler bot
+YLT Chrome,monitoring,crawler-user-agents@9345a7ad9c49,Performance analyzer evaluating front-end quality and optimization recommendations
+YaK\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Linkfluence YaK web crawler bot
+Yahoo Ad monitoring,advertising,crawler-user-agents@9345a7ad9c49,Ad ecosystem crawler auditing quality safety and policy compliance across inventory
+Yahoo Link Preview,social_preview,crawler-user-agents@9345a7ad9c49,Yahoo link preview web crawler bot
+YahooCacheSystem,seo_crawler,crawler-user-agents@9345a7ad9c49,Content fetcher crawler caching web pages and thumbnails for Yahoo properties
+YahooMailProxy,social_preview,crawler-user-agents@9345a7ad9c49,Email proxy crawler fetching URLs and resources for security scanning and rendering
+YandexRenderResourcesBot\/,search_crawler,crawler-user-agents@9345a7ad9c49,Yandex render resources web crawler
+YandoriRSSBot,feed_reader,crawler-user-agents@9345a7ad9c49,RSS feed aggregation and content syndication crawler bot
+Yellowbrandprotectionbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Yellow brand protection web crawler
+Yeti,search_crawler,crawler-user-agents@9345a7ad9c49,Naver Yeti search engine web crawler bot
+YextBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Yext web crawler for site crawling
+YisouSpider,search_crawler,crawler-user-agents@9345a7ad9c49,Yisou search engine web crawler bot
+YokoyGroupAG\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Expense management platform webhook client delivering events and verifying endpoints
+YouBot,search_crawler,crawler-user-agents@9345a7ad9c49,You.com search engine web crawler bot
+YoudaoBot,search_crawler,crawler-user-agents@9345a7ad9c49,Chinese search engine and translation service crawler bot
+Yuuperbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for data aggregation market analysis and intelligence
+Zabbix,monitoring,crawler-user-agents@9345a7ad9c49,Zabbix web crawler for monitoring
+ZanistaBot,ai_crawler,crawler-user-agents@9345a7ad9c49,Zanista's AI search crawler
+Zapier,seo_crawler,crawler-user-agents@9345a7ad9c49,Automation client fetching web pages metadata and content for workflow integration
+Zealbot,search_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and search engine crawler bot
+Zendesk Webhook,seo_crawler,crawler-user-agents@9345a7ad9c49,Support platform service validating webhook endpoints and fetching URL metadata
+ZmEu,security_scanner,crawler-user-agents@9345a7ad9c49,ZmEu vulnerability scanner web crawler
+Zombiebot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler designed to index content for SEO analysis and competitive intelligence
+ZoomBot,seo_crawler,crawler-user-agents@9345a7ad9c49,SEOZoom web crawler for SEO analysis
+ZoomInfo-,search_crawler,crawler-user-agents@9345a7ad9c49,ZoomInfo business intelligence search crawler
+ZoominfoBot,seo_crawler,crawler-user-agents@9345a7ad9c49,ZoomInfo web crawler for business intelligence
+ZoteroTranslationServer\/WMF,academic,crawler-user-agents@9345a7ad9c49,Citation server extracting metadata from URLs for Wikipedia reference generation
+ZumBot,search_crawler,crawler-user-agents@9345a7ad9c49,Zum search engine web crawler bot
+ZuperlistBot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Zuperlist web crawler for content discovery
+ZyBorg,search_crawler,crawler-user-agents@9345a7ad9c49,WISEnut search engine web indexing and crawling bot
+[Cc]urebot,monitoring,crawler-user-agents@9345a7ad9c49,Cure web crawler for content discovery
+[aA]cunetix,security_scanner,crawler-user-agents@9345a7ad9c49,Acunetix web vulnerability scanner bot
+[cC]laude[bB]ot,ai_crawler,crawler-user-agents@9345a7ad9c49,Anthropic Claude web crawler bot
+[cC]ludo,monitoring,crawler-user-agents@9345a7ad9c49,Cludo site search monitoring
+[dD]ir[Bb]uster,security_scanner,crawler-user-agents@9345a7ad9c49,DirBuster directory scanner web crawler
+[mM]echanize,automation_tool,crawler-user-agents@9345a7ad9c49,Mechanize Ruby web crawler library
+[pP]ingdom,monitoring,crawler-user-agents@9345a7ad9c49,Pingdom website monitoring web crawler
+[wW]get,automation_tool,crawler-user-agents@9345a7ad9c49,GNU Wget command-line tool for downloading web content
+^Apache-HttpClient,automation_tool,crawler-user-agents@9345a7ad9c49,Apache HTTP Client Java library for requests
+^ArenaUnfurlBot,social_preview,crawler-user-agents@9345a7ad9c49,Arena.ai link preview generator
+^BW\/,seo_crawler,crawler-user-agents@9345a7ad9c49,BuiltWith web crawler for technology detection
+^CrunchBot,seo_crawler,crawler-user-agents@9345a7ad9c49,LeadCrunch web crawler for lead generation
+^HTTPie\/,automation_tool,crawler-user-agents@9345a7ad9c49,HTTPie command-line HTTP client tool
+^LCC ,academic,crawler-user-agents@9345a7ad9c49,Leipzig Corpora Collection web crawler
+^PHP-Curl-Class,automation_tool,crawler-user-agents@9345a7ad9c49,PHP Curl Class HTTP client library
+^Seekbot,search_crawler,crawler-user-agents@9345a7ad9c49,Seekbot search engine web crawler for indexing
+^Silk\/,seo_crawler,crawler-user-agents@9345a7ad9c49,DMOZ directory crawler indexing web content
+^curl,automation_tool,crawler-user-agents@9345a7ad9c49,cURL command-line tool for HTTP requests
+^dcrawl,seo_crawler,crawler-user-agents@9345a7ad9c49,dcrawl web crawler framework
+abuse\.xmco\.fr,security_scanner,crawler-user-agents@9345a7ad9c49,Cybersecurity crawler scanning websites for vulnerabilities and threat analysis signals
+acapbot,seo_crawler,crawler-user-agents@9345a7ad9c49,ACAP web crawler for content analysis
+acoonbot,search_crawler,crawler-user-agents@9345a7ad9c49,Acoon web crawler for content discovery
+adbeat\.com,advertising,crawler-user-agents@9345a7ad9c49,Competitive intelligence bot for digital ad tracking
+adbeat_bot,advertising,crawler-user-agents@9345a7ad9c49,AdBeat web crawler for advertising analysis
+adscanner,advertising,crawler-user-agents@9345a7ad9c49,AdScanner web crawler for ad analysis
+advanced_crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Sophisticated crawler with dynamic content rendering
+aiHitBot,search_crawler,crawler-user-agents@9345a7ad9c49,AiHit web crawler for data collection
+aiohttp,automation_tool,crawler-user-agents@9345a7ad9c49,Asynchronous HTTP client library for Python
+air\.ai\/scanning,security_scanner,crawler-user-agents@9345a7ad9c49,Air.ai web crawler for scanning
+alexa site audit,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for SEO data aggregation and analysis
+alienfarm,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for data aggregation and intelligence
+allOrigins,seo_crawler,crawler-user-agents@9345a7ad9c49,Web scraping proxy tool bypassing CORS restrictions
+anthropic-ai,ai_crawler,crawler-user-agents@9345a7ad9c49,Anthropic AI web crawler bot
+antibot,security_scanner,crawler-user-agents@9345a7ad9c49,Antibot web crawler for content discovery
+arabot,search_crawler,crawler-user-agents@9345a7ad9c49,Arabot web crawler for content discovery
+archive\.org_bot,archiver,crawler-user-agents@9345a7ad9c49,Archive.org web crawler for preservation
+artemis web reader,feed_reader,crawler-user-agents@9345a7ad9c49,Artemis personal web reader
+asnriskscorer,security_scanner,crawler-user-agents@9345a7ad9c49,ASN Risk Scorer web crawler bot
+atlassian-bot,ai_crawler,crawler-user-agents@9345a7ad9c49,Atlassian Rovo's AI search crawler
+awesomecrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Awesome web crawler for content discovery
+axios,automation_tool,crawler-user-agents@9345a7ad9c49,Axios HTTP client library for requests
+backlinkcrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Backlink Crawler web crawler for analysis
+betaBot,seo_crawler,crawler-user-agents@9345a7ad9c49,BetaBot web crawler for testing
+bidswitchbot,advertising,crawler-user-agents@9345a7ad9c49,BidSwitch web crawler for advertising
+bigsur\.ai,ai_crawler,crawler-user-agents@9345a7ad9c49,Big Sur AI's web agent crawler
+bingbot,search_crawler,crawler-user-agents@9345a7ad9c49,Microsoft's web crawling bot for Bing search indexing
+binlar,security_scanner,crawler-user-agents@9345a7ad9c49,Binlar web crawler for content discovery
+bitdiscovery,security_scanner,crawler-user-agents@9345a7ad9c49,Security vulnerability scanner identifying weaknesses and compliance issues in web infrastructure
+bitlybot,seo_crawler,crawler-user-agents@9345a7ad9c49,Bit.ly web crawler for link tracking
+bl\.uk_lddc_bot,archiver,crawler-user-agents@9345a7ad9c49,British Library's legal deposit archiver
+bl\.uk_ldfc_bot,archiver,crawler-user-agents@9345a7ad9c49,British Library web archiver for content preservation
+blekkobot,search_crawler,crawler-user-agents@9345a7ad9c49,Blekko search engine web indexing and crawling bot
+blogmuraBot,seo_crawler,crawler-user-agents@9345a7ad9c49,A blog ranking site which links to blogs on just about every theme possible.
+bluesky-domain-status-classifier,social_preview,crawler-user-agents@9345a7ad9c49,Bluesky social network link preview bot
+bne\.es_bot,archiver,crawler-user-agents@9345a7ad9c49,Spanish National Library web archiver
+bnf\.fr_bot,archiver,crawler-user-agents@9345a7ad9c49,BNF French National Library web crawler
+bot-pge\.chlooe\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Chlooe web crawler for content analysis
+botify,seo_crawler,crawler-user-agents@9345a7ad9c49,Botify SEO tool web crawler for analysis
+br-crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Brazilian web content indexing and discovery crawler bot
+brainobot,seo_crawler,crawler-user-agents@9345a7ad9c49,Braino web crawler for content discovery
+brokenlinkcheck\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Broken link detection and website integrity checker
+buzzbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Buzzstream web crawler for link research
+cXensebot,advertising,crawler-user-agents@9345a7ad9c49,CXense web crawler for content analysis
+carbon-umbrella-bot,monitoring,crawler-user-agents@9345a7ad9c49,Carbon footprint tracking and environmental monitoring crawler bot
+careerbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Career-X web crawler for job discovery
+caveman-hunter,monitoring,crawler-user-agents@9345a7ad9c49,Fediverse content discovery and social network crawler bot
+centuryb\.o\.t9,seo_crawler,crawler-user-agents@9345a7ad9c49,General web crawler for data aggregation
+centurybot,seo_crawler,crawler-user-agents@9345a7ad9c49,Century web crawler for content discovery
+certytags,seo_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and verification crawler
+changedetection,monitoring,crawler-user-agents@9345a7ad9c49,ChangeDetection web crawler for monitoring
+channable,advertising,crawler-user-agents@9345a7ad9c49,Channable e-commerce marketing automation crawler
+check_http,monitoring,crawler-user-agents@9345a7ad9c49,Nagios check_http monitoring plugin
+citeseerxbot,academic,crawler-user-agents@9345a7ad9c49,CiteSeerX academic web crawler bot
+cloudflare-csup,monitoring,crawler-user-agents@9345a7ad9c49,Cache status updates and performance monitoring
+coccoc,search_crawler,crawler-user-agents@9345a7ad9c49,Coccoc search engine web crawler bot
+cognitiveSEO Bot,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analytics and digital marketing crawler
+cognitiveseo\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,CognitiveSEO backlink analysis and SEO research crawler bot
+cohere-ai,ai_crawler,crawler-user-agents@9345a7ad9c49,Cohere AI web crawler bot
+cohere-training-data-crawler,ai_crawler,crawler-user-agents@9345a7ad9c49,LLM training data collection for AI models
+collection@infegy\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Infegy web crawler for social listening
+colly,automation_tool,crawler-user-agents@9345a7ad9c49,Colly Go web crawler framework
+content crawler spider,seo_crawler,crawler-user-agents@9345a7ad9c49,Content Crawler web crawler for discovery
+contentkingapp,seo_crawler,crawler-user-agents@9345a7ad9c49,Real-time SEO auditing and monitoring tool
+contxbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Contx web crawler for content discovery
+convera,search_crawler,crawler-user-agents@9345a7ad9c49,Convera search engine web crawler bot
+cookie-maestro,security_scanner,crawler-user-agents@9345a7ad9c49,Cookie Maestro GDPR compliance scanner
+crawl4ai,ai_crawler,crawler-user-agents@9345a7ad9c49,Open-source LLM-friendly web scraping and extraction library
+crawler4j,automation_tool,crawler-user-agents@9345a7ad9c49,Crawler4j Java web crawler framework
+crawler_eb_germany,seo_crawler,crawler-user-agents@9345a7ad9c49,General web crawler for indexing and data collection purposes
+cron-job\.org,monitoring,crawler-user-agents@9345a7ad9c49,Automated website monitoring and uptime checking
+crusty\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Undocumented web crawler of unknown origin
+csirt\.cz,security_scanner,crawler-user-agents@9345a7ad9c49,Czech cybersecurity team vulnerability scanning bot
+cypex\.ai\/scanning,security_scanner,crawler-user-agents@9345a7ad9c49,Cypex security vulnerability scanner
+datagnionbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Datagnion web crawler for data analysis
+daumoa,search_crawler,crawler-user-agents@9345a7ad9c49,South Korean Daum search engine indexing bot
+dbot\),social_preview,crawler-user-agents@9345a7ad9c49,Link preview and content discovery metadata harvester bot
+deadlinkchecker,seo_crawler,crawler-user-agents@9345a7ad9c49,Dead Link Checker web crawler for link validation
+deepnoc,monitoring,crawler-user-agents@9345a7ad9c49,DeepNOC web crawler for monitoring
+developers\.google\.com\/\+\/web\/snippet,search_crawler,crawler-user-agents@9345a7ad9c49,Google snippet web crawler bot
+discobot,search_crawler,crawler-user-agents@9345a7ad9c49,Discovery Engine web crawler for content discovery
+dlvr\.it,feed_reader,crawler-user-agents@9345a7ad9c49,dlvr.it social media automation service
+domaincrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Domain Crawler web crawler for analysis
+dotbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Moz DotBot web crawler for SEO analysis
+downnotifier\.com,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring service alerting on website downtime events
+drupact,seo_crawler,crawler-user-agents@9345a7ad9c49,Drupact web crawler for content discovery
+ds9,advertising,crawler-user-agents@9345a7ad9c49,Copyright Clearance Center licensing crawler
+eMoney Advisor,monitoring,crawler-user-agents@9345a7ad9c49,Financial planning software data integration and sync crawler
+eMoneyBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Financial account aggregation and data scraping
+eRepublik\.tools,seo_crawler,crawler-user-agents@9345a7ad9c49,MMO game data and analytics crawler
+e\.ventures Investment Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,E.ventures investment web crawler bot
+easyDNS Monitoring,monitoring,crawler-user-agents@9345a7ad9c49,DNS monitoring service verifying domain resolution and availability
+easybill-ImportManager,seo_crawler,crawler-user-agents@9345a7ad9c49,Billing platform crawler importing product data from ecommerce stores
+ec2linkfinder,security_scanner,crawler-user-agents@9345a7ad9c49,EC2 link finder web crawler bot
+edansbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and analytics crawler
+edisterbot,search_crawler,crawler-user-agents@9345a7ad9c49,Edister web crawler for content discovery
+electricmonk,seo_crawler,crawler-user-agents@9345a7ad9c49,DueDil electricmonk web crawler bot
+elisabot,seo_crawler,crawler-user-agents@9345a7ad9c49,Elisa web crawler for content discovery
+elmah\.io Uptime Monitoring,monitoring,crawler-user-agents@9345a7ad9c49,elmah.io uptime monitoring service
+elmahio-uptimebot,monitoring,crawler-user-agents@9345a7ad9c49,Error logging uptime and availability monitoring
+epicbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Epic web crawler for content discovery
+eright,seo_crawler,crawler-user-agents@9345a7ad9c49,Eright web crawler for content discovery
+europarchive\.org,archiver,crawler-user-agents@9345a7ad9c49,European Archive web crawler for preservation
+ev-crawler\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Headline web crawler for content discovery
+evc-batch,seo_crawler,crawler-user-agents@9345a7ad9c49,E.ventures batch web crawler bot
+everyfeed-spider,feed_reader,crawler-user-agents@9345a7ad9c49,RSS and Atom feed aggregation and discovery crawler
+exabot,search_crawler,crawler-user-agents@9345a7ad9c49,Exabot search engine web crawler for indexing
+ezooms,seo_crawler,crawler-user-agents@9345a7ad9c49,Ezooms search engine web crawler bot
+facebookcatalog\/,advertising,crawler-user-agents@9345a7ad9c49,Facebook catalog web crawler bot
+facebookexternalhit,social_preview,crawler-user-agents@9345a7ad9c49,Facebook external hit web crawler bot
+factset_spyderbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Financial data and regulatory filing crawler
+fedistatsCrawler,monitoring,crawler-user-agents@9345a7ad9c49,Fediverse statistics collection and network analysis crawler bot
+fedoraplanet,feed_reader,crawler-user-agents@9345a7ad9c49,Fedora Planet web crawler for aggregation
+feedbot,feed_reader,crawler-user-agents@9345a7ad9c49,WordPress.com feed web crawler bot
+feeder\.co,feed_reader,crawler-user-agents@9345a7ad9c49,RSS feed aggregation and monitoring service
+fidget-spinner-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Content indexing and SEO analysis crawler
+filterdb\.iss\.net\/crawler,security_scanner,crawler-user-agents@9345a7ad9c49,ISS filter database web crawler
+findlink,seo_crawler,crawler-user-agents@9345a7ad9c49,Findlinks web crawler for link discovery
+findthatfile,search_crawler,crawler-user-agents@9345a7ad9c49,FindThatFile web crawler for file discovery
+findxbot,search_crawler,crawler-user-agents@9345a7ad9c49,FindX web crawler for content discovery
+fiperbot,search_crawler,crawler-user-agents@9345a7ad9c49,Web content indexing and search engine crawler bot
+fluffy,search_crawler,crawler-user-agents@9345a7ad9c49,Fluffy search engine web crawler bot
+fr-crawler,search_crawler,crawler-user-agents@9345a7ad9c49,FR Crawler web crawler for content discovery
+friendly-spider,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for search and data aggregation
+fuelbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Fuel web crawler for content discovery
+g00g1e\.net,seo_crawler,crawler-user-agents@9345a7ad9c49,G00g1e web crawler for content discovery
+g2reader-bot,feed_reader,crawler-user-agents@9345a7ad9c49,G2Reader web crawler for content discovery
+gdnplus\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Data gathering crawler analyzing and providing web content insights
+getthit\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,Traffic exchange service bot generating visits to listed websites
+github-camo,social_preview,crawler-user-agents@9345a7ad9c49,GitHub image proxy fetching external images for secure rendering
+gnam gnam spider,seo_crawler,crawler-user-agents@9345a7ad9c49,Gnam Gnam web crawler for discovery
+google-xrawler,search_crawler,crawler-user-agents@9345a7ad9c49,Google xrawler web crawler bot
+gregcrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for data aggregation and analysis
+grub\.org,search_crawler,crawler-user-agents@9345a7ad9c49,Grub search engine web crawler for indexing
+gsa-crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Google Search Appliance enterprise search indexing crawler bot
+gslfbot,seo_crawler,crawler-user-agents@9345a7ad9c49,GSLFBOT web crawler for content discovery
+hCardValidator,seo_crawler,crawler-user-agents@9345a7ad9c49,Microformat validator checking hCard contact data on web pages
+harsilbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing and collecting data for SEO analysis purposes
+heritrix,archiver,crawler-user-agents@9345a7ad9c49,Internet Archive's Heritrix web crawler framework
+hgfAlphaXCrawl\/,academic,crawler-user-agents@9345a7ad9c49,University research crawler collecting data for academic projects and information retrieval
+hstspreload-bot,security_scanner,crawler-user-agents@9345a7ad9c49,HSTS preload list checker verifying HTTPS enforcement across websites
+http_get,automation_tool,crawler-user-agents@9345a7ad9c49,HTTP GET command-line tool for requests
+https:\/\/developers\.cloudflare\.com\/security-center\/,security_scanner,crawler-user-agents@9345a7ad9c49,CloudFlare security center web crawler
+httpunit,automation_tool,crawler-user-agents@9345a7ad9c49,Java library for automated web application testing
+httpx,automation_tool,crawler-user-agents@9345a7ad9c49,Modern Python HTTP client with async support
+hypestat,seo_crawler,crawler-user-agents@9345a7ad9c49,Hypestat web crawler for analysis
+hyscore\.io,seo_crawler,crawler-user-agents@9345a7ad9c49,HyScore web crawler for analysis
+iAskBot\/,ai_crawler,crawler-user-agents@9345a7ad9c49,AI search engine crawler indexing web content for question answering
+ia_archiver,archiver,crawler-user-agents@9345a7ad9c49,Internet Archive Wayback Machine web crawler
+iaskspider,ai_crawler,crawler-user-agents@9345a7ad9c49,Chinese AI search engine and question answering crawler
+ichiro,search_crawler,crawler-user-agents@9345a7ad9c49,Goo ichiro search engine web crawler bot
+imageSpider,ai_crawler,crawler-user-agents@9345a7ad9c49,ByteDance's image collection crawler
+img2dataset,ai_crawler,crawler-user-agents@9345a7ad9c49,Open source tool downloading images for machine learning dataset creation
+imgproxy\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Image processing proxy resizing and optimizing images for web delivery
+impendoom-bot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for competitive intelligence and data analysis
+imrbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Mignify imrbot web crawler bot
+infoobot,seo_crawler,crawler-user-agents@9345a7ad9c49,Infoo web crawler for content discovery
+inoreader,feed_reader,crawler-user-agents@9345a7ad9c49,Inoreader feed reader web crawler bot
+integromedb,academic,crawler-user-agents@9345a7ad9c49,IntegromeDB web crawler for research
+intelium_bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Intelium web crawler for content discovery
+intelx\.io_bot,search_crawler,crawler-user-agents@9345a7ad9c49,Intelligence search engine crawler indexing leaks and dark web content
+internetVista monitor,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring service checking availability performance and SSL status
+ip-web-crawler\.com,security_scanner,crawler-user-agents@9345a7ad9c49,IP Web Crawler web crawler bot
+ips-agent,seo_crawler,crawler-user-agents@9345a7ad9c49,IPS agent web crawler for content indexing
+iskanie,seo_crawler,crawler-user-agents@9345a7ad9c49,Iskanie web crawler for content discovery
+it2media-domain-crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,IT2Media domain web crawler bot
+iubenda-radar\/,security_scanner,crawler-user-agents@9345a7ad9c49,Compliance platform crawler auditing privacy policies and cookie consent
+jetmon\/,monitoring,crawler-user-agents@9345a7ad9c49,WordPress Jetpack site uptime monitor and health checking service
+jobswithgptcom-bot,search_crawler,crawler-user-agents@9345a7ad9c49,Job portal crawler indexing career pages and employment listings
+jpg-newsbot,seo_crawler,crawler-user-agents@9345a7ad9c49,JPG news web crawler bot
+jyxobot,search_crawler,crawler-user-agents@9345a7ad9c49,Jyxo search engine bot for web crawling
+kagi-fetcher,ai_crawler,crawler-user-agents@9345a7ad9c49,Kagi AI assistant for web content
+kaikki\.org-digital-archive,archiver,crawler-user-agents@9345a7ad9c49,Digital archiving and preservation service web crawler bot
+kazbtbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content indexing and data aggregation purposes
+kb\.dk_bot,archiver,crawler-user-agents@9345a7ad9c49,Royal Danish Library web archiving and preservation crawler
+keycdn-tools\/,monitoring,crawler-user-agents@9345a7ad9c49,CDN performance monitoring measuring website load times and metrics
+keys-so-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Automated crawler for indexing and data collection purposes
+kinsta-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Hosting platform crawler for cache warming and SEO audit checks
+l9explore,security_scanner,crawler-user-agents@9345a7ad9c49,L9explore web crawler for discovery
+l9scan,security_scanner,crawler-user-agents@9345a7ad9c49,L9scan web crawler for scanning
+laion-huggingface-processor,ai_crawler,crawler-user-agents@9345a7ad9c49,LAION's image dataset builder for AI
+larbin,automation_tool,crawler-user-agents@9345a7ad9c49,Open-source web crawler for large-scale indexing projects
+lb-spider,search_crawler,crawler-user-agents@9345a7ad9c49,LB spider web crawler for content discovery
+libwww-perl,automation_tool,crawler-user-agents@9345a7ad9c49,Perl library for making HTTP requests and web crawling
+linkReader\/,ai_crawler,crawler-user-agents@9345a7ad9c49,AI assistant crawler for content indexing
+linkapediabot,seo_crawler,crawler-user-agents@9345a7ad9c49,Linkapedia web crawler for link discovery
+linkdex,seo_crawler,crawler-user-agents@9345a7ad9c49,Linkdex SEO tool web crawler for link analysis
+linko,monitoring,crawler-user-agents@9345a7ad9c49,Linko link management and URL tracking service crawler
+lipperhey,seo_crawler,crawler-user-agents@9345a7ad9c49,Lipperhey SEO tool web crawler for analysis
+loc\.gov\/programs\/web-archiving,archiver,crawler-user-agents@9345a7ad9c49,Government web archiver preserving cultural content for long-term access
+loopimprovements\.com,monitoring,crawler-user-agents@9345a7ad9c49,Network research and web data collection crawler bot
+lssbot,seo_crawler,crawler-user-agents@9345a7ad9c49,LSS web crawler for content discovery
+lssrocketcrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,LSS Rocket web crawler for content
+ltx71,security_scanner,crawler-user-agents@9345a7ad9c49,LTX71 web crawler for content discovery
+lwp-trivial,automation_tool,crawler-user-agents@9345a7ad9c49,Perl LWP library simple HTTP client and fetcher
+lyonl-asset-proxy,search_crawler,crawler-user-agents@9345a7ad9c49,Lyonl search engine asset proxy
+lyonl-crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Lyonl open web search crawler
+magicsearchdev\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content indexing and data aggregation purposes
+magpie-crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Brandwatch magpie web crawler bot
+mail\.ru,feed_reader,crawler-user-agents@9345a7ad9c49,Mail.ru content fetcher
+mappydata,seo_crawler,crawler-user-agents@9345a7ad9c49,Mappy web crawler for mapping data
+masscan,security_scanner,crawler-user-agents@9345a7ad9c49,Masscan network scanner web crawler bot
+memorybot,seo_crawler,crawler-user-agents@9345a7ad9c49,Mignify memory web crawler bot
+meta-externalads\/,advertising,crawler-user-agents@9345a7ad9c49,Meta external ads web crawler bot
+meta-externalagent\/,ai_crawler,crawler-user-agents@9345a7ad9c49,Meta external agent web crawler bot
+meta-externalfetcher\/,social_preview,crawler-user-agents@9345a7ad9c49,Meta external fetcher web crawler bot
+meta-webindexer,social_preview,crawler-user-agents@9345a7ad9c49,Meta web indexer bot for Facebook and Instagram content crawling
+mindUpBot,seo_crawler,crawler-user-agents@9345a7ad9c49,MindUp web crawler for content discovery
+minicrawler,monitoring,crawler-user-agents@9345a7ad9c49,Testomato web crawler for testing
+mirrorweb\.com,archiver,crawler-user-agents@9345a7ad9c49,Web archiving platform crawler capturing timestamped website snapshots
+mithril-crawler,academic,crawler-user-agents@9345a7ad9c49,Academic search engine project web indexing crawler bot
+mlbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Metadata Labs web crawler for analysis
+moatbot,advertising,crawler-user-agents@9345a7ad9c49,Moat web crawler for advertising analysis
+monitis -,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring bot checking website availability and performance
+monitoring360bot\/,monitoring,crawler-user-agents@9345a7ad9c49,Monitors website uptime and performance at intervals
+montastic-monitor,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring bot tracking website availability and latency
+msnbot,search_crawler,crawler-user-agents@9345a7ad9c49,Microsoft's search engine bot for web indexing
+msrbot,search_crawler,crawler-user-agents@9345a7ad9c49,Microsoft Research web crawler bot
+my-tiny-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Lightweight web crawler for content indexing and analysis
+nbertaupete95,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for SEO and competitive analysis purposes
+nerdybot,seo_crawler,crawler-user-agents@9345a7ad9c49,NerdyBot web crawler for content analysis
+netEstate NE Crawler,seo_crawler,crawler-user-agents@9345a7ad9c49,NetEstate web crawler for domain analysis
+netresearchserver,seo_crawler,crawler-user-agents@9345a7ad9c49,Net Research Server web crawler bot
+newsai\/,ai_crawler,crawler-user-agents@9345a7ad9c49,NewsAI crawler for news content aggregation and indexing
+newsharecounts,social_preview,crawler-user-agents@9345a7ad9c49,NewShareCounts web crawler for sharing
+newspaper\/,automation_tool,crawler-user-agents@9345a7ad9c49,Newspaper Python web scraping library
+niki-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Niki web crawler for content discovery
+node-fetch,automation_tool,crawler-user-agents@9345a7ad9c49,Node-fetch HTTP client library
+nomore404\.com robot,seo_crawler,crawler-user-agents@9345a7ad9c49,Broken link detection crawler identifying HTTP 404 errors
+noorobot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web scraper performing high-volume programmatic content collection
+nvdorz,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for content indexing and analysis purposes
+nyt_scraping,seo_crawler,crawler-user-agents@9345a7ad9c49,News organization newsgathering crawler for reporting support
+officestorebot,search_crawler,crawler-user-agents@9345a7ad9c49,Microsoft Office Store web crawler bot
+okhttp,automation_tool,crawler-user-agents@9345a7ad9c49,OkHttp Java HTTP client library
+omgili,seo_crawler,crawler-user-agents@9345a7ad9c49,Omgili web crawler for content discovery
+online-webceo-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Online WebCEO web crawler for analysis
+opencode-smartfetch,automation_tool,crawler-user-agents@9345a7ad9c49,Open-source AI coding agent
+openindexspider,search_crawler,crawler-user-agents@9345a7ad9c49,OpenIndex web crawler for indexing
+outbrain,advertising,crawler-user-agents@9345a7ad9c49,Outbrain web crawler for content discovery
+page-preview-tool,seo_crawler,crawler-user-agents@9345a7ad9c49,B2B intelligence platform identifying visiting companies
+page2rss,feed_reader,crawler-user-agents@9345a7ad9c49,Page2RSS web crawler for RSS conversion
+panscient,seo_crawler,crawler-user-agents@9345a7ad9c49,Panscient web crawler for content analysis
+parse\.ly scraper\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Content analytics platform crawler for metadata extraction
+peer39_crawler,advertising,crawler-user-agents@9345a7ad9c49,Peer39 contextual advertising and brand safety crawler bot
+phpcrawl,automation_tool,crawler-user-agents@9345a7ad9c49,PHP web crawler library for scraping websites
+pingping\.io\/,monitoring,crawler-user-agents@9345a7ad9c49,Lightweight monitoring bot validating URL availability
+pinterest\.com\/bot,social_preview,crawler-user-agents@9345a7ad9c49,Pinterest web crawler for content discovery
+postrank,seo_crawler,crawler-user-agents@9345a7ad9c49,PostRank web crawler for content ranking
+productsup\.io\/crawler,advertising,crawler-user-agents@9345a7ad9c49,Productsup product feed management crawler
+proximic,advertising,crawler-user-agents@9345a7ad9c49,Proximic web crawler for content analysis
+psbot,search_crawler,crawler-user-agents@9345a7ad9c49,PicSearch web crawler for image discovery
+pulsetic\.com,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring bot tracking website availability
+purebot,search_crawler,crawler-user-agents@9345a7ad9c49,Pure web crawler for content discovery
+python-opengraph,automation_tool,crawler-user-agents@9345a7ad9c49,Python OpenGraph web crawler bot
+python-requests,automation_tool,crawler-user-agents@9345a7ad9c49,Popular Python HTTP library for making web requests
+qcbot,feed_reader,crawler-user-agents@9345a7ad9c49,QUIC.cloud optimization service crawler
+rakutenusabot-image\/,seo_crawler,crawler-user-agents@9345a7ad9c49,E-commerce platform crawler extracting product images
+rawweb-bot,automation_tool,crawler-user-agents@9345a7ad9c49,Raw web content extraction and data scraping crawler
+redditbot,social_preview,crawler-user-agents@9345a7ad9c49,Reddit's web crawler for content sharing
+remove\.bg\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Image editing service crawler accessing and processing images
+researchscan\.comsys\.rwth-aachen\.de,academic,crawler-user-agents@9345a7ad9c49,Academic network measurement and analysis
+reward-gateway,seo_crawler,crawler-user-agents@9345a7ad9c49,Employee engagement platform crawler validating offers
+rogerbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Moz RogerBot web crawler for analysis
+rss-is-dead\.lol web bot,feed_reader,crawler-user-agents@9345a7ad9c49,RSS feed monitoring and availability checking service crawler
+rss-parser,feed_reader,crawler-user-agents@9345a7ad9c49,Newsletter RSS feed parser and aggregator
+rss2tg,feed_reader,crawler-user-agents@9345a7ad9c49,RSS to Telegram converter fetching feed content
+rssbot\/,feed_reader,crawler-user-agents@9345a7ad9c49,RSS bot web crawler for feeds
+s4a-probe-bot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web scraping and SEO analysis crawler tool
+s4a\/,seo_crawler,crawler-user-agents@9345a7ad9c49,JavaScript rendering and SEO prerendering service
+scraping@nytimes\.com,advertising,crawler-user-agents@9345a7ad9c49,NYTimes newsroom data collection bot
+screeenly-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Screenshot capture service crawler taking website snapshots
+scribdbot,search_crawler,crawler-user-agents@9345a7ad9c49,Scribd document web crawler bot
+search\.marginalia\.nu,search_crawler,crawler-user-agents@9345a7ad9c49,Marginalia search web crawler bot
+seewithkids,seo_crawler,crawler-user-agents@9345a7ad9c49,SeeWithKids web crawler for content discovery
+semaltbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analytics crawler collecting ranking and performance data
+semantic-visions,ai_crawler,crawler-user-agents@9345a7ad9c49,Semantic content analysis and AI training data crawler
+semanticbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Semantic web crawler for content analysis
+sempi\.tech,seo_crawler,crawler-user-agents@9345a7ad9c49,Sempi web crawler for analysis
+seo-audit-check-bot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO auditing crawler evaluating optimization signals
+seo4ajax\.com,seo_crawler,crawler-user-agents@9345a7ad9c49,seo4ajax SPA pre-rendering crawler
+seoLyt,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analysis and website optimization tool crawler bot
+seoscanners,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO Scanners web crawler for analysis
+seostar\.co,seo_crawler,crawler-user-agents@9345a7ad9c49,SEOstar web crawler for SEO analysis
+serpstatbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Serpstat web crawler for backlink tracking
+sindresorhus\/got,automation_tool,crawler-user-agents@9345a7ad9c49,Got HTTP client library for requests
+sitebot,seo_crawler,crawler-user-agents@9345a7ad9c49,Sitebot web crawler for site analysis
+sitebulb,seo_crawler,crawler-user-agents@9345a7ad9c49,Sitebulb SEO web crawler for analysis
+siteexplorer\.info,seo_crawler,crawler-user-agents@9345a7ad9c49,Site Explorer web crawler for analysis
+smtbot,seo_crawler,crawler-user-agents@9345a7ad9c49,SimilarTech web crawler for technology detection
+solarwinds\/,monitoring,crawler-user-agents@9345a7ad9c49,Observability platform monitoring website performance
+spbot,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO Profiler web crawler for analysis
+speedy,search_crawler,crawler-user-agents@9345a7ad9c49,Entireweb Speedy Spider web crawler bot
+splash Version\/,automation_tool,crawler-user-agents@9345a7ad9c49,Headless browser for web scraping and testing
+sqlmap,security_scanner,crawler-user-agents@9345a7ad9c49,SQLMap SQL injection testing web crawler
+startmebot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Start.me web crawler for content discovery
+stepstoneCrawlBot,search_crawler,crawler-user-agents@9345a7ad9c49,Stepstone Group job search crawler
+summify,seo_crawler,crawler-user-agents@9345a7ad9c49,Summify web crawler for content summarization
+sv-watchagent,monitoring,crawler-user-agents@9345a7ad9c49,Semantic Visions content monitoring and analysis crawler agent
+synthetic-monitoring-agent\/,monitoring,crawler-user-agents@9345a7ad9c49,Grafana synthetic monitoring agent probing endpoints for availability
+t3versionsBot,seo_crawler,crawler-user-agents@9345a7ad9c49,T3versions web crawler for discovery
+tagoobot,search_crawler,crawler-user-agents@9345a7ad9c49,Tagoo search engine web crawler bot
+tchelebi\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawling tool indexing content for SEO data aggregation and competitive analysis purposes
+test-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Automated testing script monitoring uptime and gathering performance analysis data
+theoldreader\.com,feed_reader,crawler-user-agents@9345a7ad9c49,The Old Reader web crawler bot
+thesis-research-bot,academic,crawler-user-agents@9345a7ad9c49,Academic research crawler collecting web data trends and analyzing website structures systematically
+tigerbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Tiger web crawler for content discovery
+top100\.rambler\.ru crawler,search_crawler,crawler-user-agents@9345a7ad9c49,Russian search engine crawler indexing web content
+toplistbot,seo_crawler,crawler-user-agents@9345a7ad9c49,TopList web crawler for ranking
+tracemyfile,seo_crawler,crawler-user-agents@9345a7ad9c49,TraceMyFile web crawler for file tracking
+tracking-quality-spider,advertising,crawler-user-agents@9345a7ad9c49,Affiliate marketing network tracking and verification
+trafilatura,automation_tool,crawler-user-agents@9345a7ad9c49,Python library for web content extraction and scraping
+trendictionbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Trendiction web crawler for trend analysis
+trentwil\.es,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing content for data aggregation SEO analysis and competitive intelligence
+trovitBot,search_crawler,crawler-user-agents@9345a7ad9c49,Trovit web crawler for content discovery
+tweetedtimes,seo_crawler,crawler-user-agents@9345a7ad9c49,Tweeted Times web crawler for news
+twengabot,seo_crawler,crawler-user-agents@9345a7ad9c49,Twenga shopping web crawler bot
+uipbot,advertising,crawler-user-agents@9345a7ad9c49,Semasio semantic targeting crawler
+um-FC,advertising,crawler-user-agents@9345a7ad9c49,Ubermetrics media monitoring crawler
+um-IC,advertising,crawler-user-agents@9345a7ad9c49,Ubermetrics communications intelligence crawler
+um-LN,seo_crawler,crawler-user-agents@9345a7ad9c49,Ubermetrics web crawler for monitoring
+upday\/,feed_reader,crawler-user-agents@9345a7ad9c49,Samsung news aggregator crawler fetching articles for daily briefings
+updown\.io,monitoring,crawler-user-agents@9345a7ad9c49,Website monitoring crawler checking availability and performance metrics from locations
+uptimedoctor,monitoring,crawler-user-agents@9345a7ad9c49,Uptime monitoring probe verifying website availability and SSL certificate health
+uptrends,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring agent testing transaction availability and performance from locations
+urlappendbot,seo_crawler,crawler-user-agents@9345a7ad9c49,URL Append web crawler for analysis
+useeBookChecker\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Ebook metadata scanner identifying and cataloging digital publication availability data
+vebidoobot,seo_crawler,crawler-user-agents@9345a7ad9c49,Vebidoo web crawler for content discovery
+vercel-screenshot,seo_crawler,crawler-user-agents@9345a7ad9c49,Vercel screenshot web crawler bot
+videootv Bot,monitoring,crawler-user-agents@9345a7ad9c49,Video content aggregation and educational media crawler bot
+videootvBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Video aggregator crawler discovering indexing video content and stream endpoints
+virustotal,security_scanner,crawler-user-agents@9345a7ad9c49,VirusTotal web crawler for security
+visionheight\.com\/scan,security_scanner,crawler-user-agents@9345a7ad9c49,Vision Height security scanner
+vkShare,social_preview,crawler-user-agents@9345a7ad9c49,VK Share web crawler for social sharing
+vmcrawl,monitoring,crawler-user-agents@9345a7ad9c49,Fediverse instance monitoring and discovery service crawler bot
+voilabot,search_crawler,crawler-user-agents@9345a7ad9c49,Voila search engine web crawler bot
+vu-server-health-scanner\/,academic,crawler-user-agents@9345a7ad9c49,Academic crawler indexing web content for research data collection and analysis
+vuhuvBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Vuhuv web crawler for content discovery
+watchTowr,security_scanner,crawler-user-agents@9345a7ad9c49,watchTowr is an external attack surface management tool that scans assets and generates findings against those assets
+wbsearchbot,search_crawler,crawler-user-agents@9345a7ad9c49,Warebay search web crawler bot
+web-archive-net\.com\.bot,archiver,crawler-user-agents@9345a7ad9c49,Web Archive web crawler for preservation
+webcompanycrawler,seo_crawler,crawler-user-agents@9345a7ad9c49,Web Company web crawler for analysis
+webgains-bot,advertising,crawler-user-agents@9345a7ad9c49,Affiliate marketing crawler extracting product listings and pricing information
+webmon ,monitoring,crawler-user-agents@9345a7ad9c49,Webmon website monitoring and crawling bot
+weborama-fetcher,advertising,crawler-user-agents@9345a7ad9c49,Weborama advertising optimization crawler
+webprosbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO crawler analyzing websites for optimization content and competitive research
+websitepulse,monitoring,crawler-user-agents@9345a7ad9c49,Synthetic monitoring agent measuring availability performance and content integrity
+webspidermount,advertising,crawler-user-agents@9345a7ad9c49,Webspidermount job listing extraction service
+webzio,seo_crawler,crawler-user-agents@9345a7ad9c49,Webz.io web crawler bot for ethical data collection
+wheresitup\.com\/,monitoring,crawler-user-agents@9345a7ad9c49,Availability monitor crawler tracking website uptime and performance metrics
+wknd-bot,advertising,crawler-user-agents@9345a7ad9c49,Wunderkind marketing automation tracker
+wmtips\.com\/,seo_crawler,crawler-user-agents@9345a7ad9c49,SEO analysis crawler scanning websites for optimization issues and metrics
+wocbot,search_crawler,crawler-user-agents@9345a7ad9c49,Wocodi web crawler for content discovery
+woobot,seo_crawler,crawler-user-agents@9345a7ad9c49,Woo web crawler for content analysis
+woorankreview\/,seo_crawler,crawler-user-agents@9345a7ad9c49,WooRank web crawler for SEO analysis
+woriobot,search_crawler,crawler-user-agents@9345a7ad9c49,Worio search engine web crawler bot
+workona-favicon-service\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Productivity platform crawler organizing web content and managing bookmarks
+wotbox,search_crawler,crawler-user-agents@9345a7ad9c49,Wotbox web crawler for content discovery
+wowLink Crawler\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Link management crawler indexing and analyzing web content for optimization
+wpbot\/,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing websites and analyzing content for search optimization
+www\.uptime\.com,monitoring,crawler-user-agents@9345a7ad9c49,Uptime.com website monitoring web crawler
+xovibot,seo_crawler,crawler-user-agents@9345a7ad9c49,Xovi SEO tool web crawler for analysis
+yacybot,search_crawler,crawler-user-agents@9345a7ad9c49,YaCy decentralized search engine web crawler
+yandex\.com\/bots,search_crawler,crawler-user-agents@9345a7ad9c49,Yandex search engine web crawler bots
+yanga,search_crawler,crawler-user-agents@9345a7ad9c49,Yanga search engine web crawler bot
+yelpspider,feed_reader,crawler-user-agents@9345a7ad9c49,Yelp business information crawler
+yoozBot,seo_crawler,crawler-user-agents@9345a7ad9c49,Yooz web crawler for content analysis
+zebra-v2-bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler for indexing and data collection purposes
+zenback bot,seo_crawler,crawler-user-agents@9345a7ad9c49,Zenback web crawler for content discovery
+zgrab,security_scanner,crawler-user-agents@9345a7ad9c49,Zgrab web crawler for security scanning
+zzhbot,seo_crawler,crawler-user-agents@9345a7ad9c49,Web crawler indexing and analyzing content for search engine and data aggregation
+(?i)[a-z]bot[/;)_-]|[a-z]bot$,generic,local,Fallback for unlisted bots named ...bot followed by a version or separator. Can also match a few phone models whose names end in -bot (e.g. Cubot)
+(?i)crawler|spider|scraper,generic,local,"Fallback for unlisted bots that call themselves a crawler, spider or scraper; first seen for osentix-crawler (Oct 2026), which crawler-user-agents doesn't list"
+^Java/,automation_tool,local,"Java's built-in HTTP client, which crawler-user-agents doesn't list"

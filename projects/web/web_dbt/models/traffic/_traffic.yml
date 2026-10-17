@@ -1,0 +1,2559 @@
+version: 2
+
+anchors:
+
+  # --- Services --------------------------------------------------------------
+
+  - &service_id
+    name: service_id
+    config:
+      meta:
+        concept: service_id
+        concept_group: Services
+    description: Identifier of the tracked website
+    data_type: varchar
+
+  - &service_name
+    name: service_name
+    config:
+      meta:
+        concept: service_name
+        concept_group: Services
+    description: Name of the tracked website
+    data_type: varchar
+
+  - &service_url
+    name: service_url
+    config:
+      meta:
+        concept: service_url
+        concept_group: Services
+    description: Address of the tracked website; null if not set
+    data_type: varchar
+
+  # --- Traffic ---------------------------------------------------------------
+
+  - &traffic_date
+    name: traffic_date
+    config:
+      meta:
+        concept: traffic_date
+        concept_group: Traffic
+    description: Calendar day of the traffic, in the reporting time zone
+    data_type: date
+
+  - &traffic_hour
+    name: traffic_hour
+    config:
+      meta:
+        concept: traffic_hour
+        concept_group: Traffic
+    description: Start of the hour of the traffic, in the reporting time zone
+    data_type: timestamp with time zone
+
+  - &session_count
+    name: session_count
+    config:
+      meta:
+        concept: session_count
+        concept_group: Traffic
+    description: Number of sessions that started in the row's day or hour, within the row's breakdown if it has one
+    data_type: bigint
+
+  - &hit_count
+    name: hit_count
+    config:
+      meta:
+        concept: hit_count
+        concept_group: Traffic
+    description: Number of page views in the row's day or hour, within the row's page if it has one
+    data_type: bigint
+
+  - &bounce_rate
+    name: bounce_rate
+    config:
+      meta:
+        concept: bounce_rate
+        concept_group: Traffic
+    description: Fraction of the day's sessions that viewed only one page; null on a day without sessions
+    data_type: double
+
+  - &avg_session_seconds
+    name: avg_session_seconds
+    config:
+      meta:
+        concept: avg_session_seconds
+        concept_group: Traffic
+    description: Average session length in seconds; null on a day without sessions
+    data_type: double
+
+  - &avg_load_time_ms
+    name: avg_load_time_ms
+    config:
+      meta:
+        concept: avg_load_time_ms
+        concept_group: Traffic
+    description: Average page load time in milliseconds; null when no page view measured one
+    data_type: double
+
+  - &avg_hits_per_session
+    name: avg_hits_per_session
+    config:
+      meta:
+        concept: avg_hits_per_session
+        concept_group: Traffic
+    description: Average number of page views per session; null on a day without sessions
+    data_type: double
+
+  # --- Pages and referrers ---------------------------------------------------
+
+  - &page_location
+    name: page_location
+    config:
+      meta:
+        concept: page_location
+        concept_group: Pages and referrers
+    description: Address of the page viewed; null if unknown
+    data_type: varchar
+
+  - &referrer_url
+    name: referrer_url
+    config:
+      meta:
+        concept: referrer_url
+        concept_group: Pages and referrers
+    description: Address of the site that sent the visitor at the start of the session; null for a direct visit
+    data_type: varchar
+
+  - &referral_count
+    name: referral_count
+    config:
+      meta:
+        concept: referral_count
+        concept_group: Pages and referrers
+    description: Number of sessions the referring site started in the day
+    data_type: bigint
+
+  # --- Audience --------------------------------------------------------------
+
+  - &visitor_country
+    name: visitor_country
+    config:
+      meta:
+        concept: visitor_country
+        concept_group: Audience
+    description: Country of the visitor's network; null if unknown
+    data_type: varchar
+
+  - &operating_system
+    name: operating_system
+    config:
+      meta:
+        concept: operating_system
+        concept_group: Audience
+    description: Visitor's operating system
+    data_type: varchar
+
+  - &browser
+    name: browser
+    config:
+      meta:
+        concept: browser
+        concept_group: Audience
+    description: Visitor's browser
+    data_type: varchar
+
+  - &device
+    name: device
+    config:
+      meta:
+        concept: device
+        concept_group: Audience
+    description: Visitor's device model, where it can be identified
+    data_type: varchar
+
+  - &device_type
+    name: device_type
+    config:
+      meta:
+        concept: device_type
+        concept_group: Audience
+    description: Kind of device the visitor used
+    data_type: varchar
+
+  # --- Sessions -----------------------------------------------------------------
+
+  - &session_id
+    name: session_id
+    config:
+      meta:
+        concept: session_id
+        concept_group: Sessions
+    description: >
+      Identifier of the session: one visitor's visit to one website. A visit ends after 30 minutes without
+      activity, so a returning visitor starts a new session.
+    data_type: varchar
+
+  - &session_started_at
+    name: session_started_at
+    config:
+      meta:
+        concept: session_started_at
+        concept_group: Sessions
+    description: When the session started
+    data_type: timestamp with time zone
+
+  - &session_last_seen_at
+    name: session_last_seen_at
+    config:
+      meta:
+        concept: session_last_seen_at
+        concept_group: Sessions
+    description: When the session was last active
+    data_type: timestamp with time zone
+
+  - &session_duration_seconds
+    name: session_duration_seconds
+    config:
+      meta:
+        concept: session_duration_seconds
+        concept_group: Sessions
+    description: >
+      Length of the session in seconds, from its first page view to its last activity. Only time with the
+      page visible counts.
+    data_type: double
+
+  - &user_agent
+    name: user_agent
+    config:
+      meta:
+        concept: user_agent
+        concept_group: Sessions
+    description: Text the visitor's browser sends to identify itself. Any client can claim to be any browser.
+    data_type: varchar
+
+  - &asn_organization
+    name: asn_organization
+    config:
+      meta:
+        concept: asn_organization
+        concept_group: Sessions
+    description: >
+      Organisation that runs the visitor's network, whether an internet provider or a hosting company;
+      null if unknown
+    data_type: varchar
+
+  - &visitor_time_zone
+    name: visitor_time_zone
+    config:
+      meta:
+        concept: visitor_time_zone
+        concept_group: Sessions
+    description: Time zone of the visitor's location; null if unknown
+    data_type: varchar
+
+  - &is_bounce
+    name: is_bounce
+    config:
+      meta:
+        concept: is_bounce
+        concept_group: Sessions
+    description: Whether the session viewed only one page
+    data_type: boolean
+
+  - &session_hit_count
+    name: session_hit_count
+    config:
+      meta:
+        concept: session_hit_count
+        concept_group: Sessions
+    description: Number of page views in the session
+    data_type: bigint
+
+  - &session_heartbeat_count
+    name: session_heartbeat_count
+    config:
+      meta:
+        concept: session_heartbeat_count
+        concept_group: Sessions
+    description: How long the session's pages were visible, in 5-second intervals
+    data_type: bigint
+
+  - &pixel_hit_count
+    name: pixel_hit_count
+    config:
+      meta:
+        concept: pixel_hit_count
+        concept_group: Sessions
+    description: Number of the session's page views where the page's script didn't run
+    data_type: bigint
+
+  - &landing_page_location
+    name: landing_page_location
+    config:
+      meta:
+        concept: landing_page_location
+        concept_group: Sessions
+    description: Address of the first page viewed in the session; null if unknown
+    data_type: varchar
+
+  # --- Hits ---------------------------------------------------------------------
+
+  - &hit_id
+    name: hit_id
+    config:
+      meta:
+        concept: hit_id
+        concept_group: Hits
+    description: Identifier of the page view
+    data_type: bigint
+
+  - &is_initial_hit
+    name: is_initial_hit
+    config:
+      meta:
+        concept: is_initial_hit
+        concept_group: Hits
+    description: Whether the page view was the first of its session
+    data_type: boolean
+
+  - &hit_started_at
+    name: hit_started_at
+    config:
+      meta:
+        concept: hit_started_at
+        concept_group: Hits
+    description: When the page view started
+    data_type: timestamp with time zone
+
+  - &hit_last_seen_at
+    name: hit_last_seen_at
+    config:
+      meta:
+        concept: hit_last_seen_at
+        concept_group: Hits
+    description: When the page view was last active
+    data_type: timestamp with time zone
+
+  - &heartbeat_count
+    name: heartbeat_count
+    config:
+      meta:
+        concept: heartbeat_count
+        concept_group: Hits
+    description: How long the page was visible, in 5-second intervals; zero when it couldn't be measured
+    data_type: bigint
+
+  - &tracker_type
+    name: tracker_type
+    config:
+      meta:
+        concept: tracker_type
+        concept_group: Hits
+    description: >
+      How the page view was recorded: by the page's script, or by a fallback when the script didn't run
+    data_type: varchar
+
+  - &hit_referrer_url
+    name: hit_referrer_url
+    config:
+      meta:
+        concept: hit_referrer_url
+        concept_group: Hits
+    description: Address of the page the visitor came from; null if none
+    data_type: varchar
+
+  - &load_time_ms
+    name: load_time_ms
+    config:
+      meta:
+        concept: load_time_ms
+        concept_group: Hits
+    description: Page load time in milliseconds; null when it couldn't be measured
+    data_type: double
+
+  # --- Bot classification -------------------------------------------------------
+
+  - &user_agent_pattern
+    name: user_agent_pattern
+    config:
+      meta:
+        concept: user_agent_pattern
+        concept_group: Bot classification
+    description: Pattern that recognises a declared bot from the text its browser sends
+    data_type: varchar
+
+  - &user_agent_pattern_source
+    name: user_agent_pattern_source
+    config:
+      meta:
+        concept: user_agent_pattern_source
+        concept_group: Bot classification
+    description: >
+      Where a bot pattern comes from: a published list of known bots, or added locally
+    data_type: varchar
+
+  - &user_agent_pattern_note
+    name: user_agent_pattern_note
+    config:
+      meta:
+        concept: user_agent_pattern_note
+        concept_group: Bot classification
+    description: What a bot pattern recognises, or why it was added
+    data_type: varchar
+
+  - &bot_category
+    name: bot_category
+    config:
+      meta:
+        concept: bot_category
+        concept_group: Bot classification
+    description: >
+      What a declared bot says it's for; null if the session isn't a declared bot. Taken at the bot's
+      word, so an impostor gets the category of the bot it imitates.
+    data_type: varchar
+
+  - &asn_pattern
+    name: asn_pattern
+    config:
+      meta:
+        concept: asn_pattern
+        concept_group: Bot classification
+    description: Pattern that recognises a hosting, VPN or other non-residential network by its operator's name
+    data_type: varchar
+
+  - &asn_pattern_source
+    name: asn_pattern_source
+    config:
+      meta:
+        concept: asn_pattern_source
+        concept_group: Bot classification
+    description: >
+      Where a network pattern comes from: seen in the data, or a known provider not yet seen
+    data_type: varchar
+
+  - &asn_pattern_note
+    name: asn_pattern_note
+    config:
+      meta:
+        concept: asn_pattern_note
+        concept_group: Bot classification
+    description: What the network is
+    data_type: varchar
+
+  - &network_category
+    name: network_category
+    config:
+      meta:
+        concept: network_category
+        concept_group: Bot classification
+    description: >
+      Kind of non-residential network the session came from; null for any other network, including most
+      home and mobile providers. The list of networks is partial.
+    data_type: varchar
+
+  - &is_declared_bot
+    name: is_declared_bot
+    config:
+      meta:
+        concept: is_declared_bot
+        concept_group: Bot classification
+    description: Whether the visitor says it's a bot. Reliable, but misses bots that pose as browsers.
+    data_type: boolean
+
+  - &is_hosting_network
+    name: is_hosting_network
+    config:
+      meta:
+        concept: is_hosting_network
+        concept_group: Bot classification
+    description: >
+      Whether the session came from a hosting, VPN or similar network. A moderate sign of automation:
+      people use VPNs and office networks too.
+    data_type: boolean
+
+  - &is_pixel_only
+    name: is_pixel_only
+    config:
+      meta:
+        concept: is_pixel_only
+        concept_group: Bot classification
+    description: >
+      Whether no page in the session ran its script. A strong sign of automation, though people who turn
+      scripts off look the same.
+    data_type: boolean
+
+  - &is_outdated_browser
+    name: is_outdated_browser
+    config:
+      meta:
+        concept: is_outdated_browser
+        concept_group: Bot classification
+    description: >
+      Whether the browser claims to be more than about a year out of date. A strong sign of automation, as
+      browsers update themselves; some managed and regional browsers also lag. Only Chrome-based browsers
+      are checked.
+    data_type: boolean
+
+  - &is_malformed_user_agent
+    name: is_malformed_user_agent
+    config:
+      meta:
+        concept: is_malformed_user_agent
+        concept_group: Bot classification
+    description: >
+      Whether the text the browser sends to identify itself is missing or incomplete. A strong sign of
+      automation, though some privacy tools strip it.
+    data_type: boolean
+
+  - &is_burst_session
+    name: is_burst_session
+    config:
+      meta:
+        concept: is_burst_session
+        concept_group: Bot classification
+    description: >
+      Whether three or more sessions from an identical browser and network started within 10 minutes of
+      each other on the same website. A moderate sign of a crawler fleet; an office or campus network can
+      look the same.
+    data_type: boolean
+
+  - &is_no_engagement
+    name: is_no_engagement
+    config:
+      meta:
+        concept: is_no_engagement
+        concept_group: Bot classification
+    description: >
+      Whether the session was a single page closed or hidden within 5 seconds. A weak sign on its own, as
+      many people leave that quickly.
+    data_type: boolean
+
+  - &is_development_session
+    name: is_development_session
+    config:
+      meta:
+        concept: is_development_session
+        concept_group: Bot classification
+    description: Whether the session viewed a local development copy of the website rather than the live site
+    data_type: boolean
+
+
+  - &bot_signals
+    name: bot_signals
+    config:
+      meta:
+        concept: bot_signals
+        concept_group: Bot classification
+    description: Signs of automation found in the session, strongest first; null if none
+    data_type: varchar
+
+  - &traffic_class
+    name: traffic_class
+    config:
+      meta:
+        concept: traffic_class
+        concept_group: Bot classification
+    description: >
+      How automated the session looks: a development visit, a declared bot (one that says it's a bot), a
+      likely bot (a strong sign of automation), a possible bot (a moderate sign) or a human (no sign). An
+      estimate: it misses bots that behave like browsers and visits that never load the tracking, and can
+      class people on VPNs, office networks or old browsers as bots. The site owner's visits count like
+      anyone's.
+    data_type: varchar
+
+  - &traffic_group
+    name: traffic_group
+    config:
+      meta:
+        concept: traffic_group
+        concept_group: Bot classification
+    description: Whether the session is a bot (of any class), a human or a development visit
+    data_type: varchar
+
+  # --- Traffic shares -----------------------------------------------------------
+
+  - &period_start_date
+    name: period_start_date
+    config:
+      meta:
+        concept: period_start_date
+        concept_group: Traffic shares
+    description: First day the shares cover
+    data_type: date
+
+  - &period_end_date
+    name: period_end_date
+    config:
+      meta:
+        concept: period_end_date
+        concept_group: Traffic shares
+    description: >
+      Last day the shares cover: the last complete day, so a day in progress can't skew them
+    data_type: date
+
+  - &week_start
+    name: week_start
+    config:
+      meta:
+        concept: week_start
+        concept_group: Traffic shares
+    description: Monday the week starts on
+    data_type: date
+
+  - &is_complete_week
+    name: is_complete_week
+    config:
+      meta:
+        concept: is_complete_week
+        concept_group: Traffic shares
+    description: >
+      Whether all seven days of the week are in the period covered. A partial week has a lower share of
+      the period's total.
+    data_type: boolean
+
+  - &hour_of_day
+    name: hour_of_day
+    config:
+      meta:
+        concept: hour_of_day
+        concept_group: Traffic shares
+    description: Hour of the day, in the reporting time zone
+    data_type: integer
+
+  - &day_of_week
+    name: day_of_week
+    config:
+      meta:
+        concept: day_of_week
+        concept_group: Traffic shares
+    description: Day of the week, numbered from 1 for Monday
+    data_type: integer
+
+  - &day_of_week_name
+    name: day_of_week_name
+    config:
+      meta:
+        concept: day_of_week_name
+        concept_group: Traffic shares
+    description: Name of the day of the week
+    data_type: varchar
+
+  - &session_share
+    name: session_share
+    config:
+      meta:
+        concept: session_share
+        concept_group: Traffic shares
+    description: The class's share of the period's sessions, excluding development visits
+    data_type: double
+
+  - &declared_bot_session_share
+    name: declared_bot_session_share
+    config:
+      meta:
+        concept: declared_bot_session_share
+        concept_group: Traffic shares
+    description: The kind of bot's share of declared bot sessions
+    data_type: double
+
+  - &hit_share
+    name: hit_share
+    config:
+      meta:
+        concept: hit_share
+        concept_group: Traffic shares
+    description: The week's share of the group's page views over the whole period
+    data_type: double
+
+  - &hour_of_day_hit_share
+    name: hour_of_day_hit_share
+    config:
+      meta:
+        concept: hour_of_day_hit_share
+        concept_group: Traffic shares
+    description: The hour's share of the group's page views
+    data_type: double
+
+  - &day_of_week_hit_share
+    name: day_of_week_hit_share
+    config:
+      meta:
+        concept: day_of_week_hit_share
+        concept_group: Traffic shares
+    description: The weekday's share of the group's page views in an average week
+    data_type: double
+
+  - &month_start
+    name: month_start
+    config:
+      meta:
+        concept: month_start
+        concept_group: Traffic shares
+    description: First day of the month
+    data_type: date
+
+  - &is_complete_month
+    name: is_complete_month
+    config:
+      meta:
+        concept: is_complete_month
+        concept_group: Traffic shares
+    description: Whether the whole month is in the period covered
+    data_type: boolean
+
+  - &country_group
+    name: country_group
+    config:
+      meta:
+        concept: country_group
+        concept_group: Traffic shares
+    description: Visitor's country if it's one of the period's most common, otherwise Other; Unknown when it can't be told
+    data_type: varchar
+
+  - &country_session_share
+    name: country_session_share
+    config:
+      meta:
+        concept: country_session_share
+        concept_group: Traffic shares
+    description: The country group's share of the traffic group's sessions in the month
+    data_type: double
+
+  - &country_group_rank
+    name: country_group_rank
+    config:
+      meta:
+        concept: country_group_rank
+        concept_group: Traffic shares
+    description: Order of the country group, most common country first, then Other, then Unknown
+    data_type: integer
+
+  # --- Lineage ---------------------------------------------------------------
+
+  - &loaded_at
+    name: loaded_at
+    config:
+      meta:
+        concept: loaded_at
+        concept_group: Lineage
+    description: When the row was last loaded. Recent rows are reloaded on each run.
+    data_type: timestamp with time zone
+
+  - &record_id
+    name: record_id
+    config:
+      meta:
+        concept: record_id
+        concept_group: Lineage
+    description: Identifier of the loaded row, the same across loads
+    data_type: varchar
+
+  - &hit_record_ids_hash
+    name: hit_record_ids_hash
+    config:
+      meta:
+        concept: hit_record_ids_hash
+        concept_group: Lineage
+    description: Fingerprint of the page views combined into the session's activity, for checking which went in
+    data_type: varchar
+
+  - &record_ids_hash
+    name: record_ids_hash
+    config:
+      meta:
+        concept: record_ids_hash
+        concept_group: Lineage
+    description: Fingerprint of the rows combined into this one, for checking which rows went in
+    data_type: varchar
+
+sources:
+  - name: shynet
+    schema: shynet
+    description: >
+      Daily traffic stats from a self-hosted Shynet instance's dashboard API
+      (https://github.com/milesmcc/shynet/blob/master/GUIDE.md#api), loaded by the dlt pipeline in src/web. The API
+      serves the dashboard's aggregates, not raw sessions and hits; the pipeline requests one day at a time, so every
+      table is per service per day (hourly_stats per hour). Each run re-fetches the last few days to complete partial
+      ones, and every table is upserted on its primary key.
+    config:
+      loaded_at_field: "to_timestamp(cast(_dlt_load_id as double))"
+      freshness:
+        error_after: {count: 1, period: day}
+    tables:
+      - name: services
+        description: The services the API token can see, one row per service, as of the latest load.
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: uuid
+
+          - <<: *service_name
+            name: name
+
+          - <<: *service_url
+            name: link
+            description: The service's website, as entered in Shynet; an empty string if none is set
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_stats
+        description: >
+          The dashboard's core stats per service per day. Averages and the bounce rate are null on days without
+          sessions. The day's latest rows can be partial until a later run re-fetches them.
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - *session_count
+
+          - *hit_count
+
+          - <<: *bounce_rate
+            name: bounce_rate_pct
+            description: Percentage (0-100) of the day's sessions with exactly one hit; null when there were no sessions
+
+          - <<: *avg_session_seconds
+            name: avg_session_duration
+            description: >
+              Mean session duration in seconds; null when there were no sessions. The API returns an ISO 8601
+              duration (e.g. P0DT00H01M30.5S), which the pipeline converts to seconds.
+
+          - <<: *avg_load_time_ms
+            name: avg_load_time
+
+          - *avg_hits_per_session
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: hourly_stats
+        description: >
+          Sessions and hits per service per hour, from the dashboard chart. Each day's request returns that day's
+          hours, so `date` is the day requested; hours that hadn't started when it was fetched are missing.
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - <<: *traffic_hour
+            name: hour
+
+          - *session_count
+
+          - *hit_count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_locations
+        description: >
+          Hits per page per service per day: the dashboard's top 300 pages. A page that drops out of the top 300 on a
+          re-fetch keeps its earlier row.
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - <<: *page_location
+            name: location
+            description: Full URL of the page hit, as the browser reported it; an empty string if unknown
+
+          - <<: *hit_count
+            name: count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_referrers
+        description: >
+          Sessions started per referrer per service per day: the top 300, counting each session's first hit.
+          Referrers matching the service's "hide referrer" regex are left out by Shynet.
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - <<: *referrer_url
+            name: referrer
+            description: URL that referred the visitor at the start of a session; an empty string for direct visits
+
+          - <<: *referral_count
+            name: count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_countries
+        description: Sessions started per visitor country per service per day (top 300).
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - <<: *visitor_country
+            name: country
+            description: ISO 3166-1 alpha-2 country code from GeoIP; an empty string if unknown
+
+          - <<: *session_count
+            name: count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_operating_systems
+        description: Sessions started per operating system per service per day (top 300).
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - <<: *operating_system
+            name: os
+
+          - <<: *session_count
+            name: count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_browsers
+        description: Sessions started per browser per service per day (top 300).
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - *browser
+
+          - <<: *session_count
+            name: count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_devices
+        description: Sessions started per device per service per day (top 300).
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - *device
+
+          - <<: *session_count
+            name: count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: daily_device_types
+        description: Sessions started per device type per service per day.
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *service_id
+            name: service_uuid
+
+          - <<: *traffic_date
+            name: date
+
+          - *device_type
+
+          - <<: *session_count
+            name: count
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+  - name: shynet_db
+    schema: shynet_db
+    description: >
+      Sessions and hits read straight from the Shynet instance's Postgres tables analytics_session and analytics_hit, by
+      the dlt pipeline in src/web. It connects as a read-only role that can't see the ip, latitude, longitude or
+      identifier columns. Rows are read incrementally on last_seen (with a one-hour lag for late commits) and upserted
+      on their primary keys, so rows deleted in Shynet are kept.
+    config:
+      loaded_at_field: "to_timestamp(cast(_dlt_load_id as double))"
+      freshness:
+        error_after: {count: 1, period: day}
+    tables:
+      - name: sessions
+        description: One row per Shynet session (analytics_session), updated while the session is active.
+        config:
+          # A quiet day writes no rows, so the table's own load ids can stop advancing. Use the pipeline's
+          # latest successful load instead.
+          loaded_at_query: "select max(inserted_at) from shynet_db._dlt_loads where status = 0"
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *session_id
+            name: uuid
+
+          - <<: *session_started_at
+            name: start_time
+
+          - <<: *session_last_seen_at
+            name: last_seen
+
+          - *user_agent
+
+          - *browser
+
+          - *device
+
+          - *device_type
+
+          - <<: *operating_system
+            name: os
+
+          - <<: *asn_organization
+            name: asn
+            description: Organisation owning the network of the session's IP address (MaxMind GeoLite2 ASN); an empty string if unknown
+
+          - <<: *visitor_country
+            name: country
+            description: ISO 3166-1 alpha-2 country code from GeoIP; an empty string if unknown
+
+          - <<: *visitor_time_zone
+            name: time_zone
+            description: IANA time zone of the session's IP location (MaxMind GeoIP); an empty string if unknown
+
+          - *service_id
+
+          - *is_bounce
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+      - name: hits
+        description: One row per Shynet hit (analytics_hit), i.e. one page view, updated by heartbeats while the page stays open.
+        config:
+          loaded_at_query: "select max(inserted_at) from shynet_db._dlt_loads where status = 0"
+        data_tests: [declared_types_match]
+        columns:
+
+          - <<: *hit_id
+            name: id
+
+          - <<: *is_initial_hit
+            name: initial
+
+          - <<: *hit_started_at
+            name: start_time
+
+          - <<: *hit_last_seen_at
+            name: last_seen
+
+          - <<: *heartbeat_count
+            name: heartbeats
+
+          - <<: *tracker_type
+            name: tracker
+
+          - <<: *page_location
+            name: location
+            description: Full URL of the page hit, as the browser reported it; an empty string if unknown
+
+          - <<: *hit_referrer_url
+            name: referrer
+            description: The page's referrer, as the browser reported it; an empty string if none was sent
+
+          - *session_id
+
+          - *service_id
+
+          - <<: *load_time_ms
+            name: load_time
+
+          - <<: *loaded_at
+            name: _dlt_load_id
+            description: dlt load id; the Unix timestamp (seconds) of the load start, as text
+            data_type: varchar
+
+          - <<: *record_id
+            name: _dlt_id
+
+models:
+
+  # --- Staging ---------------------------------------------------------------
+
+  - name: stg_shynet__services
+    description: Shynet services, one row per service. Renames `services` to the concept bank and nulls a blank link.
+    columns:
+
+      - <<: *service_id
+        data_tests: [unique, not_null]
+
+      - <<: *service_name
+        data_tests: [not_null]
+
+      - *service_url
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_stats
+    description: >
+      Core traffic stats, one row per service per day. Renames and casts `daily_stats` to the concept bank and
+      converts the bounce rate from a percentage to a fraction.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_count >= 0 and hit_count >= 0"
+      - dbt_utils.expression_is_true:  # averages exist exactly when there were sessions
+          arguments:
+            expression: "(session_count = 0) = (bounce_rate is null and avg_session_seconds is null and avg_hits_per_session is null)"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "bounce_rate between 0 and 1 and avg_session_seconds >= 0 and avg_load_time_ms >= 0"
+            config:
+              where: "session_count > 0"
+      - dbt_utils.expression_is_true:  # Shynet computes it as hits / sessions
+          arguments:
+            expression: "abs(avg_hits_per_session - hit_count / session_count) < 1e-9"
+            config:
+              where: "session_count > 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - <<: *session_count
+        data_tests: [not_null]
+
+      - <<: *hit_count
+        data_tests: [not_null]
+
+      - *bounce_rate
+
+      - *avg_session_seconds
+
+      - *avg_load_time_ms
+
+      - *avg_hits_per_session
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__hourly_stats
+    description: Sessions and hits, one row per service per hour. Renames and casts `hourly_stats` to the concept bank.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_hour]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_count >= 0 and hit_count >= 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - <<: *traffic_hour
+        data_tests: [not_null]
+
+      - <<: *session_count
+        data_tests: [not_null]
+
+      - <<: *hit_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_locations
+    description: Hits per page, one row per service per day per page (top 300). Renames and casts `daily_locations`.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, page_location]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "hit_count > 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - *page_location
+
+      - <<: *hit_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_referrers
+    description: >
+      Sessions started per referrer, one row per service per day per referrer (top 300); direct visits have a null
+      referrer. Renames and casts `daily_referrers`.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, referrer_url]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "referral_count > 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - *referrer_url
+
+      - <<: *referral_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_countries
+    description: Sessions started per country, one row per service per day per country (top 300). Renames and casts `daily_countries`.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, visitor_country]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_count > 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "regexp_full_match(visitor_country, '[A-Z]{2}')"
+            config:
+              where: "visitor_country is not null"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - *visitor_country
+
+      - <<: *session_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_operating_systems
+    description: >
+      Sessions started per operating system, one row per service per day per OS (top 300). Renames and casts
+      `daily_operating_systems`.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, operating_system]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_count > 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - <<: *operating_system
+        data_tests: [not_null]
+
+      - <<: *session_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_browsers
+    description: Sessions started per browser, one row per service per day per browser (top 300). Renames and casts `daily_browsers`.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, browser]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_count > 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - <<: *browser
+        data_tests: [not_null]
+
+      - <<: *session_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_devices
+    description: Sessions started per device, one row per service per day per device (top 300). Renames and casts `daily_devices`.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, device]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_count > 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - <<: *device
+        data_tests: [not_null]
+
+      - <<: *session_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet__daily_device_types
+    description: Sessions started per device type, one row per service per day per type. Renames and casts `daily_device_types`.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, device_type]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_count > 0"
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - <<: *device_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [PHONE, TABLET, DESKTOP, ROBOT, OTHER]
+
+      - <<: *session_count
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet_db__sessions
+    description: >
+      Shynet sessions, one row per session. Renames and casts `shynet_db.sessions` to the concept bank and nulls the
+      empty strings Shynet stores for unknown network, country and time zone.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "session_last_seen_at >= session_started_at"
+    columns:
+
+      - <<: *session_id
+        data_tests: [unique, not_null]
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: service_id
+
+      - <<: *session_started_at
+        data_tests: [not_null]
+
+      - <<: *session_last_seen_at
+        data_tests: [not_null]
+
+      - *user_agent
+
+      - *browser
+
+      - *device
+
+      - <<: *device_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [PHONE, TABLET, DESKTOP, ROBOT, OTHER]
+
+      - *operating_system
+
+      - *asn_organization
+
+      - *visitor_country
+
+      - *visitor_time_zone
+
+      - <<: *is_bounce
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  - name: stg_shynet_db__hits
+    description: >
+      Shynet hits (page views), one row per hit. Renames and casts `shynet_db.hits` to the concept bank and nulls the
+      empty strings Shynet stores for an unknown location or missing referrer.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "hit_last_seen_at >= hit_started_at and heartbeat_count >= 0"
+      - dbt_utils.expression_is_true:  # the pixel can't measure load time or send heartbeats
+          arguments:
+            expression: "load_time_ms is null and heartbeat_count = 0"
+            config:
+              where: "tracker_type = 'PIXEL'"
+    columns:
+
+      - <<: *hit_id
+        data_tests: [unique, not_null]
+
+      - <<: *session_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_shynet_db__sessions')
+                field: session_id
+
+      - *service_id
+
+      - <<: *is_initial_hit
+        data_tests: [not_null]
+
+      - <<: *hit_started_at
+        data_tests: [not_null]
+
+      - <<: *hit_last_seen_at
+        data_tests: [not_null]
+
+      - <<: *heartbeat_count
+        data_tests: [not_null]
+
+      - <<: *tracker_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [JS, PIXEL]
+
+      - *page_location
+
+      - *hit_referrer_url
+
+      - *load_time_ms
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests: [unique, not_null]
+
+  # --- Intermediate ----------------------------------------------------------
+
+  - name: int_shynet_db__session_activity
+    description: >
+      One row per session, with what its hits show: how many, how long pages stayed visible, which tracker recorded
+      them, where the visit landed and whether it was local development.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "pixel_hit_count <= session_hit_count and session_duration_seconds >= 0"
+      - dbt_utils.expression_is_true:  # Shynet recalculates is_bounce with each hit
+          arguments:
+            expression: "is_bounce = (session_hit_count = 1)"
+            config:
+              where: "session_hit_count > 0"
+    columns:
+
+      - <<: *session_id
+        data_tests: [unique, not_null]
+
+      - *service_id
+
+      - *session_started_at
+
+      - *session_last_seen_at
+
+      - *session_duration_seconds
+
+      - *user_agent
+
+      - *browser
+
+      - *device
+
+      - *device_type
+
+      - *operating_system
+
+      - *asn_organization
+
+      - *visitor_country
+
+      - *visitor_time_zone
+
+      - *is_bounce
+
+      - <<: *session_hit_count
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:  # every session has at least one hit
+              arguments:
+                min_value: 1
+
+      - *session_heartbeat_count
+
+      - *pixel_hit_count
+
+      - *landing_page_location
+
+      - *referrer_url
+
+      - *is_development_session
+
+      - *loaded_at
+
+      - *record_id
+
+      - *hit_record_ids_hash
+
+  - name: int_shynet_db__session_bot_signals
+    description: >
+      One row per session with each bot signal as its own flag, and the patterns that set the pattern-based ones.
+      fct_sessions combines them into a traffic class.
+    columns:
+
+      - <<: *session_id
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_shynet_db__session_activity')
+                field: session_id
+
+      - <<: *user_agent_pattern
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('bot_user_agent_patterns')
+                field: user_agent_pattern
+
+      - *user_agent_pattern_source
+
+      - *user_agent_pattern_note
+
+      - <<: *bot_category
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [search_crawler, ai_crawler, seo_crawler, social_preview, monitoring, security_scanner,
+                         advertising, feed_reader, archiver, academic, automation_tool, generic, other]
+
+      - <<: *asn_pattern
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('hosting_network_patterns')
+                field: asn_pattern
+
+      - *asn_pattern_source
+
+      - *asn_pattern_note
+
+      - <<: *network_category
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [cloud_hosting, vpn_proxy, security_scanner, crawler_operator]
+
+      - <<: *is_declared_bot
+        data_tests: [not_null]
+
+      - <<: *is_hosting_network
+        data_tests: [not_null]
+
+      - <<: *is_pixel_only
+        data_tests: [not_null]
+
+      - <<: *is_outdated_browser
+        data_tests: [not_null]
+
+      - <<: *is_malformed_user_agent
+        data_tests: [not_null]
+
+      - <<: *is_burst_session
+        data_tests: [not_null]
+
+      - <<: *is_no_engagement
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - *record_id
+
+  - name: int_shynet_db__reporting_period
+    description: >
+      The days the share marts cover, one row per service: from its first day with sessions to the last complete day
+      before the latest load.
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "period_end_date >= period_start_date"
+    columns:
+
+      - <<: *service_id
+        data_tests: [unique, not_null]
+
+      - *period_start_date
+
+      - *period_end_date
+
+  # --- Marts -----------------------------------------------------------------
+
+  - name: dim_services
+    description: The tracked websites, one row per Shynet service.
+    columns:
+
+      - <<: *service_id
+        data_tests: [unique, not_null]
+
+      - *service_name
+
+      - *service_url
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__services')
+                field: record_id
+
+  - name: fct_daily_traffic
+    description: >
+      Daily traffic per service: sessions, hits, bounce rate and averages. The latest days can be partial until a
+      later load re-fetches them.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date]
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_services')
+                field: service_id
+
+      - *traffic_date
+
+      - *session_count
+
+      - *hit_count
+
+      - *bounce_rate
+
+      - *avg_session_seconds
+
+      - *avg_load_time_ms
+
+      - *avg_hits_per_session
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__daily_stats')
+                field: record_id
+
+  - name: fct_hourly_traffic
+    description: Hourly sessions and hits per service, e.g. for time-of-day patterns.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_hour]
+    columns:
+
+      - <<: *service_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_services')
+                field: service_id
+
+      - *traffic_date
+
+      - *traffic_hour
+
+      - *session_count
+
+      - *hit_count
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_shynet__hourly_stats')
+                field: record_id
+
+  - name: fct_sessions
+    description: >
+      One row per Shynet session: who it looks like (browser, network, place), what it did (hits, heartbeats, landing
+      page, referrer), each bot signal, and a heuristic traffic class. See traffic_class for how the class is decided
+      and what it can't see.
+    data_tests:
+      - dbt_utils.expression_is_true:  # the class follows its precedence rules
+          arguments:
+            expression: >
+              (traffic_class = 'development') = is_development_session
+              and (traffic_class = 'declared_bot') = (is_declared_bot and not is_development_session)
+    columns:
+
+      - <<: *session_id
+        data_tests: [unique, not_null]
+
+      - <<: *service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_services')
+                field: service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - *session_started_at
+
+      - *session_last_seen_at
+
+      - *session_duration_seconds
+
+      - *user_agent
+
+      - *browser
+
+      - *device
+
+      - *device_type
+
+      - *operating_system
+
+      - *asn_organization
+
+      - *visitor_country
+
+      - *visitor_time_zone
+
+      - *is_bounce
+
+      - *session_hit_count
+
+      - *session_heartbeat_count
+
+      - *pixel_hit_count
+
+      - *landing_page_location
+
+      - *referrer_url
+
+      - <<: *traffic_class
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [development, declared_bot, likely_bot, possible_bot, human]
+
+      - <<: *traffic_group
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [bot, human, development]
+
+      - *bot_signals
+
+      - *bot_category
+
+      - *network_category
+
+      - *is_development_session
+
+      - *is_declared_bot
+
+      - *is_pixel_only
+
+      - *is_outdated_browser
+
+      - *is_malformed_user_agent
+
+      - *is_hosting_network
+
+      - *is_burst_session
+
+      - *is_no_engagement
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_shynet_db__sessions')
+                field: record_id
+
+      - *hit_record_ids_hash
+
+  - name: mart_daily_sessions_by_class
+    description: >
+      Sessions per service per day per traffic class, e.g. for charting the bot share over time. Days are in
+      var('shynet_time_zone'), like the dashboard API's. The classes are heuristic: see traffic_class.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_date, traffic_class]
+    columns:
+
+      - *service_id
+
+      - *traffic_date
+
+      - <<: *traffic_class
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [development, declared_bot, likely_bot, possible_bot, human]
+
+      - *session_count
+
+      - *record_ids_hash
+
+  - name: fct_hits
+    description: >
+      One row per Shynet hit (page view), with its session's traffic class and the local hour and weekday it started
+      in. For hit-level analysis; reports use the share marts, which show no counts.
+    data_tests:
+      - dbt_utils.expression_is_true:  # traffic_date and hour_of_day are the same local time
+          arguments:
+            expression: "hour_of_day between 0 and 23 and day_of_week between 1 and 7"
+    columns:
+
+      - <<: *hit_id
+        data_tests: [unique, not_null]
+
+      - <<: *session_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_sessions')
+                field: session_id
+
+      - *service_id
+
+      - <<: *traffic_date
+        data_tests: [not_null]
+
+      - *hour_of_day
+
+      - *day_of_week
+
+      - *hit_started_at
+
+      - *hit_last_seen_at
+
+      - *is_initial_hit
+
+      - *heartbeat_count
+
+      - *tracker_type
+
+      - *page_location
+
+      - *hit_referrer_url
+
+      - *load_time_ms
+
+      - <<: *traffic_class
+        data_tests: [not_null]  # every hit's session is classified
+
+      - <<: *traffic_group
+        data_tests: [not_null]
+
+      - *loaded_at
+
+      - <<: *record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_shynet_db__hits')
+                field: record_id
+
+  - name: mart_session_class_share
+    description: >
+      Each traffic class's share of a service's sessions over the reporting period, development sessions excluded.
+      Shares only, no counts: for reports that mustn't show traffic volumes.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_class]
+    columns:
+
+      - *service_id
+
+      - *period_start_date
+
+      - *period_end_date
+
+      - <<: *traffic_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [bot, human]
+
+      - <<: *traffic_class
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [declared_bot, likely_bot, possible_bot, human]
+
+      - <<: *session_share
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - *record_ids_hash
+
+  - name: mart_weekly_session_class_share
+    description: >
+      Each traffic class's share of a service's sessions per week, development sessions excluded. Every class appears
+      in every week with sessions (zero when absent), so stacked charts stay whole. Shares only, no counts.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, week_start, traffic_class]
+    columns:
+
+      - *service_id
+
+      - <<: *week_start
+        data_tests: [not_null]
+
+      - *is_complete_week
+
+      - <<: *traffic_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [bot, human]
+
+      - <<: *traffic_class
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [declared_bot, likely_bot, possible_bot, human]
+
+      - <<: *session_share
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - *record_ids_hash
+
+  - name: mart_declared_bot_category_share
+    description: >
+      Each bot category's share of a service's declared-bot sessions over the reporting period. Shares only, no
+      counts.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, bot_category]
+    columns:
+
+      - *service_id
+
+      - *period_start_date
+
+      - *period_end_date
+
+      - <<: *bot_category
+        data_tests: [not_null]
+
+      - <<: *declared_bot_session_share
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - *record_ids_hash
+
+  - name: mart_weekly_hit_share
+    description: >
+      Each week's share of a traffic group's hits over the reporting period: the shape of hit volume over time without
+      the volume. Every week appears for both groups (zero when a group had no hits). Development hits are excluded.
+      Shares only, no counts.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, week_start, traffic_group]
+    columns:
+
+      - *service_id
+
+      - <<: *week_start
+        data_tests: [not_null]
+
+      - *is_complete_week
+
+      - <<: *traffic_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [bot, human]
+
+      - <<: *hit_share
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - *record_ids_hash
+
+  - name: mart_hour_of_day_hit_share
+    description: >
+      Each hour of the day's share of a traffic group's hits over the reporting period, in the Shynet server's time
+      zone. All 24 hours appear for both groups. Development hits are excluded. Shares only, no counts.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_group, hour_of_day]
+    columns:
+
+      - *service_id
+
+      - *period_start_date
+
+      - *period_end_date
+
+      - <<: *hour_of_day
+        data_tests: [not_null]
+
+      - <<: *traffic_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [bot, human]
+
+      - <<: *hour_of_day_hit_share
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - *record_ids_hash
+
+  - name: mart_day_of_week_hit_share
+    description: >
+      Each weekday's share of a traffic group's hits in an average week of the reporting period, averaged per
+      occurrence of each weekday. All seven days appear for both groups. Development hits are excluded. Shares only,
+      no counts.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, traffic_group, day_of_week]
+    columns:
+
+      - *service_id
+
+      - *period_start_date
+
+      - *period_end_date
+
+      - <<: *day_of_week
+        data_tests: [not_null]
+
+      - *day_of_week_name
+
+      - <<: *traffic_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [bot, human]
+
+      - <<: *day_of_week_hit_share
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - *record_ids_hash
+
+  - name: mart_monthly_country_session_share
+    description: >
+      Each country's share of a traffic group's sessions per month. The most common countries over the reporting
+      period (var top_countries) keep their own row, the rest are Other, and sessions of unknown country are
+      Unknown. Every country group appears in every month a traffic group has sessions. Development sessions are
+      excluded. Shares only, no counts.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [service_id, month_start, traffic_group, country_group]
+    columns:
+
+      - *service_id
+
+      - <<: *month_start
+        data_tests: [not_null]
+
+      - *is_complete_month
+
+      - <<: *traffic_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [bot, human]
+
+      - <<: *country_group
+        data_tests: [not_null]
+
+      - <<: *country_group_rank
+        data_tests: [not_null]
+
+      - <<: *country_session_share
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+      - *record_ids_hash
+
+seeds:
+  - name: bot_user_agent_patterns
+    description: >
+      Patterns that recognise self-declared bots in user agents, by kind. Generated, don't edit: `web-seeds update`
+      (task seeds:update PROJECT=web) builds it from crawler-user-agents (github.com/monperrus/crawler-user-agents,
+      MIT, licence in seeds/licenses/) at a pinned commit, plus the local patterns in
+      seed_sources/bot_user_agent_patterns.local.csv. Each row records its source and a note.
+    config:
+      column_types: {user_agent_pattern: varchar, bot_category: varchar, user_agent_pattern_source: varchar,
+                     user_agent_pattern_note: varchar}
+    data_tests: [declared_types_match]
+    columns:
+
+      - <<: *user_agent_pattern
+        data_tests: [unique, not_null]
+
+      - <<: *bot_category
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [search_crawler, ai_crawler, seo_crawler, social_preview, monitoring, security_scanner,
+                         advertising, feed_reader, archiver, academic, automation_tool, generic]
+
+      - <<: *user_agent_pattern_source
+        data_tests: [not_null]
+
+      - <<: *user_agent_pattern_note
+        data_tests: [not_null]
+
+  - name: hosting_network_patterns
+    description: >
+      Patterns that recognise hosting, VPN, security-scanner and crawler-operator networks by organisation name.
+      Maintained by hand and partial: add a row, with its source and a note, when a hosting provider shows up as an
+      ordinary network in fct_sessions. `web-seeds check` validates it.
+    config:
+      column_types: {asn_pattern: varchar, network_category: varchar, asn_pattern_source: varchar,
+                     asn_pattern_note: varchar}
+    data_tests: [declared_types_match]
+    columns:
+
+      - <<: *asn_pattern
+        data_tests: [unique, not_null]
+
+      - <<: *network_category
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [cloud_hosting, vpn_proxy, security_scanner, crawler_operator]
+
+      - <<: *asn_pattern_source
+        data_tests: [not_null]
+
+      - <<: *asn_pattern_note
+        data_tests: [not_null]
+
+unit_tests:
+  - name: daily_stats_percentages_become_fractions
+    description: The 0-100 bounce rate becomes a fraction; days without sessions keep their null averages.
+    model: stg_shynet__daily_stats
+    given:
+      - input: source('shynet', 'daily_stats')
+        rows:
+          - {service_uuid: a, date: 2026-10-01, session_count: 4, hit_count: 6, bounce_rate_pct: 25,
+             avg_session_duration: 90.5, avg_load_time: 412.5, avg_hits_per_session: 1.5,
+             _dlt_load_id: "1790520062.5", _dlt_id: "a"}
+          - {service_uuid: a, date: 2026-10-02, session_count: 0, hit_count: 0, bounce_rate_pct: null,
+             avg_session_duration: null, avg_load_time: null, avg_hits_per_session: null,
+             _dlt_load_id: "1790520062.5", _dlt_id: "b"}
+    expect:
+      rows:
+        - {traffic_date: 2026-10-01, bounce_rate: 0.25, avg_session_seconds: 90.5, avg_load_time_ms: 412.5}
+        - {traffic_date: 2026-10-02, bounce_rate: null, avg_session_seconds: null, avg_load_time_ms: null}
+
+  - name: daily_referrers_blank_is_a_direct_visit
+    description: Shynet's empty-string referrer (a direct visit) becomes null; real referrers are unchanged.
+    model: stg_shynet__daily_referrers
+    given:
+      - input: source('shynet', 'daily_referrers')
+        rows:
+          - {service_uuid: a, date: 2026-10-01, referrer: "", count: 3, _dlt_load_id: "1790520062.5", _dlt_id: "a"}
+          - {service_uuid: a, date: 2026-10-01, referrer: "https://news.ycombinator.com/", count: 1,
+             _dlt_load_id: "1790520062.5", _dlt_id: "b"}
+    expect:
+      rows:
+        - {referrer_url: null, referral_count: 3}
+        - {referrer_url: "https://news.ycombinator.com/", referral_count: 1}
+
+  - name: session_activity_keeps_a_direct_landing_and_spots_development
+    description: >
+      The landing referrer comes from the first hit even when it's null (a direct visit), not from a later hit; a hit
+      on a local address marks the session as development.
+    model: int_shynet_db__session_activity
+    given:
+      - input: ref('stg_shynet_db__sessions')
+        rows:
+          - {session_id: a, session_started_at: "2026-10-01 10:00:00+00", session_last_seen_at: "2026-10-01 10:01:00+00"}
+          - {session_id: b, session_started_at: "2026-10-01 11:00:00+00", session_last_seen_at: "2026-10-01 11:00:00+00"}
+      - input: ref('stg_shynet_db__hits')
+        rows:
+          - {hit_id: 1, session_id: a, hit_started_at: "2026-10-01 10:00:00+00", tracker_type: JS, heartbeat_count: 4,
+             page_location: "https://example.com/", hit_referrer_url: null, record_id: h1}
+          - {hit_id: 2, session_id: a, hit_started_at: "2026-10-01 10:00:30+00", tracker_type: PIXEL, heartbeat_count: 0,
+             page_location: "https://example.com/about", hit_referrer_url: "https://example.com/", record_id: h2}
+          - {hit_id: 3, session_id: b, hit_started_at: "2026-10-01 11:00:00+00", tracker_type: JS, heartbeat_count: 0,
+             page_location: "http://127.0.0.1:5500/index.html", hit_referrer_url: null, record_id: h3}
+    expect:
+      rows:
+        - {session_id: a, session_duration_seconds: 60, session_hit_count: 2, session_heartbeat_count: 4, pixel_hit_count: 1,
+           landing_page_location: "https://example.com/", referrer_url: null, is_development_session: false}
+        - {session_id: b, session_duration_seconds: 0, session_hit_count: 1, session_heartbeat_count: 0, pixel_hit_count: 0,
+           landing_page_location: "http://127.0.0.1:5500/index.html", referrer_url: null, is_development_session: true}
+
+  - name: session_bot_signals_patterns_versions_and_bursts
+    description: >
+      A named bot pattern wins over a generic one; Shynet's ROBOT without a pattern is "other"; hosting networks match by
+      name; a year-old Chrome is outdated and a current one isn't; a bare "Mozilla/5.0" is malformed; three sessions of one
+      browser on one network within 10 minutes are a burst, but not when they're on different services (one visitor
+      on several sites); network patterns match regardless of case.
+    model: int_shynet_db__session_bot_signals
+    given:
+      - input: ref('int_shynet_db__session_activity')
+        rows:
+          - {session_id: bing, session_started_at: "2026-10-01 00:00:00+00", device_type: ROBOT, browser: bingbot,
+             user_agent: "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)", asn_organization: MICROSOFT-CORP-MSN-AS-BLOCK,
+             is_development_session: false}
+          - {session_id: robot, session_started_at: "2026-10-01 01:00:00+00", device_type: ROBOT, browser: Other,
+             user_agent: "Mozilla/5.0 (Unknown; Linux) SomeAgent/1.0", asn_organization: Example ISP, is_development_session: false}
+          - {session_id: old_chrome, session_started_at: "2026-10-01 02:00:00+00", device_type: DESKTOP, browser: Chrome,
+             user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+             asn_organization: OVH SAS, is_development_session: false}
+          - {session_id: new_chrome, session_started_at: "2026-10-01 03:00:00+00", device_type: DESKTOP, browser: Chrome,
+             user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+             asn_organization: Home ISP, is_development_session: false}
+          - {session_id: bare, session_started_at: "2026-10-01 04:00:00+00", device_type: OTHER, browser: Other,
+             user_agent: Mozilla/5.0, asn_organization: Home ISP, is_development_session: false}
+          - {session_id: burst_1, session_started_at: "2026-10-01 05:00:00+00", device_type: DESKTOP, browser: Edge,
+             user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edg/154.0", asn_organization: Fleet ISP, is_development_session: false}
+          - {session_id: burst_2, session_started_at: "2026-10-01 05:04:00+00", device_type: DESKTOP, browser: Edge,
+             user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edg/154.0", asn_organization: Fleet ISP, is_development_session: false}
+          - {session_id: burst_3, session_started_at: "2026-10-01 05:09:00+00", device_type: DESKTOP, browser: Edge,
+             user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edg/154.0", asn_organization: Fleet ISP, is_development_session: false}
+          - {session_id: site_a, service_id: a, session_started_at: "2026-10-01 07:00:00+00", device_type: DESKTOP, browser: Edge,
+             user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edg/154.1", asn_organization: Home ISP, is_development_session: false}
+          - {session_id: site_b, service_id: b, session_started_at: "2026-10-01 07:02:00+00", device_type: DESKTOP, browser: Edge,
+             user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edg/154.1", asn_organization: Home ISP, is_development_session: false}
+          - {session_id: site_c, service_id: c, session_started_at: "2026-10-01 07:04:00+00", device_type: DESKTOP, browser: Edge,
+             user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edg/154.1", asn_organization: Home ISP, is_development_session: false}
+          - {session_id: hetzner, session_started_at: "2026-10-01 08:00:00+00", device_type: DESKTOP, browser: Chrome,
+             user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+             asn_organization: Hetzner Online GmbH, is_development_session: false}
+      - input: ref('bot_user_agent_patterns')
+        rows:
+          - {user_agent_pattern: "bingbot|bingpreview|msnbot", bot_category: search_crawler}
+          - {user_agent_pattern: "(?i)[a-z]bot[/;)_-]|[a-z]bot$", bot_category: generic}
+      - input: ref('hosting_network_patterns')
+        rows:
+          - {asn_pattern: microsoft-corp-msn-as-block, network_category: crawler_operator}
+          - {asn_pattern: ovh, network_category: cloud_hosting}
+          - {asn_pattern: ^Hetzner, network_category: cloud_hosting}
+    expect:
+      rows:
+        - {session_id: bing, bot_category: search_crawler, network_category: crawler_operator, is_declared_bot: true,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: false}
+        - {session_id: robot, bot_category: other, network_category: null, is_declared_bot: true,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: false}
+        - {session_id: old_chrome, bot_category: null, network_category: cloud_hosting, is_declared_bot: false,
+           is_outdated_browser: true, is_malformed_user_agent: false, is_burst_session: false}
+        - {session_id: new_chrome, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: false}
+        - {session_id: bare, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: true, is_burst_session: false}
+        - {session_id: burst_1, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: true}
+        - {session_id: burst_2, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: true}
+        - {session_id: burst_3, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: true}
+        - {session_id: site_a, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: false}
+        - {session_id: site_b, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: false}
+        - {session_id: site_c, bot_category: null, network_category: null, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: false}
+        - {session_id: hetzner, bot_category: null, network_category: cloud_hosting, is_declared_bot: false,
+           is_outdated_browser: false, is_malformed_user_agent: false, is_burst_session: false}
+
+  - name: sessions_are_classed_by_signal_precedence
+    description: >
+      Development beats everything, a declared bot beats the other signals, a strong signal alone is likely_bot, a moderate
+      one needs backing for likely_bot and is possible_bot alone, and no_engagement alone stays human.
+    model: fct_sessions
+    given:
+      - input: ref('int_shynet_db__session_activity')
+        rows:
+          - {session_id: dev_bot, session_started_at: "2026-10-01 12:00:00+00", is_development_session: true}
+          - {session_id: declared, session_started_at: "2026-10-01 12:00:00+00", is_development_session: false}
+          - {session_id: pixel, session_started_at: "2026-10-01 12:00:00+00", is_development_session: false}
+          - {session_id: hosted_bounce, session_started_at: "2026-10-01 12:00:00+00", is_development_session: false}
+          - {session_id: hosted, session_started_at: "2026-10-01 12:00:00+00", is_development_session: false}
+          - {session_id: bounce, session_started_at: "2026-10-01 12:00:00+00", is_development_session: false}
+          - {session_id: clean, session_started_at: "2026-10-01 03:00:00+00", is_development_session: false}
+      - input: ref('int_shynet_db__session_bot_signals')
+        format: csv
+        rows: |
+          session_id,is_declared_bot,is_pixel_only,is_outdated_browser,is_malformed_user_agent,is_hosting_network,is_burst_session,is_no_engagement
+          dev_bot,true,false,false,false,false,false,false
+          declared,true,false,false,false,false,false,true
+          pixel,false,true,false,false,false,false,false
+          hosted_bounce,false,false,false,false,true,false,true
+          hosted,false,false,false,false,true,false,false
+          bounce,false,false,false,false,false,false,true
+          clean,false,false,false,false,false,false,false
+    expect:
+      rows:
+        - {session_id: dev_bot, traffic_class: development, bot_signals: declared_bot, traffic_date: 2026-10-01}
+        - {session_id: declared, traffic_class: declared_bot, bot_signals: "declared_bot, no_engagement", traffic_date: 2026-10-01}
+        - {session_id: pixel, traffic_class: likely_bot, bot_signals: pixel_only, traffic_date: 2026-10-01}
+        - {session_id: hosted_bounce, traffic_class: likely_bot, bot_signals: "hosting_network, no_engagement", traffic_date: 2026-10-01}
+        - {session_id: hosted, traffic_class: possible_bot, bot_signals: hosting_network, traffic_date: 2026-10-01}
+        - {session_id: bounce, traffic_class: human, bot_signals: no_engagement, traffic_date: 2026-10-01}
+        - {session_id: clean, traffic_class: human, bot_signals: null, traffic_date: 2026-09-30}  # 03:00 UTC is the day before in New York

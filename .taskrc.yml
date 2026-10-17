@@ -1,0 +1,3 @@
+# Prompt for missing required variables (e.g. PROJECT in profile:ingestion). Prompts need a terminal,
+# so in CI and other non-interactive runs a missing variable still fails instead of waiting for input.
+interactive: true

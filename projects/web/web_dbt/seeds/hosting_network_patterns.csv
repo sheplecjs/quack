@@ -1,0 +1,39 @@
+asn_pattern,network_category,asn_pattern_source,asn_pattern_note
+^google$,crawler_operator,"local: observed in sessions, Oct 2026","Google's main network, where Googlebot crawls from"
+microsoft-corp-msn-as-block,crawler_operator,"local: observed in sessions, Oct 2026","Microsoft's network for Bing services, where Bingbot crawls from"
+apple-engineering,crawler_operator,"local: observed in sessions, Oct 2026","Apple's network, where Applebot crawls from"
+^facebook$,crawler_operator,"local: observed in sessions, Oct 2026","Meta's network, where its link-preview and indexing crawlers run"
+yandex,crawler_operator,"local: known provider, not yet observed","Yandex's networks, where YandexBot crawls from"
+baidu,crawler_operator,"local: known provider, not yet observed","Baidu's networks, where Baiduspider crawls from"
+amazon,cloud_hosting,"local: observed in sessions, Oct 2026","Amazon Web Services (AMAZON-02, AMAZON-AES and others)"
+google-cloud-platform,cloud_hosting,"local: observed in sessions, Oct 2026",Google Cloud
+microsoft-corp-azure|^microsoft-azure,cloud_hosting,"local: known provider, not yet observed",Microsoft Azure
+oracle-bmc|oracle cloud,cloud_hosting,"local: known provider, not yet observed",Oracle Cloud Infrastructure
+alibaba,cloud_hosting,"local: known provider, not yet observed",Alibaba Cloud
+tencent,cloud_hosting,"local: observed in sessions, Oct 2026",Tencent Cloud
+huawei cloud|huawei clouds,cloud_hosting,"local: known provider, not yet observed",Huawei Cloud
+digitalocean,cloud_hosting,"local: known provider, not yet observed",DigitalOcean
+linode|akamai connected cloud,cloud_hosting,"local: known provider, not yet observed",Akamai Connected Cloud (formerly Linode)
+ovh,cloud_hosting,"local: observed in sessions, Oct 2026","OVHcloud, dedicated servers and cloud"
+hetzner,cloud_hosting,"local: observed in sessions, Oct 2026","Hetzner, dedicated servers and cloud"
+scaleway|^online s\.a\.s,cloud_hosting,"local: observed in sessions, Oct 2026","Scaleway (formerly Online S.A.S.), cloud and dedicated servers"
+leaseweb,cloud_hosting,"local: observed in sessions, Oct 2026","Leaseweb, dedicated servers and cloud"
+contabo,cloud_hosting,"local: known provider, not yet observed","Contabo, VPS and dedicated servers"
+vultr|choopa|the constant company,cloud_hosting,"local: known provider, not yet observed","Vultr (operated by The Constant Company, formerly Choopa)"
+ionos|1&1,cloud_hosting,"local: known provider, not yet observed","IONOS (formerly 1&1), hosting and cloud"
+hostinger,cloud_hosting,"local: known provider, not yet observed","Hostinger, web hosting and VPS"
+colocrossing,cloud_hosting,"local: known provider, not yet observed","ColoCrossing, dedicated servers and VPS"
+psychz,cloud_hosting,"local: known provider, not yet observed","Psychz Networks, dedicated servers"
+g-core|gcore,cloud_hosting,"local: known provider, not yet observed","Gcore, cloud and CDN"
+zenlayer,cloud_hosting,"local: known provider, not yet observed","Zenlayer, edge cloud and bare metal"
+egihosting,cloud_hosting,"local: observed in sessions, Oct 2026","EGIHosting, US dedicated servers"
+quickpacket,cloud_hosting,"local: observed in sessions, Oct 2026","QuickPacket, US dedicated servers and VPS"
+reliablesite,cloud_hosting,"local: observed in sessions, Oct 2026","ReliableSite, US dedicated servers"
+ghostnet,cloud_hosting,"local: observed in sessions, Oct 2026","GHOSTnet, German hosting provider"
+firstcolo,cloud_hosting,"local: observed in sessions, Oct 2026","firstcolo, German colocation and hosting"
+custodiandc,cloud_hosting,"local: observed in sessions, Oct 2026","Custodian Data Centres, UK colocation"
+servers\.com|fdcservers|kamatera|hivelocity,cloud_hosting,"local: known provider, not yet observed","Dedicated-server and cloud hosts: servers.com, FDCservers, Kamatera, Hivelocity"
+datacamp|cdn77,vpn_proxy,"local: observed in sessions, Oct 2026","DataCamp (CDN77), whose servers many VPN services run on"
+m247,vpn_proxy,"local: known provider, not yet observed","M247, hosting that many VPN services run on"
+hostroyale,vpn_proxy,"local: observed in sessions, Oct 2026","HostRoyale, hosting that VPN and proxy services run on"
+opendns|censys|shodan|palo alto networks,security_scanner,"local: observed in sessions, Oct 2026","Security scanners and link checkers: Cisco OpenDNS (observed), Censys, Shodan, Palo Alto Networks"

@@ -1,0 +1,287 @@
+version: 2
+
+# Data dictionary: documents every source, seed and model column in the project, resolved to the concept it
+# is defined by. Concepts carry their identity in meta.concept, set in each domain's concept bank.
+
+anchors:
+
+  # --- Data dictionary -------------------------------------------------------
+
+  - &concept
+    name: concept
+    config:
+      meta:
+        concept: concept
+        concept_group: Data dictionary
+    description: The concept the column represents; null if it isn't linked to one
+    data_type: varchar
+
+  - &concept_group
+    name: concept_group
+    config:
+      meta:
+        concept: concept_group
+        concept_group: Data dictionary
+    description: Category the concept belongs to
+    data_type: varchar
+
+  - &concept_description
+    name: concept_description
+    config:
+      meta:
+        concept: concept_description
+        concept_group: Data dictionary
+    description: Definition of the concept; null if no final or intermediate table uses it
+    data_type: varchar
+
+  - &concept_data_type
+    name: concept_data_type
+    config:
+      meta:
+        concept: concept_data_type
+        concept_group: Data dictionary
+    description: Data type of the concept
+    data_type: varchar
+
+  - &domain
+    name: domain
+    config:
+      meta:
+        concept: domain
+        concept_group: Data dictionary
+    description: Subject area the column is documented in
+    data_type: varchar
+
+  - &layer
+    name: layer
+    config:
+      meta:
+        concept: layer
+        concept_group: Data dictionary
+    description: Stage the column sits at, from raw input to final table
+    data_type: varchar
+
+  - &resource_type
+    name: resource_type
+    config:
+      meta:
+        concept: resource_type
+        concept_group: Data dictionary
+    description: Kind of object the column belongs to
+    data_type: varchar
+
+  - &node_id
+    name: node_id
+    config:
+      meta:
+        concept: node_id
+        concept_group: Data dictionary
+    description: Unique identifier of the table the column belongs to
+    data_type: varchar
+
+  - &node_name
+    name: node_name
+    config:
+      meta:
+        concept: node_name
+        concept_group: Data dictionary
+    description: Name of the table the column belongs to
+    data_type: varchar
+
+  - &node_relation
+    name: node_relation
+    config:
+      meta:
+        concept: node_relation
+        concept_group: Data dictionary
+    description: Where the column's table can be queried
+    data_type: varchar
+
+  - &node_description
+    name: node_description
+    config:
+      meta:
+        concept: node_description
+        concept_group: Data dictionary
+    description: Description of the column's table
+    data_type: varchar
+
+  - &materialization
+    name: materialization
+    config:
+      meta:
+        concept: materialization
+        concept_group: Data dictionary
+    description: How the column's table is stored
+    data_type: varchar
+
+  - &upstream_nodes
+    name: upstream_nodes
+    config:
+      meta:
+        concept: upstream_nodes
+        concept_group: Data dictionary
+    description: Tables the column's table is built from; null for a raw input
+    data_type: varchar
+
+  - &column_position
+    name: column_position
+    config:
+      meta:
+        concept: column_position
+        concept_group: Data dictionary
+    description: Position of the column in its table's documentation, from 1
+    data_type: integer
+
+  - &column_name
+    name: column_name
+    config:
+      meta:
+        concept: column_name
+        concept_group: Data dictionary
+    description: Name of the column
+    data_type: varchar
+
+  - &column_description
+    name: column_description
+    config:
+      meta:
+        concept: column_description
+        concept_group: Data dictionary
+    description: Description of the column as documented in its table
+    data_type: varchar
+
+  - &column_data_type
+    name: column_data_type
+    config:
+      meta:
+        concept: column_data_type
+        concept_group: Data dictionary
+    description: Data type of the column as documented in its table
+    data_type: varchar
+
+  - &column_tests
+    name: column_tests
+    config:
+      meta:
+        concept: column_tests
+        concept_group: Data dictionary
+    description: Data tests that check the column
+    data_type: varchar
+
+  - &is_unique_key
+    name: is_unique_key
+    config:
+      meta:
+        concept: is_unique_key
+        concept_group: Data dictionary
+    description: Whether the column is, or is part of, a key that identifies each row of its table
+    data_type: boolean
+
+  - &is_renamed
+    name: is_renamed
+    config:
+      meta:
+        concept: is_renamed
+        concept_group: Data dictionary
+    description: Whether the column's name differs from its concept's
+    data_type: boolean
+
+  - &is_retyped
+    name: is_retyped
+    config:
+      meta:
+        concept: is_retyped
+        concept_group: Data dictionary
+    description: Whether the column's data type differs from its concept's
+    data_type: boolean
+
+  - &is_redescribed
+    name: is_redescribed
+    config:
+      meta:
+        concept: is_redescribed
+        concept_group: Data dictionary
+    description: Whether the column's description differs from its concept's
+    data_type: boolean
+
+  - &has_concept_conflict
+    name: has_concept_conflict
+    config:
+      meta:
+        concept: has_concept_conflict
+        concept_group: Data dictionary
+    description: Whether tables define the column's concept inconsistently
+    data_type: boolean
+
+models:
+  - name: mart_data_dictionary
+    description: >
+      The user-facing data dictionary: one row per documented column of every source, seed and model, with its
+      concept, where it sits (domain, layer, node), how it's tested, and where it diverges from its concept.
+      Built from dbt's graph at compile time, so rebuild it after documentation changes. Group by concept for a
+      glossary, or filter to a node for its column reference.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [node_id, column_name]
+      - dbt_utils.expression_is_true:  # Declared Divergence: models reference concepts unchanged
+          arguments:
+            expression: "resource_type <> 'model' or not (is_renamed or is_retyped or is_redescribed)"
+    columns:
+
+      - <<: *concept
+        data_tests:
+          - not_null  # every documented column is anchored to a concept
+
+      - *concept_group
+
+      - <<: *concept_description
+        data_tests:
+          - not_null  # every concept is used by at least one model
+
+      - *concept_data_type
+
+      - *domain
+
+      - *layer
+
+      - *resource_type
+
+      - <<: *node_id
+        data_tests: [not_null]
+
+      - *node_name
+
+      - *node_relation
+
+      - *node_description
+
+      - *materialization
+
+      - *upstream_nodes
+
+      - *column_position
+
+      - <<: *column_name
+        data_tests: [not_null]
+
+      - *column_description
+
+      - *column_data_type
+
+      - *column_tests
+
+      - *is_unique_key
+
+      - *is_renamed
+
+      - *is_retyped
+
+      - *is_redescribed
+
+      - <<: *has_concept_conflict
+        data_tests:
+          - accepted_values:  # models agree on every concept
+              arguments:
+                values: [false]

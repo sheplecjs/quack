@@ -10,14 +10,19 @@ wheels/
 .venv
 
 # Local DuckDB data
-data/
 *.duckdb
 *.duckdb.wal
+data/*/*
+!data/*/report/
 
 # Caches
 .pytest_cache/
 .ruff_cache/
+__marimo__/
 
+
+# Task's fingerprints for tasks with sources
+.task/
 
 # Local task list
 TODO.md

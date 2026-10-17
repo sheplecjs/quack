@@ -1,0 +1,5 @@
+sources:
+  analytics:
+    type: dbt_profile
+    profile: web
+    target: local-dev

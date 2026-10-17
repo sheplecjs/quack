@@ -5,6 +5,8 @@ ignore-from-file:
   - .gitignore
   - projects/financial/.gitignore
   - projects/financial/financial_dbt/.gitignore
+  - projects/web/.gitignore
+  - projects/web/web_dbt/.gitignore
 
 rules:
   document-start: disable

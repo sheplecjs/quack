@@ -1,0 +1,423 @@
+title: Web Traffic
+notes: |
+  Who and what visits the site, and when.
+
+source: analytics
+
+style:
+  frame:
+    width: 1440
+  charts:
+    category_colors:
+      # Groupings that aren't one country stay grey, so the named countries carry the color
+      country_group:
+        values:
+          Other: dbt-grays.muted
+          Unknown: dbt-grays.border
+  variables:
+    position: title-inline
+
+variables:
+  service:
+    notes: The website the board shows, by name. Hidden, because a static page can't change it.
+    default: Profile
+    visible: false
+
+queries:
+  # ── The anchor ──────────────────────────────────────────────────────────
+  # Every query reads its service from here, so no chart can show another site's shares.
+  selected_service:
+    notes: The identifier of the website the board shows
+    sql: |
+      SELECT service_id
+      FROM dim_services
+      WHERE service_name = {{ service }}
+
+  # ── KPI rail ────────────────────────────────────────────────────────────
+  session_kpis:
+    notes: Whole-period shares of sessions by class, and search engines' share of declared bots
+    sql: |
+      SELECT
+        sum(session_share) FILTER (WHERE traffic_group = 'bot') AS bot_share,
+        sum(session_share) FILTER (WHERE traffic_class = 'declared_bot') AS declared_bot_share,
+        sum(session_share) FILTER (WHERE traffic_class IN ('likely_bot', 'possible_bot')) AS undeclared_bot_share,
+        sum(session_share) FILTER (WHERE traffic_class = 'likely_bot') AS likely_bot_share,
+        sum(session_share) FILTER (WHERE traffic_class = 'human') AS human_share,
+        (
+          SELECT declared_bot_session_share
+          FROM mart_declared_bot_category_share
+          WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+            AND bot_category = 'search_crawler'
+        ) AS search_engine_share_of_declared
+      FROM mart_session_class_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+
+  search_engine_kpi:
+    notes: Search engines' share of all sessions, and of declared bot sessions
+    sql: |
+      SELECT
+        declared_bot_share * search_engine_share_of_declared AS search_engine_share,
+        search_engine_share_of_declared
+      FROM {{ queries.session_kpis }}
+
+  # ── Table: sessions by class over the whole period ──────────────────────
+  class_share:
+    notes: Each class's share of the period's sessions, labelled for reading
+    sql: |
+      SELECT
+        CASE traffic_class
+          WHEN 'declared_bot' THEN 'Declared bot'
+          WHEN 'likely_bot' THEN 'Likely bot'
+          WHEN 'possible_bot' THEN 'Possible bot'
+          ELSE 'Human'
+        END AS traffic_class,
+        session_share,
+        session_share AS share_bar
+      FROM mart_session_class_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+      ORDER BY session_share DESC
+
+  # ── Hero: weekly class shares ───────────────────────────────────────────
+  weekly_class_share:
+    notes: Each class's share of each week's sessions
+    sql: |
+      SELECT
+        week_start,
+        CASE traffic_class
+          WHEN 'declared_bot' THEN 'Declared bot'
+          WHEN 'likely_bot' THEN 'Likely bot'
+          WHEN 'possible_bot' THEN 'Possible bot'
+          ELSE 'Human'
+        END AS traffic_class,
+        session_share
+      FROM mart_weekly_session_class_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+      ORDER BY week_start, traffic_class
+
+  # ── Hit volume over time, without the volume ────────────────────────────
+  weekly_hit_share:
+    notes: Each complete week's share of each group's page views over the period; partial weeks are left out
+    sql: |
+      SELECT
+        week_start,
+        CASE traffic_group WHEN 'bot' THEN 'Bots' ELSE 'Humans' END AS traffic_group,
+        hit_share
+      FROM mart_weekly_hit_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+        AND is_complete_week
+      ORDER BY week_start, traffic_group
+
+  # ── Seasonal profiles ───────────────────────────────────────────────────
+  day_of_week_hit_share:
+    notes: Each weekday's share of an average week's page views, per group
+    sql: |
+      SELECT
+        day_of_week,
+        left(day_of_week_name, 3) AS day,
+        CASE traffic_group WHEN 'bot' THEN 'Bots' ELSE 'Humans' END AS traffic_group,
+        day_of_week_hit_share
+      FROM mart_day_of_week_hit_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+      ORDER BY day_of_week, traffic_group
+
+  hour_of_day_hit_share:
+    notes: Each hour's share of each group's page views, in the reporting time zone
+    sql: |
+      SELECT
+        hour_of_day,
+        CASE traffic_group WHEN 'bot' THEN 'Bots' ELSE 'Humans' END AS traffic_group,
+        hour_of_day_hit_share
+      FROM mart_hour_of_day_hit_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+      ORDER BY hour_of_day, traffic_group
+
+  # ── Where sessions come from ────────────────────────────────────────────
+  monthly_country_share:
+    notes: Each country group's share of each month's sessions, humans and bots separately
+    sql: |
+      SELECT
+        month_start,
+        CASE traffic_group WHEN 'bot' THEN 'Bots' ELSE 'Humans' END AS traffic_group,
+        country_group,
+        country_group_rank,
+        country_session_share
+      FROM mart_monthly_country_session_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+      ORDER BY month_start, traffic_group, country_group_rank
+
+  # ── Declared bots by kind ───────────────────────────────────────────────
+  bot_categories:
+    notes: Each kind of declared bot's share of declared bot sessions, labelled for reading
+    sql: |
+      SELECT
+        CASE bot_category
+          WHEN 'search_crawler' THEN 'Search engine'
+          WHEN 'ai_crawler' THEN 'AI crawler'
+          WHEN 'seo_crawler' THEN 'SEO crawler'
+          WHEN 'social_preview' THEN 'Social preview'
+          WHEN 'automation_tool' THEN 'Automation tool'
+          WHEN 'security_scanner' THEN 'Security scanner'
+          WHEN 'feed_reader' THEN 'Feed reader'
+          -- Bots that aren't on the list of known bots: one bucket for a viewer
+          WHEN 'generic' THEN 'Other'
+          WHEN 'other' THEN 'Other'
+          ELSE upper(left(bot_category, 1)) || replace(substr(bot_category, 2), '_', ' ')
+        END AS bot_category,
+        sum(declared_bot_session_share) AS declared_bot_session_share
+      FROM mart_declared_bot_category_share
+      WHERE service_id = (SELECT service_id FROM {{ queries.selected_service }})
+      GROUP BY 1
+
+charts:
+  # ── KPIs ────────────────────────────────────────────────────────────────
+  kpi_bot_share:
+    type: kpi
+    query: session_kpis
+    label: Bot share of sessions
+    notes: The share of sessions classed as any kind of bot, and how much is declared
+    value: bot_share
+    style:
+      value:
+        format: percent_whole
+    support:
+      value: declared_bot_share
+      label: say they're bots
+      format: percent_whole
+
+  kpi_undeclared:
+    type: kpi
+    query: session_kpis
+    label: Undeclared bots
+    notes: "Sessions that look automated without saying so: likely bots show a strong sign of automation, possible bots a moderate one"
+    value: undeclared_bot_share
+    style:
+      value:
+        format: percent_whole
+    support:
+      value: likely_bot_share
+      label: likely (the rest possible)
+      format: percent_whole
+
+  kpi_human_share:
+    type: kpi
+    query: session_kpis
+    label: Human share of sessions
+    notes: The share of sessions with no sign of automation
+    value: human_share
+    style:
+      value:
+        format: percent_whole
+
+  kpi_search_crawlers:
+    type: kpi
+    query: search_engine_kpi
+    label: Search engine sessions
+    notes: How much of all traffic is search engines indexing the site, and their part of the declared bots
+    value: search_engine_share
+    style:
+      value:
+        format: percent_whole
+    support:
+      value: search_engine_share_of_declared
+      label: of declared bots
+      format: percent_whole
+
+  # ── Class table ─────────────────────────────────────────────────────────
+  class_table:
+    type: table
+    query: class_share
+    title: Sessions by class
+    subtitle: Whole period
+    notes: The overall mix of human and bot sessions, as shares
+    style:
+      pagination:
+        enabled: false
+      columns:
+        traffic_class:
+          label: Class
+        session_share:
+          label: Share
+          format: percent_whole
+          align: right
+        share_bar:
+          label: " "
+          spark:
+            type: bar
+
+  # ── Hero ────────────────────────────────────────────────────────────────
+  hero_weekly_class_share:
+    query: weekly_class_share
+    type: area
+    title: Who visits, week by week
+    subtitle: Share of each week's sessions by class
+    notes: How the bot share moves over time, and which kind of bot drives it. Weeks with few sessions move in large steps.
+    x: week_start
+    y: session_share
+    color: traffic_class
+    sort:
+      by: traffic_class
+      order: asc
+    style:
+      stack: zero
+      color:
+        categorical:
+          palette: ["#c2410c", "#15803d", "#f97316", "#fdba74"]  # Declared, Human, Likely, Possible (alphabetical)
+      axis_y:
+        labels:
+          align: right
+          format: percent_whole
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+
+  weekly_hits_trend:
+    query: weekly_hit_share
+    type: line
+    title: Page views over time
+    subtitle: Each complete week's share of the period's page views, humans and bots separately
+    notes: When each group's page views rose or fell, without the volume itself
+    x: week_start
+    y: hit_share
+    color: traffic_group
+    sort:
+      by: traffic_group
+      order: asc
+    style:
+      color:
+        categorical:
+          palette: ["#c2410c", "#15803d"]  # Bots, Humans (alphabetical)
+      axis_y:
+        labels:
+          align: right
+          format: percent_whole
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+
+  # ── Right column ────────────────────────────────────────────────────────
+  day_of_week_bars:
+    query: day_of_week_hit_share
+    type: bar
+    title: Page views by day of week
+    subtitle: Share of an average week's page views
+    notes: Which days each group is busiest
+    x: day
+    y: day_of_week_hit_share
+    color: traffic_group
+    sort:
+      by: day_of_week
+      order: asc
+    style:
+      orientation: vertical
+      stack: none
+      color:
+        categorical:
+          palette: ["#c2410c", "#15803d"]  # Bots, Humans (alphabetical)
+      axis_y:
+        labels:
+          align: right
+          format: percent_whole
+
+  hour_of_day_trend:
+    query: hour_of_day_hit_share
+    type: line
+    title: Page views by hour of day
+    subtitle: Share of each group's page views, US Eastern time
+    notes: What time of day each group arrives
+    x: hour_of_day
+    y: hour_of_day_hit_share
+    color: traffic_group
+    sort:
+      by: traffic_group
+      order: asc
+    style:
+      color:
+        categorical:
+          palette: ["#c2410c", "#15803d"]  # Bots, Humans (alphabetical)
+      axis_y:
+        labels:
+          align: right
+          format: percent_whole
+
+  # ── Countries ───────────────────────────────────────────────────────────
+  country_share_bars:
+    query: monthly_country_share
+    type: bar
+    title: Where sessions come from
+    subtitle: Share of each month's sessions by country, the most common by name
+    notes: How the visitor mix by country shifts over time; humans and bots often come from different places
+    x: month_start
+    y: country_session_share
+    color: country_group
+    multiples:
+      columns: traffic_group
+    sort:
+      by: country_group_rank
+      order: asc
+    style:
+      orientation: vertical
+      stack: zero
+      axis_y:
+        labels:
+          align: right
+          format: percent_whole
+      axis_x:
+        labels:
+          time_unit: yearmonth
+
+  # ── Bottom ──────────────────────────────────────────────────────────────
+  bot_category_bars:
+    query: bot_categories
+    type: bar
+    title: Declared bots by kind
+    subtitle: Share of sessions from declared bots
+    notes: What declared bots say they're for
+    x: bot_category
+    y: declared_bot_session_share
+    style:
+      color:
+        static: "#c2410c"  # the bot color used across the board
+      orientation: horizontal
+      axis_y:
+        labels:
+          format: percent_whole
+
+rows:
+- text: "[Data dictionary →](data_dictionary.html): what every figure means, where it comes from and its limitations"
+- cols:
+  - width: "17%"
+    rows:
+    - kpi_bot_share
+    - kpi_undeclared
+    - kpi_human_share
+    - kpi_search_crawlers
+    - class_table
+  - width: "55%"
+    rows:
+    - hero_weekly_class_share
+    - weekly_hits_trend
+  - width: "28%"
+    rows:
+    - day_of_week_bars
+    - hour_of_day_trend
+- country_share_bars
+- cols:
+  - width: "50%"
+    rows:
+    - bot_category_bars
+  - width: "50%"
+    rows:
+    - text: |
+        **How sessions are classed.** Each session gets the first class that applies:
+
+        - **Declared bot**: it says it's a bot.
+        - **Likely bot**: a strong sign of automation (the page's script never ran, a browser about a year or more
+          out of date, or a missing browser identity), or two weaker signs together.
+        - **Possible bot**: one moderate sign: a hosting or VPN network, or a burst of sessions from identical browsers.
+        - **Human**: no sign of automation.
+
+        An estimate, not a verdict. Bots that behave like browsers look human, visits that never load the tracking
+        aren't seen, and people on VPNs, office networks or old browsers can look like bots. Development visits are
+        left out.

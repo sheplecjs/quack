@@ -8,7 +8,6 @@ dependencies = []
 
 [project.scripts]
 quack = "quack:main"
-ingest-financial = "financial.pipelines:main"
 
 [build-system]
 requires = ["uv_build>=0.12.13,<0.13.0"]
@@ -21,6 +20,7 @@ exclude-newer = "5 days"
 [tool.uv.workspace]
 members = [
     "projects/financial",
+    "projects/web",
 ]
 
 [dependency-groups]
@@ -31,3 +31,11 @@ dev = [
     "ty>=0.0.82",
     "yamllint>=1.38.0",
 ]
+eda = [
+    "altair>=6.3.0",
+    "marimo[sql]>=0.24.2",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# marimo writes a `return` at the end of every cell and displays a cell's last bare expression
+"**/notebooks/*.py" = ["B018", "PLR1711"]
