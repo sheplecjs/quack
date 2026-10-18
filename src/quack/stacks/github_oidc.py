@@ -76,8 +76,6 @@ class GithubOidcStack(Stack):
             ),
         )
         role.add_to_policy(
-            iam.PolicyStatement(
-                actions=["sts:AssumeRoleWithWebIdentity"], resources=assumable
-            )
+            iam.PolicyStatement(actions=["sts:AssumeRole"], resources=assumable)
         )
         return role
