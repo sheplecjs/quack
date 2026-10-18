@@ -1,11 +1,8 @@
 name: Deploy
 
-# Deploys the persistent storage stack and the ephemeral pipeline stack. The scheduled run brings the
-# pipeline stack up each weekday morning, before the pipelines' own schedules (cdk.json); destroy-ephemeral
-# takes it down in the evening.
 on:
   schedule:
-    - cron: "0 6 * * 1-5"  # 06:00 UTC, Monday to Friday
+    - cron: "0 8 * * 1-5"
   push:
     branches: [main]
   workflow_dispatch:
@@ -19,8 +16,6 @@ on:
 permissions:
   contents: read
 
-# Shared with destroy-ephemeral, so a deploy and a destroy never overlap. Queued, never cancelled: a
-# cancelled CloudFormation update leaves a stack rolling back.
 concurrency:
   group: aws-quack
   cancel-in-progress: false
@@ -46,8 +41,6 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: quack-deploy-${{ github.run_id }}
 
-      # A push outside the weekday window updates storage only, so it doesn't bring the pipeline stack
-      # (and its NAT gateway) up overnight or for a weekend
       - name: Choose stacks
         id: stacks
         env:

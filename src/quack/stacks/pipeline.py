@@ -56,7 +56,7 @@ class PipelineStack(Stack):
             },
         )
         shared = self._import_storage(config)
-        # To the persistent logs bucket, so flow logs outlive this stack
+
         self.vpc.add_flow_log(
             "FlowLog",
             destination=ec2.FlowLogDestination.to_s3(

@@ -1,22 +1,3 @@
-"""The `quack-run` CLI: pull the DuckDB file from S3, run a command, push the results back.
-
-A container's disk doesn't outlive its task, so each pipeline step (load, build, render) pulls the
-project's database, runs, and pushes what it changed. dlt keeps its pipeline state inside the database,
-so the next load resumes incrementally from what was pushed.
-
-    quack-run --pull-db --push-db -- financial-load all
-    quack-run --pull-db --push-dir /data/report=report -- bash render_reports.sh /data/report
-
-Settings come from the environment, which the ECS task definition sets:
-
-- QUACK_PROJECT: the project name, which prefixes every key (`<project>/data.duckdb`)
-- QUACK_DATA_BUCKET: the bucket holding the database
-- QUACK_ARTIFACTS_BUCKET: the bucket artifact folders are pushed to (needed for --push-dir)
-- DUCKDB_PATH: the local database path, as the project's dlt destination and dbt profile read it
-
-Nothing is pushed unless the command succeeds, so a failed step leaves S3 as it was.
-"""
-
 import argparse
 import mimetypes
 import os
@@ -31,8 +12,6 @@ import boto3
 from botocore.exceptions import ClientError
 
 DB_FILENAME = "data.duckdb"
-# S3 status codes for a conditional write that lost: the object changed (412), or another write to the
-# same key was in flight (409)
 CONFLICT_STATUSES = frozenset({409, 412})
 
 
@@ -142,7 +121,9 @@ def log(message: str) -> None:
 
 
 def main(argv: Sequence[str] | None = None, s3: Any = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description="Pull the DuckDB file from S3, run a command, push the results back."
+    )
     parser.add_argument(
         "--pull-db", action="store_true", help="download the database before running"
     )
