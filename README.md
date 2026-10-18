@@ -147,11 +147,11 @@ Once, with administrator credentials for the target account and region:
 | Workflow | Runs | Does |
 |---|---|---|
 | `ci.yml` | Pull requests, pushes to `main` | `task ci`, then `cdk synth` (cdk-nag); on pull requests, `cdk diff` against AWS in the job summary |
-| `deploy.yml` | 06:00 UTC on weekdays, pushes to `main`, by hand | Deploys `QuackStorage` and `QuackPipeline`. A push outside 06:00-20:00 UTC on a weekday deploys storage only |
+| `deploy.yml` | 08:00 UTC on weekdays, pushes to `main`, by hand | Deploys `QuackStorage` and `QuackPipeline`. A push outside 08:00-20:00 UTC on a weekday deploys storage only |
 | `destroy-ephemeral.yml` | 20:00 UTC daily, by hand | Destroys `QuackPipeline` only |
 
 Deploy and destroy share a concurrency group, so they never overlap. The pipelines' schedules in `cdk.json`
-(07:00 and 07:30 UTC on weekdays) fall inside the window the pipeline stack exists.
+(09:00 and 09:30 UTC on weekdays) fall inside the window the pipeline stack exists.
 
 ### Operating
 

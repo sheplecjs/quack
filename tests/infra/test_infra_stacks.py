@@ -169,8 +169,8 @@ def test_schedules_start_the_state_machines(stacks):
     pipeline = stacks[PIPELINE_STACK]
     schedules = pipeline.find_resources("AWS::Scheduler::Schedule")
     assert {s["Properties"]["ScheduleExpression"] for s in schedules.values()} == {
-        "cron(0 7 ? * MON-FRI *)",
-        "cron(30 7 ? * MON-FRI *)",
+        "cron(0 9 ? * MON-FRI *)",
+        "cron(30 9 ? * MON-FRI *)",
     }
     for schedule in schedules.values():
         assert schedule["Properties"]["Target"]["Arn"]["Ref"].endswith(

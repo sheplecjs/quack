@@ -15,13 +15,13 @@
       "noncurrent_version_days": 30,
       "projects": {
         "financial": {
-          "schedule": "cron(0 7 ? * MON-FRI *)",
+          "schedule": "cron(0 9 ? * MON-FRI *)",
           "secret_keys": [
             "SOURCES__ALPHA_VANTAGE__API_KEY"
           ]
         },
         "web": {
-          "schedule": "cron(30 7 ? * MON-FRI *)",
+          "schedule": "cron(30 9 ? * MON-FRI *)",
           "secret_keys": [
             "SOURCES__SHYNET__BASE_URL",
             "SOURCES__SHYNET__API_KEY",

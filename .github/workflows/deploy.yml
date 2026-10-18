@@ -50,7 +50,7 @@ jobs:
           hour=$(date -u +%-H); weekday=$(date -u +%u)
           if [[ "$EVENT" == "workflow_dispatch" && "$REQUESTED" == "storage" ]]; then
             stacks="QuackStorage"
-          elif [[ "$EVENT" == "push" ]] && (( weekday > 5 || hour < 6 || hour >= 20 )); then
+          elif [[ "$EVENT" == "push" ]] && (( weekday > 5 || hour < 8 || hour >= 20 )); then
             stacks="QuackStorage"
           else
             stacks="QuackStorage QuackPipeline"
