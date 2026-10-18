@@ -214,7 +214,7 @@ def test_github_roles_trust_exactly_this_repository(stacks):
 def test_github_roles_can_only_assume_cdk_bootstrap_roles(stacks):
     for policy in stacks[GITHUB_OIDC_STACK].find_resources("AWS::IAM::Policy").values():
         for statement in policy["Properties"]["PolicyDocument"]["Statement"]:
-            assert statement["Action"] == "sts:AssumeRole"
+            assert statement["Action"] == "sts:AssumeRoleWithWebIdentity"
             resources = (
                 statement["Resource"]
                 if isinstance(statement["Resource"], list)
