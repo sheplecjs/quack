@@ -1,0 +1,37 @@
+name: Destroy ephemeral stack
+
+on:
+  schedule:
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aws-quack
+  cancel-in-progress: false
+
+jobs:
+  destroy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    environment: aws
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd  # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: quack-destroy-${{ github.run_id }}
+
+      - name: cdk destroy
+        run: npx cdk destroy QuackPipeline --exclusively --force

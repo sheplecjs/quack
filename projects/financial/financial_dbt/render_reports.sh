@@ -1,7 +1,7 @@
 # Render this project's dbt charts boards into one folder: every board as HTML, so the boards' relative
 # links (portfolio.html <-> asset_<ticker>.html, data_dictionary.html) resolve, and the landing board as
 # PNG too. Run from this directory with the dbt profile's environment set. Used by `task report` and the
-# Docker image's build_and_render.sh.
+# image's render step (the root Dockerfile and src/quack/stacks/project_pipeline.py).
 #
 #   bash render_reports.sh <output folder>
 set -euo pipefail

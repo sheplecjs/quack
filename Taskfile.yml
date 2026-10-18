@@ -100,27 +100,31 @@ tasks:
   # --- Docker (run from inside a project dir, e.g. projects/financial) --------
 
   docker:build:
-    desc: Build the Dockerfile in the current directory
-    dir: "{{.PROJECT_DIR}}"
+    desc: Build the image for the project in the current directory, from the root Dockerfile
+    dir: "{{.ROOT_DIR}}"
     vars:
       # Task-level, so PROJECT stays free for tasks that require it (see x-requires-project)
-      IMAGE: "quack-{{base .PROJECT_DIR}}"
+      IMAGE_PROJECT: "{{base .PROJECT_DIR}}"
     cmds:
-      - docker build --build-context workspace={{.ROOT_DIR}} --build-arg UID=$(id -u) --build-arg GID=$(id -g) -t {{.IMAGE}} .
+      - >-
+        docker build --build-arg PROJECT={{.IMAGE_PROJECT}} --build-arg UID=$(id -u) --build-arg GID=$(id -g)
+        -t quack-{{.IMAGE_PROJECT}} .
     preconditions:
-      - sh: test -f Dockerfile
-        msg: "No Dockerfile in {{.PROJECT_DIR}}; run this from a project directory"
+      - sh: test -f {{.ROOT_DIR}}/projects/{{.IMAGE_PROJECT}}/pyproject.toml
+        msg: "{{.PROJECT_DIR}} isn't a project; run this from a project directory, e.g. projects/financial"
 
   docker:run:
-    desc: Build and run the Dockerfile in the current directory (extra args after --)
+    desc: Build the current directory's project image and run it on data/<project> (extra args after --)
+    summary: |
+      With no arguments, runs the image's default command: dbt build, the static docs page and the
+      reports, against data/<project>/data.duckdb. Arguments after -- replace the command.
     dir: "{{.PROJECT_DIR}}"
     deps: [docker:build]
     vars:
-      PROJECT: "{{base .PROJECT_DIR}}"
-      IMAGE: "quack-{{.PROJECT}}"
+      IMAGE_PROJECT: "{{base .PROJECT_DIR}}"
     cmds:
-      - mkdir -p {{.ROOT_DIR}}/data/{{.PROJECT}}
-      - docker run --rm -v {{.ROOT_DIR}}/data/{{.PROJECT}}:/data {{.IMAGE}} {{.CLI_ARGS}}
+      - mkdir -p {{.ROOT_DIR}}/data/{{.IMAGE_PROJECT}}
+      - docker run --rm -v {{.ROOT_DIR}}/data/{{.IMAGE_PROJECT}}:/data quack-{{.IMAGE_PROJECT}} {{.CLI_ARGS}}
 
   marimo:
     desc: Spin up a marimo notebook server.
@@ -229,6 +233,38 @@ tasks:
         vars: {PROJECT: "{{.PROJECT}}", CLI_ARGS: ""}
       - task: report
         vars: {PROJECT: "{{.PROJECT}}"}
+
+  # --- AWS (CDK app in src/quack; stacks and runbook in README.md) ---------
+
+  cdk:synth:
+    desc: Synthesize every stack to cdk.out and run cdk-nag (no AWS credentials needed)
+    cmds:
+      - npx cdk synth --quiet
+
+  cdk:diff:
+    desc: Diff the stacks against what's deployed (extra cdk arguments after --)
+    cmds:
+      - npx cdk diff --no-change-set {{.CLI_ARGS}}
+
+  cdk:bootstrap:
+    desc: Bootstrap the account and region for CDK (once, with admin credentials)
+    cmds:
+      - npx cdk bootstrap
+
+  cdk:deploy:oidc:
+    desc: Deploy the GitHub OIDC roles (once, by hand; CI can't change its own access)
+    cmds:
+      - npx cdk deploy QuackGithubOidc
+
+  cdk:deploy:
+    desc: Deploy the storage and pipeline stacks, as the deploy workflow does
+    cmds:
+      - npx cdk deploy QuackStorage QuackPipeline {{.CLI_ARGS}}
+
+  cdk:destroy:ephemeral:
+    desc: Destroy the pipeline stack; storage, data and secrets are kept
+    cmds:
+      - npx cdk destroy QuackPipeline --exclusively {{.CLI_ARGS}}
 
   # --- Profiling -----------------------------------------------------------
 

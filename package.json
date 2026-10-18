@@ -1,0 +1,8 @@
+{
+  "name": "quack-infra",
+  "private": true,
+  "description": "Pins the AWS CDK CLI for the CDK app in src/quack (see cdk.json)",
+  "devDependencies": {
+    "aws-cdk": "2.1142.0"
+  }
+}

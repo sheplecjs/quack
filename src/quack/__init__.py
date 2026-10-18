@@ -1,2 +1,1 @@
-def main() -> None:
-    print("Hello from quack!")
+"""quack infrastructure: the CDK app that deploys the analytics projects' pipelines to AWS."""

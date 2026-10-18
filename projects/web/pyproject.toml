@@ -22,8 +22,13 @@ requires = ["uv_build>=0.12.13,<0.13.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
+# What the container image adds to run a step against S3 (see the root Dockerfile)
+deploy = ["quack-runtime"]
 dbt = [
     "dbt-charts>=0.8.0",
     "dbt-core<2",
     "dbt-duckdb>=1.11.0",
 ]
+
+[tool.uv.sources]
+quack-runtime = { workspace = true }
