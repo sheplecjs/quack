@@ -26,7 +26,6 @@ class GithubOidcStack(Stack):
             )
 
         def bootstrap_role(kind: str) -> str:
-            # As `cdk bootstrap` names them: cdk-<qualifier>-<kind>-role-<account>-<region>
             return (
                 f"arn:{self.partition}:iam::{self.account}:role/"
                 f"cdk-{config.cdk_qualifier}-{kind}-role-{self.account}-{self.region}"
