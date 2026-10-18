@@ -46,6 +46,12 @@ class QuackConfig(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     github_repo: str = Field(pattern=r"^[\w.-]+/[\w.-]+$")
+    # GitHub's numeric ids for the owner and repository, which its OIDC subjects now carry
+    # (repo:<owner>@<owner_id>/<name>@<repo_id>:...). A repository deleted and recreated under the
+    # same name gets a new id, so it can't assume the roles. Both are public: GET /repos/<owner>/<name>
+    # returns them as owner.id and id.
+    github_owner_id: int = Field(gt=0)
+    github_repo_id: int = Field(gt=0)
     github_environment: str = "aws"
     github_oidc_provider_arn: str | None = None
     cdk_qualifier: str = DEFAULT_QUALIFIER
@@ -54,6 +60,12 @@ class QuackConfig(BaseModel):
     log_retention_days: Literal[1, 3, 5, 7, 14, 30, 60, 90, 180, 365] = 30
     noncurrent_version_days: int = Field(default=30, ge=1)
     projects: dict[str, ProjectConfig]
+
+    @property
+    def github_subject_repo(self) -> str:
+        """The repository as GitHub's OIDC subject names it: <owner>@<owner_id>/<name>@<repo_id>."""
+        owner, name = self.github_repo.split("/")
+        return f"{owner}@{self.github_owner_id}/{name}@{self.github_repo_id}"
 
     @field_validator("projects")
     @classmethod

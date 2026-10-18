@@ -34,7 +34,7 @@ class GithubOidcStack(Stack):
         self.deploy_role = self._role(
             "GithubDeployRole",
             provider,
-            subject=f"repo:{config.github_repo}:environment:{config.github_environment}",
+            subject=f"repo:{config.github_subject_repo}:environment:{config.github_environment}",
             description=f"GitHub Actions deploys from {config.github_repo} ({config.github_environment} environment)",
             assumable=[
                 bootstrap_role(kind)
@@ -44,7 +44,7 @@ class GithubOidcStack(Stack):
         self.diff_role = self._role(
             "GithubDiffRole",
             provider,
-            subject=f"repo:{config.github_repo}:pull_request",
+            subject=f"repo:{config.github_subject_repo}:pull_request",
             description=f"GitHub Actions read-only diffs for pull requests in {config.github_repo}",
             assumable=[bootstrap_role("lookup")],
         )

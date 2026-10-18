@@ -206,8 +206,8 @@ def test_github_roles_trust_exactly_this_repository(stacks):
         subjects.add(condition["token.actions.githubusercontent.com:sub"])
         assert "StringLike" not in statement["Condition"]
     assert subjects == {
-        "repo:sheplecjs/quack:environment:aws",
-        "repo:sheplecjs/quack:pull_request",
+        "repo:sheplecjs@63471359/quack@1393700582:environment:aws",
+        "repo:sheplecjs@63471359/quack@1393700582:pull_request",
     }
 
 

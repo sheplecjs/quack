@@ -6,6 +6,8 @@ from quack.config import load_config
 SCHEDULE = "cron(0 7 ? * MON-FRI *)"
 BASE = {
     "github_repo": "sheplecjs/quack",
+    "github_owner_id": 63471359,
+    "github_repo_id": 1393700582,
     "projects": {"financial": {"schedule": SCHEDULE}},
 }
 
@@ -22,7 +24,8 @@ def test_accepts_the_minimal_config():
 
 def test_accepts_json_from_the_command_line():
     assert load_config(
-        '{"github_repo": "a/b", "projects": {"web": {"schedule": "cron(0 1 * * ? *)"}}}'
+        '{"github_repo": "a/b", "github_owner_id": 1, "github_repo_id": 2,'
+        ' "projects": {"web": {"schedule": "cron(0 1 * * ? *)"}}}'
     )
 
 
@@ -65,3 +68,13 @@ def test_rejects_unknown_keys():
 def test_requires_the_context():
     with pytest.raises(ValueError, match="no `quack` context"):
         load_config(None)
+
+
+def test_subject_names_the_repository_by_name_and_id():
+    assert make().github_subject_repo == "sheplecjs@63471359/quack@1393700582"
+
+
+@pytest.mark.parametrize("missing", ["github_owner_id", "github_repo_id"])
+def test_requires_the_github_ids(missing):
+    with pytest.raises(ValidationError, match=missing):
+        load_config({k: v for k, v in BASE.items() if k != missing})

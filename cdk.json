@@ -8,6 +8,8 @@
   "context": {
     "quack": {
       "github_repo": "sheplecjs/quack",
+      "github_owner_id": 63471359,
+      "github_repo_id": 1393700582,
       "github_environment": "aws",
       "schedule_time_zone": "UTC",
       "alert_email": null,
