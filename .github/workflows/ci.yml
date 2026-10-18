@@ -58,7 +58,7 @@ jobs:
       # Read-only: the diff role can assume only the CDK lookup role
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd  # v6.3.0
         with:
-          role-to-assume: ${{ secrets.AWS_DIFF_ROLE_ARN }}
+          role-to-assume: ${{ vars.AWS_DIFF_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: quack-diff-${{ github.run_id }}
 
