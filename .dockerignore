@@ -7,7 +7,6 @@
 !packages/runtime/pyproject.toml
 !packages/runtime/src
 !projects/*/pyproject.toml
-!projects/*/README.md
 !projects/*/profiles.yml
 !projects/*/.dlt/config.toml
 !projects/*/src

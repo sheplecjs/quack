@@ -97,6 +97,13 @@ The two pattern lists are dbt seeds, and every row records where it came from (s
   (MIT) at a pinned commit, plus local patterns for what it misses: `task seeds:update PROJECT=web`.
 - `hosting_network_patterns.csv` is maintained by hand, with a source and a note on each row.
 
+## On AWS
+
+The scheduled pipeline (see the root README's "Running on AWS") runs `web-load all`, then dbt, then the reports,
+at 09:30 UTC on weekdays. Its secret in Secrets Manager holds `SOURCES__SHYNET__BASE_URL`,
+`SOURCES__SHYNET__API_KEY` and `SOURCES__SHYNET_DB__CREDENTIALS`. Its tasks may also connect out on port 5432,
+for the Shynet database.
+
 ## Reports
 
 `web_dbt/charts/` holds two [dbt charts](https://dbtcharts.com/) boards, rendered to static HTML in `data/web/report/`,

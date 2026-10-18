@@ -20,7 +20,6 @@ COPY --chown=nonroot projects/${PROJECT}/pyproject.toml /app/projects/${PROJECT}
 COPY --chown=nonroot packages/runtime/pyproject.toml /app/packages/runtime/
 RUN uv sync --frozen --package ${PROJECT} --group dbt --group deploy --no-install-workspace
 
-COPY --chown=nonroot projects/${PROJECT}/README.md /app/projects/${PROJECT}/
 COPY --chown=nonroot projects/${PROJECT}/src /app/projects/${PROJECT}/src
 COPY --chown=nonroot packages/runtime/src /app/packages/runtime/src
 RUN uv sync --frozen --package ${PROJECT} --group dbt --group deploy --no-editable

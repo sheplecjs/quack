@@ -6,10 +6,31 @@ A uv workspace of analytics projects. Each project lives under `projects/`, e.g.
 - Run `task setup` (or `uv sync --all-packages --all-groups`) to install the environment. A plain
   `uv sync` removes the member projects' dependencies and breaks the root-level checks.
 - Run `task check` for lint, format, types, YAML and secrets, and `task ci` to add tests.
-- `src/quack` is the AWS CDK app (stacks and runbook in README.md); `packages/runtime` is `quack-run`, which
-  the images use to pull and push the DuckDB file. One root `Dockerfile` builds every project's image.
+- **Keep code comments minimal.** Comment only what the code can't say: a non-obvious reason, a constraint, a
+  workaround. No module docstrings or narrating comments; how things fit together belongs in the README.
+
+## AWS infrastructure and CI/CD
+
+The README's "Running on AWS" section is the runbook: stacks, setup, workflows, cadence, troubleshooting.
+
+- `src/quack` is the AWS CDK app. Its settings are the `quack` context in `cdk.json`, validated by
+  `src/quack/config.py`: add a setting there, not as a constant in a stack.
+- Three stacks with three lifecycles: `QuackGithubOidc` (deployed by hand), `QuackStorage` (persistent,
+  retained) and `QuackPipeline` (ephemeral, destroyed daily). **The pipeline stack holds no data**: anything
+  that must survive a destroy (buckets, secrets, topics, logs) goes in `QuackStorage`.
+- **Stacks share resources through SSM parameters under `/quack/storage/`, never CloudFormation exports**, so
+  each can be deployed and destroyed alone.
+- `packages/runtime` is `quack-run`, which each pipeline step uses to pull the DuckDB file from S3 and push it
+  back with a conditional write. A step that changes the database pulls and pushes it; nothing is pushed on
+  failure. One root `Dockerfile` builds every project's image; `.dockerignore` is an allowlist.
+- **Least privilege**: a project's task role reaches only its own `<project>/` prefixes; the GitHub roles can
+  only assume the CDK bootstrap roles, and trust GitHub's ID-based OIDC subject exactly (no wildcards).
 - cdk-nag runs on every synth and in `tests/infra`. Fix a finding where possible; otherwise acknowledge it
   with a reason on the construct it's about (`quack.nag.acknowledge`), never for a whole stack.
+- Workflows pin actions by commit SHA and read AWS settings from repository variables (`vars.*`), not secrets.
+- **Keep the docs in step.** A change to schedules, stack names, workflows, GitHub variables, the OIDC trust or
+  setup steps updates the README's AWS section in the same commit. The pipeline schedules in `cdk.json` must
+  fall between the scheduled deploy (08:00 UTC) and destroy (10:00 UTC).
 
 ## dbt documentation: Declared Divergence
 

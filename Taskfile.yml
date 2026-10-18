@@ -252,7 +252,7 @@ tasks:
       - npx cdk bootstrap
 
   cdk:deploy:oidc:
-    desc: Deploy the GitHub OIDC roles (once, by hand; CI can't change its own access)
+    desc: Deploy the GitHub OIDC roles (once, by hand, in the bootstrap region; CI can't change its own access)
     cmds:
       - npx cdk deploy QuackGithubOidc
 

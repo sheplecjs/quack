@@ -2,7 +2,6 @@
 name = "financial"
 version = "0.1.0"
 description = "A dbt-core based analytics stack."
-readme = "README.md"
 authors = [
     { name = "sheplecjs", email = "colin.shepley@pm.me" }
 ]
