@@ -1,13 +1,15 @@
 [project]
 name = "quack"
 version = "0.1.0"
-description = "Add your description here"
+description = "Infrastructure for the quack analytics projects: a CDK app for AWS."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
-
-[project.scripts]
-quack = "quack:main"
+dependencies = [
+    "aws-cdk-lib>=2.273.0",
+    "cdk-nag>=3.0.2",
+    "constructs>=10.8.1",
+    "pydantic>=2.13.5",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.13,<0.13.0"]
@@ -21,11 +23,13 @@ exclude-newer = "5 days"
 members = [
     "projects/financial",
     "projects/web",
+    "packages/runtime",
 ]
 
 [dependency-groups]
 dev = [
     "detect-secrets>=1.5.0",
+    "moto>=5.2.4",
     "pytest>=9.1.1",
     "ruff>=0.16.8",
     "ty>=0.0.82",

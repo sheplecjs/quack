@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  schedule:
+    - cron: "0 8 * * 1-5"
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      stacks:
+        description: Stacks to deploy
+        type: choice
+        default: all
+        options: [all, storage]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aws-quack
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment: aws
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd  # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: quack-deploy-${{ github.run_id }}
+
+      - name: Choose stacks
+        id: stacks
+        env:
+          EVENT: ${{ github.event_name }}
+          REQUESTED: ${{ inputs.stacks }}
+        run: |
+          hour=$(date -u +%-H); weekday=$(date -u +%u)
+          if [[ "$EVENT" == "workflow_dispatch" && "$REQUESTED" == "storage" ]]; then
+            stacks="QuackStorage"
+          elif [[ "$EVENT" == "push" ]] && (( weekday > 5 || hour < 8 || hour >= 20 )); then
+            stacks="QuackStorage"
+          else
+            stacks="QuackStorage QuackPipeline"
+          fi
+          echo "Deploying: $stacks" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "names=$stacks" >> "$GITHUB_OUTPUT"
+
+      - name: cdk deploy
+        env:
+          STACKS: ${{ steps.stacks.outputs.names }}
+        # STACKS is a space-separated list of stack names; word splitting is intended
+        run: npx cdk deploy $STACKS --require-approval never --progress events

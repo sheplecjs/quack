@@ -1,0 +1,18 @@
+[project]
+name = "quack-runtime"
+version = "0.1.0"
+description = "Runs a pipeline step in a container against a DuckDB file and artifacts kept in S3."
+authors = [
+    { name = "sheplecjs", email = "colin.shepley@pm.me" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "boto3>=1.40",
+]
+
+[project.scripts]
+quack-run = "quack_runtime.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"

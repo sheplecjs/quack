@@ -1,0 +1,25 @@
+# Allowlist: the image build (and the CDK asset hash) sees only what the root Dockerfile copies.
+# Never add .dlt/secrets.toml or local data.
+*
+!Dockerfile
+!pyproject.toml
+!uv.lock
+!packages/runtime/pyproject.toml
+!packages/runtime/src
+!projects/*/pyproject.toml
+!projects/*/README.md
+!projects/*/profiles.yml
+!projects/*/.dlt/config.toml
+!projects/*/src
+!projects/*/*_dbt
+
+# Generated or local files inside the allowed folders
+**/__pycache__
+**/.user.yml
+projects/*/src/notebooks
+projects/*/*_dbt/dbt_packages
+projects/*/*_dbt/dbt_internal_packages
+projects/*/*_dbt/target
+projects/*/*_dbt/logs
+projects/*/*_dbt/.env
+projects/*/*_dbt/.vscode

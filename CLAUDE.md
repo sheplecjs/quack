@@ -6,6 +6,10 @@ A uv workspace of analytics projects. Each project lives under `projects/`, e.g.
 - Run `task setup` (or `uv sync --all-packages --all-groups`) to install the environment. A plain
   `uv sync` removes the member projects' dependencies and breaks the root-level checks.
 - Run `task check` for lint, format, types, YAML and secrets, and `task ci` to add tests.
+- `src/quack` is the AWS CDK app (stacks and runbook in README.md); `packages/runtime` is `quack-run`, which
+  the images use to pull and push the DuckDB file. One root `Dockerfile` builds every project's image.
+- cdk-nag runs on every synth and in `tests/infra`. Fix a finding where possible; otherwise acknowledge it
+  with a reason on the construct it's about (`quack.nag.acknowledge`), never for a whole stack.
 
 ## dbt documentation: Declared Divergence
 
