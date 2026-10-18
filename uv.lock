@@ -2706,7 +2706,7 @@ deploy = [
 [package.metadata]
 requires-dist = [
     { name = "dlt", extras = ["duckdb", "sql-database"], specifier = ">=1.20" },
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.3.6" },
     { name = "pydantic", specifier = ">=2.11" },
 ]
 
