@@ -37,7 +37,7 @@ dev = [
 ]
 eda = [
     "altair>=6.3.0",
-    "marimo[sql]>=0.24.2",
+    "marimo[sql]>=0.25.1",
 ]
 
 [tool.ruff.lint.per-file-ignores]
