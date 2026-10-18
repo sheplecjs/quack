@@ -220,7 +220,38 @@ def test_github_roles_can_only_assume_cdk_bootstrap_roles(stacks):
                 if isinstance(statement["Resource"], list)
                 else [statement["Resource"]]
             )
-            assert all(":role/cdk-hnb659fds-" in json.dumps(r) for r in resources)
+            assert resources and all(isinstance(r, str) for r in resources)
+            assert all(
+                r in {bootstrap_role(kind) for kind in BOOTSTRAP_ROLE_KINDS}
+                for r in resources
+            )
+
+
+# The roles `cdk bootstrap` creates, by the names it gives them
+BOOTSTRAP_ROLE_KINDS = ("deploy", "file-publishing", "image-publishing", "lookup")
+
+
+def bootstrap_role(kind):
+    return (
+        f"arn:aws:iam::{ENV.account}:role/"
+        f"cdk-hnb659fds-{kind}-role-{ENV.account}-{ENV.region}"
+    )
+
+
+def test_deploy_role_can_assume_every_bootstrap_role_and_diff_role_only_lookup(stacks):
+    policies = stacks[GITHUB_OIDC_STACK].find_resources("AWS::IAM::Policy")
+
+    def assumable(prefix):
+        [statement] = next(
+            p for name, p in policies.items() if name.startswith(prefix)
+        )["Properties"]["PolicyDocument"]["Statement"]
+        resource = statement["Resource"]
+        return set(resource if isinstance(resource, list) else [resource])
+
+    assert assumable("GithubDeployRole") == {
+        bootstrap_role(k) for k in BOOTSTRAP_ROLE_KINDS
+    }
+    assert assumable("GithubDiffRole") == {bootstrap_role("lookup")}
 
 
 def test_diff_role_is_read_only(stacks):

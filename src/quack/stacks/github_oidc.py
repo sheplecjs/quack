@@ -3,7 +3,6 @@ from aws_cdk import aws_iam as iam
 from constructs import Construct
 
 from quack.config import QuackConfig
-from quack.nag import acknowledge, wildcard_resource
 
 GITHUB_OIDC_URL = "https://token.actions.githubusercontent.com"
 GITHUB_OIDC_HOST = "token.actions.githubusercontent.com"
@@ -27,7 +26,11 @@ class GithubOidcStack(Stack):
             )
 
         def bootstrap_role(kind: str) -> str:
-            return f"arn:{self.partition}:iam::{self.account}:role/cdk-{config.cdk_qualifier}-{kind}-{self.account}-*"
+            # As `cdk bootstrap` names them: cdk-<qualifier>-<kind>-role-<account>-<region>
+            return (
+                f"arn:{self.partition}:iam::{self.account}:role/"
+                f"cdk-{config.cdk_qualifier}-{kind}-role-{self.account}-{self.region}"
+            )
 
         self.deploy_role = self._role(
             "GithubDeployRole",
@@ -75,11 +78,5 @@ class GithubOidcStack(Stack):
         )
         role.add_to_policy(
             iam.PolicyStatement(actions=["sts:AssumeRole"], resources=assumable)
-        )
-        acknowledge(
-            role,
-            "The bootstrap roles' names end in the region, which the wildcard stands for; the role can "
-            "assume only these CDK roles",
-            *(wildcard_resource(self, arn) for arn in assumable),
         )
         return role
