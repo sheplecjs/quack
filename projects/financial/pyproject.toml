@@ -28,7 +28,7 @@ dbt = [
     "dbt-duckdb>=1.11.0",
 ]
 interactive = [
-    "marimo[sql]>=0.24.2",
+    "marimo[sql]>=0.25.1",
     "requests>=2.34.2",
 ]
 
