@@ -5,7 +5,7 @@ description = "Infrastructure for the quack analytics projects: a CDK app for AW
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "aws-cdk-lib>=2.273.0",
+    "aws-cdk-lib>=2.274.0",
     "cdk-nag>=3.0.2",
     "constructs>=10.8.1",
     "pydantic>=2.14.1",
