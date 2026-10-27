@@ -7,8 +7,13 @@ requires-python = ">=3.14"
 dependencies = [
     "aws-cdk-lib>=2.274.0",
     "cdk-nag>=3.0.2",
+    "certifi>=2026.10.19",
     "constructs>=10.8.1",
+    "gitpython>=3.2.1",
+    "opentelemetry-api>=1.45.1",
+    "pillow>=13.0.0",
     "pydantic>=2.14.1",
+    "setuptools>=84.1.0",
 ]
 
 [build-system]
