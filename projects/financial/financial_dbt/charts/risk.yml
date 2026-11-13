@@ -431,7 +431,7 @@ charts:
               hinge: 0
 
 rows:
-- text: "[← Portfolio](portfolio.html) · [Data dictionary →](data_dictionary.html)"
+- text: "[← Portfolio](portfolio.html) · [Targets and projections →](targets.html) · [Data dictionary →](data_dictionary.html)"
 - cols:
   - width: "17%"
     rows:

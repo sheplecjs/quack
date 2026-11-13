@@ -57,10 +57,11 @@ which is not committed.
 2. **Model:** dbt stages, types and tests the raw data. It then builds point-in-time marts: economic data is
    joined to trading days only once it would have been available. It also builds a portfolio of the configured
    holdings.
-3. **Measure:** a semantic layer defines risk metrics (beta, alpha, correlation, volatility, the Sharpe ratio)
-   for each holding and the whole portfolio against a benchmark index fund, queryable over any period.
-4. **Report:** a portfolio performance report with an overview, a risk and return page and one page per
-   holding, exported as linked static HTML.
+3. **Measure:** a semantic layer over the marts defines the metrics: prices, holdings, economic indicators,
+   risk (beta, alpha, correlation, volatility, the Sharpe ratio) against a benchmark index fund, and
+   projections from analyst targets. Each can be queried over any period.
+4. **Report:** a portfolio performance report with an overview, a risk and return page, a targets and
+   projections page and one page per holding, exported as linked static HTML.
 5. **Document:** a data dictionary model, built from dbt's graph, lists every column in the project with its
    concept, lineage, tests and any declared divergence.
 
@@ -142,10 +143,41 @@ June and November are empty: each has fewer than 20 trading days in the data. Ot
 - **See the SQL:** add `--explain` to print the SQL MetricFlow generates instead of running it.
 - **Run a saved query** from the domain YAML: `uv run mf query --saved-query risk_all_history`.
 
+### Other semantic models
+
+Every mart that reports read has a semantic model, declared on the model in `models/assets/_assets.yml`:
+
+| Semantic model | Built on | Metrics |
+|---|---|---|
+| `daily_prices` | `fct_daily_prices` | `period_price_return`, `last_close_price`, `average_daily_volume` |
+| `companies` | `dim_companies` | none: sector, industry and other profile dimensions, as of each date |
+| `portfolio_positions` | `fct_portfolio_positions_daily` | `holdings_value`, `holdings_cost_basis`, `holdings_unrealized_gain`, `holdings_estimated_dividends` |
+| `economic_indicators` | `fct_economic_indicators` | `latest_indicator_value`, dated by when each figure became available |
+| `price_targets` | `fct_price_targets_daily` | the latest analyst target, implied upside, forecast EPS, forward P/E, earnings growth and earnings yield spread |
+| `portfolio_projections` | `fct_portfolio_projections_daily` | projected holdings value, price gain, dividends and total return at each horizon |
+
+- **Values at a date take the period's last trading day.** A holdings value or price grouped by month is
+  the value at the month's last close, not a sum over the month.
+- **`companies` joins as of each date.** It keeps every version of a company's record, so grouping by
+  `ticker__sector` gives the sector each company had at the time. Months before the first company load have
+  no sector.
+- **Point in time.** Analyst targets (`fct_price_targets_daily`) count from the trading day after they were
+  loaded.
+- **Projections.** `fct_portfolio_projections_daily` assumes each holding moves steadily to its target, which
+  analysts usually set 12 months ahead, and projects that rate to each horizon in the `projection_horizons`
+  seed (3, 6, 12 and 24 months).
+
+For example, the holdings' value at each month's end by sector:
+
+```bash
+uv run mf query --metrics holdings_value --group-by ticker__sector,metric_time__month --order metric_time__month
+```
+
 **In the reports.** dbt charts runs SQL, not semantic-layer queries. `financial-metrics update`, run from the dbt
 project after `dbt parse`, compiles each saved query with MetricFlow into
 `financial_dbt/charts/_metrics.yml`. The risk and return board (`charts/risk.yml`) extends that file, so every
-figure on it has a single definition in the semantic layer. `financial-metrics check` fails while the file is
+figure on it has a single definition in the semantic layer. The targets and projections board
+(`charts/targets.yml`) reads its figures the same way. `financial-metrics check` fails while the file is
 out of date, and `render_reports.sh` runs it before rendering.
 
 ## The web project

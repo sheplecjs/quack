@@ -18,6 +18,9 @@ vars:
   # The economic series used as the risk-free rate in fct_daily_returns_vs_benchmark. Changing it means
   # rewording the risk_free_return concept, which names the 3-month bill.
   risk_free_indicator: TREASURY_YIELD_3MONTH
+  # The long-term rate that fct_price_targets_daily's earnings yield spread is measured against. Changing it
+  # means rewording the earnings_yield_spread concept, which names the 10-year yield.
+  long_rate_indicator: TREASURY_YIELD_10YEAR
 
 models:
   financial_dbt:
