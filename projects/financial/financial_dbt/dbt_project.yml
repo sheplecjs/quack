@@ -12,6 +12,13 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+vars:
+  # How far dim_calendar_days runs past the latest trading day, for projections to a future date
+  calendar_future_years: 2
+  # The economic series used as the risk-free rate in fct_daily_returns_vs_benchmark. Changing it means
+  # rewording the risk_free_return concept, which names the 3-month bill.
+  risk_free_indicator: TREASURY_YIELD_3MONTH
+
 models:
   financial_dbt:
     assets:

@@ -39,7 +39,7 @@ resolve within one file, so a split by layer cuts exactly the links the anchors 
 |---|---|---|
 | `anchors:` (concept bank) | Full definitions | n/a: this is the fully realised state |
 | `sources:` | `<<: *concept` plus `name` / `data_type` / `description` | The source system differs from the concept here |
-| `models:` (staging, marts) | Bare `*concept`, or `<<: *concept` plus `data_tests` only | This test applies at this grain |
+| `models:` (staging, marts) | Bare `*concept`, or `<<: *concept` plus `data_tests` / `entity` / `dimension` | This test applies at this grain; this column plays this role in the semantic layer |
 
 #### 1. Concept bank (`anchors:`)
 
@@ -128,7 +128,7 @@ sources:
   Types are compared by name, case-insensitively, which is why the bank uses DuckDB's own type names.
 - Other source-level `data_tests` are allowed for assumptions about the raw data (e.g. the source's grain).
 
-#### 3. Models: overrides are tactical data tests
+#### 3. Models: overrides are tactical data tests and semantic roles
 
 ```yaml
 models:
@@ -141,8 +141,9 @@ models:
 ```
 
 - Use a bare alias whenever the column is exactly the concept.
-- An override in a model may add `data_tests` and nothing else. Changing `name`, `description` or
-  `data_type` here means the column is a new concept (see the concept bank rules).
+- An override in a model may add `data_tests`, and the semantic-layer keys `entity` and `dimension`
+  (see Semantic layer), and nothing else. Changing `name`, `description` or `data_type` here means the
+  column is a new concept (see the concept bank rules).
 - Choose where each test goes. The same concept can be unique at one grain and repeated at another,
   e.g. `ticker_symbol` in `stg_alpha_vantage__company_overviews` vs `stg_alpha_vantage__daily_prices`.
 - Tests that span columns (composite keys with `dbt_utils.unique_combination_of_columns`, row-level
@@ -296,6 +297,28 @@ For every strategy:
   `data_tests` override never has an inherited list to lose.
 - **Layout:** separate column entries with a blank line, and keep blank lines free of whitespace
   (yamllint's `trailing-spaces` rule rejects it).
+
+### Semantic layer
+
+Semantic models and metrics use dbt's model-level spec: `semantic_model:`, `agg_time_dimension` and `metrics:`
+on the model's own entry, and `entity` / `dimension` on its columns. They live in the domain YAML beside the
+model they're built on.
+
+- **A semantic role is declared per model, like a test.** The same concept can be an entity in one model and a
+  plain column in another, so `entity` and `dimension` go on the model's column override, not in the bank.
+- **Time grain belongs to the concept.** A date concept carries `granularity: day` in the bank: a time
+  dimension needs it, and it's true of the date wherever it's used. Declare the dimension as
+  `dimension: {type: time}`: dbt ignores the column's granularity with the shorthand `dimension: time`.
+- **Dimension descriptions come from the concept.** Don't give a `dimension` or `entity` its own
+  `description`, which would redescribe the concept.
+- **Metric descriptions follow the concept description rules** (information, not implementation; short;
+  system-agnostic). A metric that isn't for report readers, such as a sum that only feeds a derived metric, is
+  `hidden: true`.
+- **Don't reuse a concept's name for a metric that means something else.** A metric calculated here is named
+  apart from a figure the source supplies, e.g. `benchmark_beta` vs the source's `beta`.
+- **Metrics that aren't additive are derived from sums that are.** Beta, correlation and volatility are built
+  from sums of returns, squares and cross products, so they're correct over any period or grouping chosen at
+  query time. Window calculations that depend on the path (a rolling 60-day beta) are mart columns instead.
 
 ### Data dictionary
 

@@ -21,6 +21,7 @@ anchors:
         concept_group: Prices
     description: Trading day
     data_type: date
+    granularity: day
 
   - &open_price
     name: open_price
@@ -617,6 +618,47 @@ anchors:
     description: Observed value of the series, in its unit, with percentages as fractions; null where none was reported
     data_type: double
 
+  # --- Calendar --------------------------------------------------------------
+
+  - &calendar_date
+    name: calendar_date
+    config:
+      meta:
+        concept: calendar_date
+        concept_group: Calendar
+    description: Calendar day
+    data_type: date
+    granularity: day
+
+  - &is_trading_day
+    name: is_trading_day
+    config:
+      meta:
+        concept: is_trading_day
+        concept_group: Calendar
+    description: Whether the market traded that day; null outside the period with price data
+    data_type: boolean
+
+  - &trading_day_number
+    name: trading_day_number
+    config:
+      meta:
+        concept: trading_day_number
+        concept_group: Calendar
+    description: >
+      Position of the trading day in the price history, counting from 1; null on other days. Use it to count
+      trading days between dates: the numbers shift if earlier history is added.
+    data_type: bigint
+
+  - &as_of_trading_date
+    name: as_of_trading_date
+    config:
+      meta:
+        concept: as_of_trading_date
+        concept_group: Calendar
+    description: Latest trading day on or before this day; null outside the period with price data
+    data_type: date
+
   # --- Derived (intermediate and marts) -------------------------------------
 
   - &available_from_date
@@ -849,6 +891,57 @@ anchors:
         concept: price_record_ids_hash
         concept_group: Portfolio
     description: Fingerprint of the price rows combined into this one, for checking which rows went in
+    data_type: varchar
+
+  # --- Risk ------------------------------------------------------------------
+
+  - &benchmark_ticker_symbol
+    name: benchmark_ticker_symbol
+    config:
+      meta:
+        concept: benchmark_ticker_symbol
+        concept_group: Risk
+    description: Ticker symbol of the index fund the security is measured against
+    data_type: varchar
+
+  - &benchmark_daily_return
+    name: benchmark_daily_return
+    config:
+      meta:
+        concept: benchmark_daily_return
+        concept_group: Risk
+    description: The benchmark's return from the previous trading day's close, as a fraction
+    data_type: double
+
+  - &risk_free_return
+    name: risk_free_return
+    config:
+      meta:
+        concept: risk_free_return
+        concept_group: Risk
+    description: >
+      Return from holding 3-month Treasury bills over the same days as the daily return, as a fraction. Uses the
+      latest monthly average yield known on the trading day.
+    data_type: double
+
+  - &beta_60_day
+    name: beta_60_day
+    config:
+      meta:
+        concept: beta_60_day
+        concept_group: Risk
+    description: >
+      Beta against the benchmark over the latest 60 trading days, from returns above the risk-free rate; null
+      until 60 days are available
+    data_type: double
+
+  - &benchmark_price_record_id
+    name: benchmark_price_record_id
+    config:
+      meta:
+        concept: benchmark_price_record_id
+        concept_group: Risk
+    description: Identifier of the benchmark's daily price row this row comes from
     data_type: varchar
 
   # --- Lineage ---------------------------------------------------------------
@@ -1129,8 +1222,8 @@ sources:
       - name: economic_indicators
         description: >
           US macroeconomic time series, one row per indicator per period. Full history is returned on every load.
-          Indicators: REAL_GDP (quarterly), CPI, FEDERAL_FUNDS_RATE, TREASURY_YIELD (10-year) and UNEMPLOYMENT (monthly),
-          INFLATION (annual).
+          Indicators: REAL_GDP (quarterly), CPI, FEDERAL_FUNDS_RATE, TREASURY_YIELD_10YEAR, TREASURY_YIELD_3MONTH and
+          UNEMPLOYMENT (monthly), INFLATION (annual). A Treasury series' code adds its maturity to the API function name.
         data_tests: [declared_types_match]
         columns:
 
@@ -1584,6 +1677,47 @@ models:
       - <<: *is_current
         data_tests: [not_null]
 
+  - name: dim_calendar_days
+    description: >
+      One row per calendar day with no gaps, marking trading days: the semantic layer's time spine. Runs from the
+      earliest economic observation to calendar_future_years past the latest trading day. A trading day is any date
+      with a loaded price, so a day missing from every ticker's load also reads as a market holiday.
+    time_spine:
+      standard_granularity_column: calendar_date
+    data_tests:
+      - dbt_utils.sequential_values:  # no gaps: the time spine needs every day
+          arguments:
+            column_name: calendar_date
+            datepart: day
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "coalesce(is_trading_day, false) = (trading_day_number is not null)"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "as_of_trading_date <= calendar_date"
+    columns:
+
+      - <<: *calendar_date
+        data_tests: [unique, not_null]
+
+      - *is_trading_day
+
+      - <<: *trading_day_number
+        data_tests:
+          - unique
+          - dbt_utils.sequential_values:  # trading days are numbered without gaps
+              arguments:
+                interval: 1
+              config:
+                where: "trading_day_number is not null"
+
+      - <<: *as_of_trading_date
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: trading_date
+
   - name: fct_daily_prices
     description: Daily price bars, one row per ticker per trading day, with returns and a rebased close for charting.
     data_tests:
@@ -1593,6 +1727,9 @@ models:
       - dbt_utils.expression_is_true:
           arguments:
             expression: "close_index > 0"
+      - dbt_utils.expression_is_true:  # closes are unadjusted: a move this large is more likely a split than a trade
+          arguments:
+            expression: "daily_return is null or daily_return between -0.3 and 0.5"
     columns:
 
       - *ticker_symbol
@@ -1785,6 +1922,190 @@ models:
       - <<: *price_record_ids_hash
         data_tests: [not_null]
 
+  - name: fct_daily_returns_vs_benchmark
+    description: >
+      Each security's daily return beside its benchmark's and the risk-free return, one row per security,
+      benchmark and trading day where both returns cover the same period. Feeds the benchmark_returns semantic
+      model: its metrics are per security and benchmark, so group by both, or the figures mix securities.
+    semantic_model:
+      name: benchmark_returns
+    primary_entity: benchmark_return_day
+    agg_time_dimension: trading_date
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, benchmark_ticker_symbol, trading_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "ticker_symbol <> benchmark_ticker_symbol"
+    columns:
+
+      - <<: *ticker_symbol
+        entity: {name: ticker, type: foreign}
+
+      - <<: *benchmark_ticker_symbol
+        entity: {name: benchmark, type: foreign}
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('benchmarks')
+                field: ticker_symbol
+
+      - <<: *trading_date
+        dimension: {type: time}  # the shorthand `dimension: time` drops the concept's granularity
+
+      - <<: *daily_return
+        data_tests: [not_null]
+
+      - <<: *benchmark_daily_return
+        data_tests: [not_null]
+
+      - <<: *risk_free_return
+        data_tests: [not_null]  # the risk-free series covers every trading day
+
+      - *beta_60_day
+
+      - <<: *price_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+      - <<: *benchmark_price_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+      - <<: *indicator_record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_economic_indicators')
+                field: record_id
+
+    # Beta, correlation, alpha, volatility and the Sharpe ratio aren't sums, so each is derived from sums
+    # that are (x = the benchmark's return above the risk-free rate, y = the security's). They're then
+    # correct over any period chosen at query time. Daily figures are annualized over 252 trading days.
+    metrics:
+
+      - name: benchmark_return_days
+        description: Number of trading days with returns for both the security and its benchmark
+        type: simple
+        agg: count
+        expr: daily_return
+
+      - name: sum_daily_return
+        hidden: true
+        type: simple
+        agg: sum
+        expr: daily_return
+
+      - name: sum_daily_return_squared
+        hidden: true
+        type: simple
+        agg: sum
+        expr: daily_return * daily_return
+
+      - name: sum_excess_return
+        hidden: true
+        type: simple
+        agg: sum
+        expr: daily_return - risk_free_return
+
+      - name: sum_excess_return_squared
+        hidden: true
+        type: simple
+        agg: sum
+        expr: (daily_return - risk_free_return) * (daily_return - risk_free_return)
+
+      - name: sum_benchmark_excess_return
+        hidden: true
+        type: simple
+        agg: sum
+        expr: benchmark_daily_return - risk_free_return
+
+      - name: sum_benchmark_excess_return_squared
+        hidden: true
+        type: simple
+        agg: sum
+        expr: (benchmark_daily_return - risk_free_return) * (benchmark_daily_return - risk_free_return)
+
+      - name: sum_excess_return_cross_product
+        hidden: true
+        type: simple
+        agg: sum
+        expr: (daily_return - risk_free_return) * (benchmark_daily_return - risk_free_return)
+
+      - name: benchmark_beta
+        description: >
+          How far the security's return moves with its benchmark's over the period, both measured above the
+          risk-free rate: 1 moves with the benchmark, above 1 amplifies it. Can differ from the company's
+          reported beta, which covers a different period.
+        type: derived
+        expr: (days * sum_xy - sum_x * sum_y) / nullif(days * sum_xx - sum_x * sum_x, 0)
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: sum_benchmark_excess_return_squared, alias: sum_xx}
+          - {name: sum_excess_return_cross_product, alias: sum_xy}
+
+      - name: benchmark_correlation
+        description: >
+          Correlation between the security's and its benchmark's daily returns above the risk-free rate over
+          the period, from -1 to 1
+        type: derived
+        expr: (days * sum_xy - sum_x * sum_y) / nullif(sqrt((days * sum_xx - sum_x * sum_x) * (days * sum_yy - sum_y * sum_y)), 0)
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: sum_benchmark_excess_return_squared, alias: sum_xx}
+          - {name: sum_excess_return_squared, alias: sum_yy}
+          - {name: sum_excess_return_cross_product, alias: sum_xy}
+
+      - name: annualized_alpha
+        description: >
+          Yearly return above what the security's beta and its benchmark's return predict, as a fraction
+        type: derived
+        expr: 252 * (sum_y - beta * sum_x) / nullif(days, 0)
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: benchmark_beta, alias: beta}
+
+      - name: annualized_excess_return
+        description: Average daily return above the risk-free rate, as a yearly fraction
+        type: derived
+        expr: 252 * sum_y / nullif(days, 0)
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_excess_return, alias: sum_y}
+
+      - name: annualized_volatility
+        description: Standard deviation of the security's daily return, scaled to a year
+        type: derived
+        expr: sqrt(252 * (sum_rr - sum_r * sum_r / days) / nullif(days - 1, 0))
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_daily_return, alias: sum_r}
+          - {name: sum_daily_return_squared, alias: sum_rr}
+
+      - name: sharpe_ratio
+        description: Yearly return above the risk-free rate per unit of its yearly volatility
+        type: derived
+        expr: sqrt(252) * (sum_y / days) / nullif(sqrt((sum_yy - sum_y * sum_y / days) / nullif(days - 1, 0)), 0)
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: sum_excess_return_squared, alias: sum_yy}
+
 seeds:
   - name: portfolio_holdings
     description: >
@@ -1813,6 +2134,25 @@ seeds:
       - <<: *purchase_date
         data_tests: [not_null]
 
+  - name: benchmarks
+    description: >
+      The index funds that securities and the portfolio are measured against (beta, alpha, excess return):
+      one row per benchmark. Each must also be in the price loader's symbols, so its prices are loaded.
+    config:
+      column_types:
+        ticker_symbol: varchar
+    data_tests: [declared_types_match]
+    columns:
+
+      - <<: *ticker_symbol
+        data_tests:
+          - unique
+          - not_null
+          - relationships:  # the benchmark's prices are loaded
+              arguments:
+                to: ref('fct_daily_prices')
+                field: ticker_symbol
+
 unit_tests:
   - name: company_overviews_nulls_placeholders_and_casts
     description: >
@@ -1834,6 +2174,67 @@ unit_tests:
            market_capitalization: 212460716000, dividend_date: 2026-01-15, percent_insiders: 0.5}
         - {ticker_symbol: BBB, sector: TECHNOLOGY, pe_ratio: 31.2, peg_ratio: 1.8, beta: null,
            market_capitalization: null, dividend_date: null, percent_insiders: null}
+
+  - name: calendar_days_mark_trading_days
+    description: >
+      Weekends and holidays aren't trading days and map to the previous trading day; days outside the price
+      history are unknown (null); trading days are numbered without gaps.
+    model: dim_calendar_days
+    overrides:
+      vars: {calendar_future_years: 0}
+    given:
+      - input: ref('fct_daily_prices')
+        rows:
+          - {trading_date: 2026-11-06}  # Friday
+          - {trading_date: 2026-11-09}  # Monday
+          - {trading_date: 2026-11-09}  # a second ticker on the same day
+          - {trading_date: 2026-11-11}  # Wednesday, after a holiday
+      - input: ref('fct_economic_indicators')
+        rows:
+          - {period_start_date: 2026-11-05}
+    expect:
+      rows:
+        - {calendar_date: 2026-11-05, is_trading_day: null, trading_day_number: null, as_of_trading_date: null}
+        - {calendar_date: 2026-11-06, is_trading_day: true, trading_day_number: 1, as_of_trading_date: 2026-11-06}
+        - {calendar_date: 2026-11-07, is_trading_day: false, trading_day_number: null, as_of_trading_date: 2026-11-06}
+        - {calendar_date: 2026-11-08, is_trading_day: false, trading_day_number: null, as_of_trading_date: 2026-11-06}
+        - {calendar_date: 2026-11-09, is_trading_day: true, trading_day_number: 2, as_of_trading_date: 2026-11-09}
+        - {calendar_date: 2026-11-10, is_trading_day: false, trading_day_number: null, as_of_trading_date: 2026-11-09}
+        - {calendar_date: 2026-11-11, is_trading_day: true, trading_day_number: 3, as_of_trading_date: 2026-11-11}
+
+  - name: returns_vs_benchmark_pair_matching_periods
+    description: >
+      Securities pair with each benchmark but not themselves, only on days both returns span the same period;
+      the risk-free return accrues over the calendar days since the previous close.
+    model: fct_daily_returns_vs_benchmark
+    given:
+      - input: ref('fct_daily_prices')
+        rows:
+          - {ticker_symbol: AAA, trading_date: 2026-11-05, daily_return: null, record_id: a1}
+          - {ticker_symbol: AAA, trading_date: 2026-11-06, daily_return: 0.01, record_id: a2}
+          - {ticker_symbol: AAA, trading_date: 2026-11-09, daily_return: -0.02, record_id: a3}
+          - {ticker_symbol: SPY, trading_date: 2026-11-05, daily_return: null, record_id: s1}
+          - {ticker_symbol: SPY, trading_date: 2026-11-06, daily_return: 0.005, record_id: s2}
+          - {ticker_symbol: SPY, trading_date: 2026-11-09, daily_return: -0.01, record_id: s3}
+          # BBB misses Friday, so its Monday return spans Thursday to Monday and isn't compared
+          - {ticker_symbol: BBB, trading_date: 2026-11-05, daily_return: null, record_id: b1}
+          - {ticker_symbol: BBB, trading_date: 2026-11-09, daily_return: 0.03, record_id: b2}
+      - input: ref('benchmarks')
+        rows:
+          - {ticker_symbol: SPY}
+      - input: ref('int_alpha_vantage__indicators_as_of_daily')
+        rows:  # a yield of 36.5 keeps the arithmetic exact: 36.5 x days / 365
+          - {trading_date: 2026-11-06, indicator: TREASURY_YIELD_3MONTH, value: 36.5, record_id: r1}
+          - {trading_date: 2026-11-09, indicator: TREASURY_YIELD_3MONTH, value: 36.5, record_id: r1}
+          - {trading_date: 2026-11-09, indicator: TREASURY_YIELD_10YEAR, value: 99, record_id: r2}
+    expect:
+      rows:
+        - {ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-06, daily_return: 0.01,
+           benchmark_daily_return: 0.005, risk_free_return: 0.1, beta_60_day: null, price_record_id: a2,
+           benchmark_price_record_id: s2, indicator_record_id: r1}
+        - {ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-09, daily_return: -0.02,
+           benchmark_daily_return: -0.01, risk_free_return: 0.3, beta_60_day: null, price_record_id: a3,
+           benchmark_price_record_id: s3, indicator_record_id: r1}
 
   - name: economic_indicators_percent_series_become_fractions
     description: Series reported in percent are divided by 100 and relabelled "fraction"; other units are unchanged.

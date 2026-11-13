@@ -76,7 +76,7 @@ queries:
     sql: |
       SELECT trading_date, ANY_VALUE(value) AS yield
       FROM mart_daily_market
-      WHERE indicator = 'TREASURY_YIELD'
+      WHERE indicator = 'TREASURY_YIELD_10YEAR'
         AND trading_date >= (SELECT MIN(trading_date) FROM fct_portfolio_daily)
       GROUP BY trading_date
       ORDER BY trading_date
