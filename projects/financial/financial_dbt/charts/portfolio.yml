@@ -329,7 +329,9 @@ charts:
           align: right
 
 rows:
-- text: "[Data dictionary →](data_dictionary.html): what every figure means and where it comes from"
+- text: >-
+    [Risk and return →](risk.html): beta, alpha and the Sharpe ratio against the benchmark ·
+    [Data dictionary →](data_dictionary.html): what every figure means and where it comes from
 - cols:
   - width: "17%"
     rows:

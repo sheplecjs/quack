@@ -316,6 +316,11 @@ model they're built on.
   `hidden: true`.
 - **Don't reuse a concept's name for a metric that means something else.** A metric calculated here is named
   apart from a figure the source supplies, e.g. `benchmark_beta` vs the source's `beta`.
+- **Saved queries are what the chart boards read.** `task charts:metrics PROJECT=<project>` compiles each one
+  to SQL in `charts/_metrics.yml` (generated: don't edit); boards extend it and read `{{ queries.<name> }}`.
+  `task report` fails while the file is out of date.
+- **Parse with `--no-partial-parse` after editing a model's metrics.** Partial parsing registers them twice
+  ("dbt found two metrics with the name …").
 - **Metrics that aren't additive are derived from sums that are.** Beta, correlation and volatility are built
   from sums of returns, squares and cross products, so they're correct over any period or grouping chosen at
   query time. Window calculations that depend on the path (a rolling 60-day beta) are mart columns instead.

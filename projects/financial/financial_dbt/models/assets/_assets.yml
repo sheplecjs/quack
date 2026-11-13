@@ -895,6 +895,15 @@ anchors:
 
   # --- Risk ------------------------------------------------------------------
 
+  - &return_series
+    name: return_series
+    config:
+      meta:
+        concept: return_series
+        concept_group: Risk
+    description: What the returns belong to, a security's ticker symbol or Portfolio for the whole portfolio
+    data_type: varchar
+
   - &benchmark_ticker_symbol
     name: benchmark_ticker_symbol
     config:
@@ -1924,9 +1933,10 @@ models:
 
   - name: fct_daily_returns_vs_benchmark
     description: >
-      Each security's daily return beside its benchmark's and the risk-free return, one row per security,
-      benchmark and trading day where both returns cover the same period. Feeds the benchmark_returns semantic
-      model: its metrics are per security and benchmark, so group by both, or the figures mix securities.
+      Each return series' daily return beside its benchmark's and the risk-free return, one row per series,
+      benchmark and trading day where both returns cover the same period. A series is a security or the whole
+      portfolio. Feeds the benchmark_returns semantic model: its metrics are per series and benchmark, so group
+      by both, or the figures mix series.
     semantic_model:
       name: benchmark_returns
     primary_entity: benchmark_return_day
@@ -1934,11 +1944,21 @@ models:
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
-            combination_of_columns: [ticker_symbol, benchmark_ticker_symbol, trading_date]
+            combination_of_columns: [return_series, benchmark_ticker_symbol, trading_date]
       - dbt_utils.expression_is_true:
           arguments:
-            expression: "ticker_symbol <> benchmark_ticker_symbol"
+            expression: "return_series <> benchmark_ticker_symbol"
+      - dbt_utils.expression_is_true:  # a security's series is its ticker; the portfolio has none
+          arguments:
+            expression: "coalesce(ticker_symbol, 'Portfolio') = return_series"
+      - dbt_utils.expression_is_true:  # a security keeps its price row's id, the portfolio a hash of its rows
+          arguments:
+            expression: "(price_record_id is null) = (ticker_symbol is null) and (price_record_ids_hash is null) = (ticker_symbol is not null)"
     columns:
+
+      - <<: *return_series
+        dimension: {type: categorical}
+        data_tests: [not_null]
 
       - <<: *ticker_symbol
         entity: {name: ticker, type: foreign}
@@ -1967,11 +1987,12 @@ models:
 
       - <<: *price_record_id
         data_tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('fct_daily_prices')
                 field: record_id
+
+      - *price_record_ids_hash
 
       - <<: *benchmark_price_record_id
         data_tests:
@@ -1989,12 +2010,15 @@ models:
                 field: record_id
 
     # Beta, correlation, alpha, volatility and the Sharpe ratio aren't sums, so each is derived from sums
-    # that are (x = the benchmark's return above the risk-free rate, y = the security's). They're then
-    # correct over any period chosen at query time. Daily figures are annualized over 252 trading days.
+    # that are (x = the benchmark's return above the risk-free rate, y = the series'). They're then correct
+    # over any period chosen at query time. Daily figures are annualized over 252 trading days, and every
+    # derived metric is null below 20 trading days, where the figures are mostly noise.
     metrics:
 
       - name: benchmark_return_days
-        description: Number of trading days with returns for both the security and its benchmark
+        description: >
+          Number of trading days with returns for both the series and its benchmark. The risk figures are left
+          empty for periods of fewer than 20 trading days, which are too short to be meaningful.
         type: simple
         agg: count
         expr: daily_return
@@ -2043,11 +2067,14 @@ models:
 
       - name: benchmark_beta
         description: >
-          How far the security's return moves with its benchmark's over the period, both measured above the
+          How far the series' return moves with its benchmark's over the period, both measured above the
           risk-free rate: 1 moves with the benchmark, above 1 amplifies it. Can differ from the company's
           reported beta, which covers a different period.
         type: derived
-        expr: (days * sum_xy - sum_x * sum_y) / nullif(days * sum_xx - sum_x * sum_x, 0)
+        expr: >
+          case when days >= 20 then
+            (days * sum_xy - sum_x * sum_y) / nullif(days * sum_xx - sum_x * sum_x, 0)
+          end
         input_metrics:
           - {name: benchmark_return_days, alias: days}
           - {name: sum_benchmark_excess_return, alias: sum_x}
@@ -2057,10 +2084,14 @@ models:
 
       - name: benchmark_correlation
         description: >
-          Correlation between the security's and its benchmark's daily returns above the risk-free rate over
-          the period, from -1 to 1
+          Correlation between the series' and its benchmark's daily returns above the risk-free rate over the
+          period, from -1 to 1
         type: derived
-        expr: (days * sum_xy - sum_x * sum_y) / nullif(sqrt((days * sum_xx - sum_x * sum_x) * (days * sum_yy - sum_y * sum_y)), 0)
+        expr: >
+          case when days >= 20 then
+            (days * sum_xy - sum_x * sum_y)
+            / nullif(sqrt((days * sum_xx - sum_x * sum_x) * (days * sum_yy - sum_y * sum_y)), 0)
+          end
         input_metrics:
           - {name: benchmark_return_days, alias: days}
           - {name: sum_benchmark_excess_return, alias: sum_x}
@@ -2071,9 +2102,10 @@ models:
 
       - name: annualized_alpha
         description: >
-          Yearly return above what the security's beta and its benchmark's return predict, as a fraction
+          Yearly return above what the series' beta and its benchmark's return predict, as a fraction
         type: derived
-        expr: 252 * (sum_y - beta * sum_x) / nullif(days, 0)
+        expr: >
+          case when days >= 20 then 252 * (sum_y - beta * sum_x) / days end
         input_metrics:
           - {name: benchmark_return_days, alias: days}
           - {name: sum_benchmark_excess_return, alias: sum_x}
@@ -2083,15 +2115,26 @@ models:
       - name: annualized_excess_return
         description: Average daily return above the risk-free rate, as a yearly fraction
         type: derived
-        expr: 252 * sum_y / nullif(days, 0)
+        expr: >
+          case when days >= 20 then 252 * sum_y / days end
         input_metrics:
           - {name: benchmark_return_days, alias: days}
           - {name: sum_excess_return, alias: sum_y}
 
-      - name: annualized_volatility
-        description: Standard deviation of the security's daily return, scaled to a year
+      - name: benchmark_annualized_excess_return
+        description: The benchmark's average daily return above the risk-free rate on the same days, as a yearly fraction
         type: derived
-        expr: sqrt(252 * (sum_rr - sum_r * sum_r / days) / nullif(days - 1, 0))
+        expr: >
+          case when days >= 20 then 252 * sum_x / days end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+
+      - name: annualized_volatility
+        description: Standard deviation of the series' daily return, scaled to a year
+        type: derived
+        expr: >
+          case when days >= 20 then sqrt(252 * (sum_rr - sum_r * sum_r / days) / (days - 1)) end
         input_metrics:
           - {name: benchmark_return_days, alias: days}
           - {name: sum_daily_return, alias: sum_r}
@@ -2100,11 +2143,61 @@ models:
       - name: sharpe_ratio
         description: Yearly return above the risk-free rate per unit of its yearly volatility
         type: derived
-        expr: sqrt(252) * (sum_y / days) / nullif(sqrt((sum_yy - sum_y * sum_y / days) / nullif(days - 1, 0)), 0)
+        expr: >
+          case when days >= 20 then
+            sqrt(252) * (sum_y / days) / nullif(sqrt((sum_yy - sum_y * sum_y / days) / (days - 1)), 0)
+          end
         input_metrics:
           - {name: benchmark_return_days, alias: days}
           - {name: sum_excess_return, alias: sum_y}
           - {name: sum_excess_return_squared, alias: sum_yy}
+
+# Named metric queries: what the chart boards read, compiled to SQL by `task charts:metrics`. Each risk query
+# has the same metrics, grouped over a different period.
+saved_queries:
+
+  - name: risk_all_history
+    description: Risk figures for each series against each benchmark over all the history they share
+    query_params:
+      metrics: &risk_metrics
+        - benchmark_return_days
+        - benchmark_beta
+        - benchmark_correlation
+        - annualized_alpha
+        - annualized_excess_return
+        - benchmark_annualized_excess_return
+        - annualized_volatility
+        - sharpe_ratio
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+
+  - name: risk_by_quarter
+    description: Risk figures for each series against each benchmark, per calendar quarter
+    query_params:
+      metrics: *risk_metrics
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+        - TimeDimension('metric_time', 'quarter')
+
+  - name: risk_by_month
+    description: Risk figures for each series against each benchmark, per calendar month
+    query_params:
+      metrics: *risk_metrics
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+        - TimeDimension('metric_time', 'month')
+
+  - name: risk_by_year
+    description: Risk figures for each series against each benchmark, per calendar year
+    query_params:
+      metrics: *risk_metrics
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+        - TimeDimension('metric_time', 'year')
 
 seeds:
   - name: portfolio_holdings
@@ -2205,9 +2298,18 @@ unit_tests:
   - name: returns_vs_benchmark_pair_matching_periods
     description: >
       Securities pair with each benchmark but not themselves, only on days both returns span the same period;
-      the risk-free return accrues over the calendar days since the previous close.
+      the risk-free return accrues over the calendar days since the previous close. The portfolio's return is
+      weighted by the previous day's position values.
     model: fct_daily_returns_vs_benchmark
     given:
+      - input: ref('fct_portfolio_positions_daily')
+        rows:  # AAA +50% and SPY flat on equal values is +25%; both then fall 25%
+          - {ticker_symbol: AAA, trading_date: 2026-11-05, position_value: 64, price_record_id: a1}
+          - {ticker_symbol: AAA, trading_date: 2026-11-06, position_value: 96, price_record_id: a2}
+          - {ticker_symbol: AAA, trading_date: 2026-11-09, position_value: 72, price_record_id: a3}
+          - {ticker_symbol: SPY, trading_date: 2026-11-05, position_value: 64, price_record_id: s1}
+          - {ticker_symbol: SPY, trading_date: 2026-11-06, position_value: 64, price_record_id: s2}
+          - {ticker_symbol: SPY, trading_date: 2026-11-09, position_value: 48, price_record_id: s3}
       - input: ref('fct_daily_prices')
         rows:
           - {ticker_symbol: AAA, trading_date: 2026-11-05, daily_return: null, record_id: a1}
@@ -2229,12 +2331,18 @@ unit_tests:
           - {trading_date: 2026-11-09, indicator: TREASURY_YIELD_10YEAR, value: 99, record_id: r2}
     expect:
       rows:
-        - {ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-06, daily_return: 0.01,
-           benchmark_daily_return: 0.005, risk_free_return: 0.1, beta_60_day: null, price_record_id: a2,
-           benchmark_price_record_id: s2, indicator_record_id: r1}
-        - {ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-09, daily_return: -0.02,
-           benchmark_daily_return: -0.01, risk_free_return: 0.3, beta_60_day: null, price_record_id: a3,
-           benchmark_price_record_id: s3, indicator_record_id: r1}
+        - {return_series: AAA, ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-06,
+           daily_return: 0.01, benchmark_daily_return: 0.005, risk_free_return: 0.1, beta_60_day: null,
+           price_record_id: a2, benchmark_price_record_id: s2, indicator_record_id: r1}
+        - {return_series: AAA, ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-09,
+           daily_return: -0.02, benchmark_daily_return: -0.01, risk_free_return: 0.3, beta_60_day: null,
+           price_record_id: a3, benchmark_price_record_id: s3, indicator_record_id: r1}
+        - {return_series: Portfolio, ticker_symbol: null, benchmark_ticker_symbol: SPY, trading_date: 2026-11-06,
+           daily_return: 0.25, benchmark_daily_return: 0.005, risk_free_return: 0.1, beta_60_day: null,
+           price_record_id: null, benchmark_price_record_id: s2, indicator_record_id: r1}
+        - {return_series: Portfolio, ticker_symbol: null, benchmark_ticker_symbol: SPY, trading_date: 2026-11-09,
+           daily_return: -0.25, benchmark_daily_return: -0.01, risk_free_return: 0.3, beta_60_day: null,
+           price_record_id: null, benchmark_price_record_id: s3, indicator_record_id: r1}
 
   - name: economic_indicators_percent_series_become_fractions
     description: Series reported in percent are divided by 100 and relabelled "fraction"; other units are unchanged.

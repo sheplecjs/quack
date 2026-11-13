@@ -11,6 +11,7 @@
 | Ingestion | [dlt](https://dlthub.com/), with pydantic-validated config, from the [Alpha Vantage](https://www.alphavantage.co/) and [Shynet](https://github.com/milesmcc/shynet) APIs |
 | Storage | [DuckDB](https://duckdb.org/) |
 | Transformation | [dbt](https://www.getdbt.com/) (dbt-duckdb): staging, intermediate and mart layers with enforced contracts |
+| Semantic layer | dbt semantic models, metrics and saved queries, queried with [MetricFlow](https://docs.getdbt.com/docs/build/about-metricflow) (`mf`) |
 | Reporting | [dbt charts](https://dbtcharts.com/) (`dct`) boards, exported as static HTML; [marimo](https://marimo.io/) notebooks for exploration |
 | Quality | ruff, ty, pytest, yamllint, detect-secrets; dbt data and unit tests |
 | Packaging | Docker: one image per project, from the root `Dockerfile` |
@@ -23,7 +24,7 @@
 quack/
 ├── projects/
 │   ├── financial/              # Market and macroeconomic data project
-│   │   ├── src/financial/      # financial-load CLI and shared DuckDB destination
+│   │   ├── src/financial/      # financial-load and financial-metrics CLIs, shared DuckDB destination
 │   │   │   └── ingestion/      # one dlt source per subpackage, e.g. alpha_vantage/
 │   │   ├── src/notebooks/      # marimo notebooks
 │   │   ├── tests/              # pytest suite for the pipeline
@@ -31,7 +32,7 @@ quack/
 │   │   │   ├── models/         # one folder per domain (e.g. assets/): staging/, intermediate/, marts/
 │   │   │   ├── seeds/          # e.g. the portfolio holdings
 │   │   │   ├── tests/          # custom generic tests
-│   │   │   └── charts/         # dbt charts report boards
+│   │   │   └── charts/         # dbt charts report boards; _metrics.yml is generated from the saved queries
 │   └── web/                    # Web analytics project
 │       ├── src/web/            # web-load CLI; ingestion/shynet/ loads a Shynet instance
 │       ├── tests/
@@ -56,13 +57,96 @@ which is not committed.
 2. **Model:** dbt stages, types and tests the raw data. It then builds point-in-time marts: economic data is
    joined to trading days only once it would have been available. It also builds a portfolio of the configured
    holdings.
-3. **Report:** a portfolio performance report with an overview and one page per holding, exported as linked
-   static HTML.
-4. **Document:** a data dictionary model, built from dbt's graph, lists every column in the project with its
+3. **Measure:** a semantic layer defines risk metrics (beta, alpha, correlation, volatility, the Sharpe ratio)
+   for each holding and the whole portfolio against a benchmark index fund, queryable over any period.
+4. **Report:** a portfolio performance report with an overview, a risk and return page and one page per
+   holding, exported as linked static HTML.
+5. **Document:** a data dictionary model, built from dbt's graph, lists every column in the project with its
    concept, lineage, tests and any declared divergence.
 
 Column documentation follows a **Declared Divergence** practice, described in [CLAUDE.md](CLAUDE.md): each
 concept is defined once, and any difference from it has to be declared explicitly.
+
+### Semantic layer and risk metrics
+
+`fct_daily_returns_vs_benchmark` holds one row per return series, benchmark and trading day. A return series is
+a holding or the whole portfolio. Each row has the series' daily return, the benchmark's, and the risk-free
+return over the same days, from the 3-month Treasury bill rate. The benchmark is SPY, set in the `benchmarks`
+seed. The portfolio's return is weighted by the previous day's position values, so buying a holding isn't
+counted as a gain.
+
+The `benchmark_returns` semantic model, declared on that model in `models/assets/_assets.yml`, defines these
+metrics:
+
+| Metric | Meaning |
+|---|---|
+| `benchmark_beta` | How far the series moves with the benchmark, both measured above the risk-free rate |
+| `benchmark_correlation` | Correlation with the benchmark, from -1 to 1 |
+| `annualized_alpha` | Yearly return above what the series' beta and the benchmark's return predict |
+| `annualized_excess_return` | Average return above the risk-free rate, as a yearly fraction |
+| `benchmark_annualized_excess_return` | The benchmark's own excess return over the same days |
+| `annualized_volatility` | Standard deviation of the daily return, scaled to a year |
+| `sharpe_ratio` | Excess return per unit of volatility |
+| `benchmark_return_days` | Trading days in the period with returns for both the series and the benchmark |
+
+How they're calculated:
+
+- **Built from sums.** Beta, correlation and volatility aren't additive, so each is derived from additive sums:
+  returns, their squares and their cross products. That keeps them correct over any period chosen at query
+  time, from a month to all history.
+- **Short periods are left empty.** Every metric except `benchmark_return_days` is null for a period of fewer
+  than 20 trading days.
+- **Yearly figures** scale daily ones over 252 trading days.
+- **Rolling beta is a column, not a metric.** A rolling 60-day beta depends on the order of the days, so it's
+  the mart column `beta_60_day` instead.
+
+**Querying with MetricFlow.** `mf` reads the semantic manifest from dbt's `target/`. Run it from the dbt
+project, with the same environment as dbt:
+
+```bash
+cd projects/financial/financial_dbt
+export DBT_PROFILES_DIR=.. DUCKDB_PATH=../../../data/financial/data.duckdb
+
+uv run dbt parse --no-partial-parse                       # writes target/semantic_manifest.json
+uv run mf list metrics                                    # every metric, with the dimensions it can use
+uv run mf list dimensions --metrics benchmark_beta        # what benchmark_beta can be grouped by
+```
+
+For example, the portfolio's beta, alpha and Sharpe ratio for each calendar month:
+
+```bash
+uv run mf query \
+  --metrics benchmark_return_days,benchmark_beta,annualized_alpha,sharpe_ratio \
+  --group-by benchmark_return_day__return_series,metric_time__month \
+  --where "{{ Dimension('benchmark_return_day__return_series') }} = 'Portfolio'" \
+  --order metric_time__month
+```
+
+```
+metric_time__month    benchmark_return_day__return_series      benchmark_return_days    benchmark_beta    sharpe_ratio    annualized_alpha
+--------------------  -------------------------------------  -----------------------  ----------------  --------------  ------------------
+2026-06-01T00:00:00   Portfolio                                                    4
+2026-07-01T00:00:00   Portfolio                                                   22         -0.121099        3.40817            0.588377
+2026-08-01T00:00:00   Portfolio                                                   21          0.288169        5.5676             0.578972
+2026-09-01T00:00:00   Portfolio                                                   21          0.403292        0.361104           0.0904172
+2026-10-01T00:00:00   Portfolio                                                   22          0.212995        2.31293            0.255659
+2026-11-01T00:00:00   Portfolio                                                    9
+```
+
+June and November are empty: each has fewer than 20 trading days in the data. Other ways to query:
+
+- **Another grain:** swap `metric_time__month` for `metric_time__quarter` or `metric_time__year`, or drop it for
+  all history.
+- **Other series:** drop the `--where` to see every holding.
+- **By benchmark:** group by the `benchmark` entity, as in `--group-by benchmark_return_day__return_series,benchmark`.
+- **See the SQL:** add `--explain` to print the SQL MetricFlow generates instead of running it.
+- **Run a saved query** from the domain YAML: `uv run mf query --saved-query risk_all_history`.
+
+**In the reports.** dbt charts runs SQL, not semantic-layer queries. `financial-metrics update`, run from the dbt
+project after `dbt parse`, compiles each saved query with MetricFlow into
+`financial_dbt/charts/_metrics.yml`. The risk and return board (`charts/risk.yml`) extends that file, so every
+figure on it has a single definition in the semantic layer. `financial-metrics check` fails while the file is
+out of date, and `render_reports.sh` runs it before rendering.
 
 ## The web project
 
