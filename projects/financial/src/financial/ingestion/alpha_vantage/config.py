@@ -66,6 +66,19 @@ class EconomicIndicator(BaseModel):
             )
         return self
 
+    @property
+    def code(self) -> str:
+        """The series' code in the loaded data: the function, plus the maturity where it has one.
+
+        (indicator, date) is the table's primary key, so each series needs its own code,
+        e.g. TREASURY_YIELD_3MONTH and TREASURY_YIELD_10YEAR.
+        """
+        return (
+            f"{self.function}_{self.maturity.upper()}"
+            if self.maturity
+            else self.function
+        )
+
     def params(self) -> dict[str, str]:
         """Query params for this series, omitting unset ones so the API uses its defaults."""
         return self.model_dump(exclude={"function"}, exclude_none=True)
@@ -77,6 +90,8 @@ DEFAULT_INDICATORS = (
     EconomicIndicator(function="INFLATION"),
     EconomicIndicator(function="FEDERAL_FUNDS_RATE", interval="monthly"),
     EconomicIndicator(function="TREASURY_YIELD", interval="monthly", maturity="10year"),
+    # The usual risk-free rate for excess returns (Sharpe ratio, alpha)
+    EconomicIndicator(function="TREASURY_YIELD", interval="monthly", maturity="3month"),
     EconomicIndicator(function="UNEMPLOYMENT"),
 )
 
@@ -126,11 +141,11 @@ class AlphaVantageConfig(BaseModel):
     def _check_indicators(
         cls, value: tuple[EconomicIndicator, ...]
     ) -> tuple[EconomicIndicator, ...]:
-        # (indicator, date) is the table's primary key, so each function can appear once
-        functions = [indicator.function for indicator in value]
-        duplicates = sorted({f for f in functions if functions.count(f) > 1})
+        # (indicator, date) is the table's primary key, so each series code can appear once
+        codes = [indicator.code for indicator in value]
+        duplicates = sorted({c for c in codes if codes.count(c) > 1})
         if duplicates:
-            raise ValueError(f"duplicate indicator functions: {duplicates}")
+            raise ValueError(f"duplicate indicator series: {duplicates}")
         return value
 
     def redact(self, text: str) -> str:

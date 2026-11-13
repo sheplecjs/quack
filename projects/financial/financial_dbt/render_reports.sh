@@ -1,5 +1,5 @@
 # Render this project's dbt charts boards into one folder: every board as HTML, so the boards' relative
-# links (portfolio.html <-> asset_<ticker>.html, data_dictionary.html) resolve, and the landing board as
+# links (portfolio.html <-> risk.html, targets.html, asset_<ticker>.html, data_dictionary.html) resolve, and the landing board as
 # PNG too. Run from this directory with the dbt profile's environment set. Used by `task report` and the
 # image's render step (the root Dockerfile and src/quack/stacks/project_pipeline.py).
 #
@@ -9,5 +9,9 @@ set -euo pipefail
 out="${1:?usage: render_reports.sh <output folder>}"
 mkdir -p "$out"  # dct doesn't create it
 
-dct render charts/portfolio.yml charts/asset_*.yml charts/data_dictionary.yml --format html --output "$out/{stem}.html"
+# The boards read metrics from charts/_metrics.yml; fail rather than render metrics that no longer match
+# the semantic layer (regenerate with `task charts:metrics PROJECT=financial`)
+financial-metrics check
+
+dct render charts/portfolio.yml charts/risk.yml charts/targets.yml charts/asset_*.yml charts/data_dictionary.yml --format html --output "$out/{stem}.html"
 dct render charts/portfolio.yml --format png --output "$out/{stem}.png"

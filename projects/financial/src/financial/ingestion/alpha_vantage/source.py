@@ -163,7 +163,7 @@ def economic_indicators(settings: AlphaVantageConfig) -> Iterator[list[dict[str,
         payload = _query(settings, indicator.function, **indicator.params())
         yield [
             {
-                "indicator": indicator.function,
+                "indicator": indicator.code,
                 "name": payload["name"],
                 "interval": payload["interval"],
                 "unit": payload["unit"],

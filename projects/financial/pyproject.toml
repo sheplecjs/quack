@@ -14,6 +14,7 @@ dependencies = [
 
 [project.scripts]
 financial-load = "financial.pipelines:main"
+financial-metrics = "financial.metrics:main"
 
 [build-system]
 requires = ["uv_build>=0.13.5,<0.14.0"]

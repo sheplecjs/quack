@@ -201,6 +201,27 @@ tasks:
     cmds:
       - uv run {{.PROJECT}}-seeds update {{.CLI_ARGS}}
 
+  charts:metrics:
+    desc: Compile a project's saved queries to SQL for its dbt charts boards (charts/_metrics.yml)
+    summary: |
+      Parses the dbt project, then runs the project's <PROJECT>-metrics CLI, which compiles each saved
+      query with MetricFlow and rewrites charts/_metrics.yml. Run it after changing a metric or saved
+      query; `task report` fails while the file is out of date.
+
+        task charts:metrics PROJECT=financial
+    requires: *requires_project
+    dir: "projects/{{.PROJECT}}/{{.PROJECT}}_dbt"
+    env:
+      DBT_PROFILES_DIR: ..
+      DUCKDB_PATH: "{{.ROOT_DIR}}/data/{{.PROJECT}}/data.duckdb"
+    preconditions:
+      - sh: test -x {{.ROOT_DIR}}/.venv/bin/{{.PROJECT}}-metrics
+        msg: "{{.PROJECT}} has no chart metrics (no {{.PROJECT}}-metrics command)"
+    cmds:
+      # A full parse: partial parsing registers a model's metrics twice after its YAML changes
+      - uv run dbt parse --quiet --no-partial-parse
+      - uv run {{.PROJECT}}-metrics update
+
   report:
     desc: Render a project's dbt charts boards to data/<PROJECT>/report (HTML, plus a PNG of the landing board)
     summary: |
