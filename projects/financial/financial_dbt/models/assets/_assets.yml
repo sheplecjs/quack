@@ -21,6 +21,7 @@ anchors:
         concept_group: Prices
     description: Trading day
     data_type: date
+    granularity: day
 
   - &open_price
     name: open_price
@@ -607,6 +608,7 @@ anchors:
         concept_group: Economic series
     description: Start of the period an observation covers
     data_type: date
+    granularity: day
 
   - &value
     name: value
@@ -616,6 +618,47 @@ anchors:
         concept_group: Economic series
     description: Observed value of the series, in its unit, with percentages as fractions; null where none was reported
     data_type: double
+
+  # --- Calendar --------------------------------------------------------------
+
+  - &calendar_date
+    name: calendar_date
+    config:
+      meta:
+        concept: calendar_date
+        concept_group: Calendar
+    description: Calendar day
+    data_type: date
+    granularity: day
+
+  - &is_trading_day
+    name: is_trading_day
+    config:
+      meta:
+        concept: is_trading_day
+        concept_group: Calendar
+    description: Whether the market traded that day; null outside the period with price data
+    data_type: boolean
+
+  - &trading_day_number
+    name: trading_day_number
+    config:
+      meta:
+        concept: trading_day_number
+        concept_group: Calendar
+    description: >
+      Position of the trading day in the price history, counting from 1; null on other days. Use it to count
+      trading days between dates: the numbers shift if earlier history is added.
+    data_type: bigint
+
+  - &as_of_trading_date
+    name: as_of_trading_date
+    config:
+      meta:
+        concept: as_of_trading_date
+        concept_group: Calendar
+    description: Latest trading day on or before this day; null outside the period with price data
+    data_type: date
 
   # --- Derived (intermediate and marts) -------------------------------------
 
@@ -629,6 +672,7 @@ anchors:
       First day an observation counts as known: the day after its period ends. Actual publication is
       usually later, so this is an optimistic assumption.
     data_type: date
+    granularity: day
 
   - &daily_return
     name: daily_return
@@ -851,6 +895,216 @@ anchors:
     description: Fingerprint of the price rows combined into this one, for checking which rows went in
     data_type: varchar
 
+  # --- Risk ------------------------------------------------------------------
+
+  - &return_series
+    name: return_series
+    config:
+      meta:
+        concept: return_series
+        concept_group: Risk
+    description: What the returns belong to, a security's ticker symbol or Portfolio for the whole portfolio
+    data_type: varchar
+
+  - &benchmark_ticker_symbol
+    name: benchmark_ticker_symbol
+    config:
+      meta:
+        concept: benchmark_ticker_symbol
+        concept_group: Risk
+    description: Ticker symbol of the index fund the security is measured against
+    data_type: varchar
+
+  - &benchmark_daily_return
+    name: benchmark_daily_return
+    config:
+      meta:
+        concept: benchmark_daily_return
+        concept_group: Risk
+    description: The benchmark's return from the previous trading day's close, as a fraction
+    data_type: double
+
+  - &risk_free_return
+    name: risk_free_return
+    config:
+      meta:
+        concept: risk_free_return
+        concept_group: Risk
+    description: >
+      Return from holding 3-month Treasury bills over the same days as the daily return, as a fraction. Uses the
+      latest monthly average yield known on the trading day.
+    data_type: double
+
+  - &beta_60_day
+    name: beta_60_day
+    config:
+      meta:
+        concept: beta_60_day
+        concept_group: Risk
+    description: >
+      Beta against the benchmark over the latest 60 trading days, from returns above the risk-free rate; null
+      until 60 days are available
+    data_type: double
+
+  - &benchmark_price_record_id
+    name: benchmark_price_record_id
+    config:
+      meta:
+        concept: benchmark_price_record_id
+        concept_group: Risk
+    description: Identifier of the benchmark's daily price row this row comes from
+    data_type: varchar
+
+  # --- Analyst targets -------------------------------------------------------
+
+  - &implied_upside
+    name: implied_upside
+    config:
+      meta:
+        concept: implied_upside
+        concept_group: Analyst targets
+    description: >
+      Return to the analyst target from the day's close, as a fraction. Analyst targets usually look 12 months
+      ahead.
+    data_type: double
+
+  - &forward_eps
+    name: forward_eps
+    config:
+      meta:
+        concept: forward_eps
+        concept_group: Analyst targets
+    description: Forecast earnings per share for the coming year
+    data_type: double
+
+  - &forward_earnings
+    name: forward_earnings
+    config:
+      meta:
+        concept: forward_earnings
+        concept_group: Analyst targets
+    description: Forecast earnings for the coming year across all shares
+    data_type: double
+
+  - &forward_pe_at_close
+    name: forward_pe_at_close
+    config:
+      meta:
+        concept: forward_pe_at_close
+        concept_group: Analyst targets
+    description: Price-to-earnings ratio on forecast earnings, at the day's close
+    data_type: double
+
+  - &implied_earnings_growth
+    name: implied_earnings_growth
+    config:
+      meta:
+        concept: implied_earnings_growth
+        concept_group: Analyst targets
+    description: Forecast growth in earnings per share over the last twelve months' earnings, as a fraction
+    data_type: double
+
+  - &earnings_yield
+    name: earnings_yield
+    config:
+      meta:
+        concept: earnings_yield
+        concept_group: Analyst targets
+    description: Forecast earnings per share as a fraction of the day's close
+    data_type: double
+
+  - &earnings_yield_spread
+    name: earnings_yield_spread
+    config:
+      meta:
+        concept: earnings_yield_spread
+        concept_group: Analyst targets
+    description: >
+      Earnings yield minus the 10-year Treasury yield known that day: a rough measure of the extra return
+      shares offer over government bonds
+    data_type: double
+
+  - &company_record_id
+    name: company_record_id
+    config:
+      meta:
+        concept: company_record_id
+        concept_group: Analyst targets
+    description: Identifier of the company version in effect on the trading day
+    data_type: varchar
+
+  # --- Projections -----------------------------------------------------------
+
+  - &horizon_months
+    name: horizon_months
+    config:
+      meta:
+        concept: horizon_months
+        concept_group: Projections
+    description: How many months ahead the projection looks
+    data_type: integer
+
+  - &horizon_date
+    name: horizon_date
+    config:
+      meta:
+        concept: horizon_date
+        concept_group: Projections
+    description: Date the projection is for
+    data_type: date
+    granularity: day
+
+  - &projected_price
+    name: projected_price
+    config:
+      meta:
+        concept: projected_price
+        concept_group: Projections
+    description: >
+      Price at the horizon date if the stock moves steadily to its analyst target 12 months out. Beyond 12
+      months the same rate continues.
+    data_type: double
+
+  - &projected_position_value
+    name: projected_position_value
+    config:
+      meta:
+        concept: projected_position_value
+        concept_group: Projections
+    description: Value of the position at the horizon date, at the projected price
+    data_type: double
+
+  - &projected_price_gain
+    name: projected_price_gain
+    config:
+      meta:
+        concept: projected_price_gain
+        concept_group: Projections
+    description: Change in the position's value from the day's close to the horizon date, at the projected price
+    data_type: double
+
+  - &projected_dividends
+    name: projected_dividends
+    config:
+      meta:
+        concept: projected_dividends
+        concept_group: Projections
+    description: >
+      Dividends expected between the day and the horizon date, at the current yearly dividend per share. An
+      estimate.
+    data_type: double
+
+  - &projected_total_return
+    name: projected_total_return
+    config:
+      meta:
+        concept: projected_total_return
+        concept_group: Projections
+    description: >
+      Return from the day's close to the horizon date at the projected price, including expected dividends, as
+      a fraction
+    data_type: double
+
   # --- Lineage ---------------------------------------------------------------
 
   - &loaded_at
@@ -879,6 +1133,7 @@ anchors:
         concept_group: Lineage
     description: When this version of the record became current
     data_type: timestamp with time zone
+    granularity: day
 
   - &valid_to
     name: valid_to
@@ -888,6 +1143,7 @@ anchors:
         concept_group: Lineage
     description: When this version was replaced; null while it's current
     data_type: timestamp with time zone
+    granularity: day
 
 sources:
   - name: alpha_vantage
@@ -1129,8 +1385,8 @@ sources:
       - name: economic_indicators
         description: >
           US macroeconomic time series, one row per indicator per period. Full history is returned on every load.
-          Indicators: REAL_GDP (quarterly), CPI, FEDERAL_FUNDS_RATE, TREASURY_YIELD (10-year) and UNEMPLOYMENT (monthly),
-          INFLATION (annual).
+          Indicators: REAL_GDP (quarterly), CPI, FEDERAL_FUNDS_RATE, TREASURY_YIELD_10YEAR, TREASURY_YIELD_3MONTH and
+          UNEMPLOYMENT (monthly), INFLATION (annual). A Treasury series' code adds its maturity to the API function name.
         data_tests: [declared_types_match]
         columns:
 
@@ -1450,7 +1706,11 @@ models:
   - name: dim_companies
     description: >
       Company profile and fundamentals, one row per ticker per version. Filter on is_current to screen on the
-      latest fundamentals; join on valid_from / valid_to for the version in effect at a point in time.
+      latest fundamentals; join on valid_from / valid_to for the version in effect at a point in time. Feeds the
+      companies semantic model, whose validity window joins each version to the metrics of its own dates.
+    semantic_model:
+      name: companies
+    primary_entity: company_version
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -1458,15 +1718,18 @@ models:
     columns:
 
       - <<: *ticker_symbol
+        entity: {name: ticker, type: natural}
         data_tests:
           - not_null
           - unique:  # one current version per ticker
               config:
                 where: "is_current"
 
-      - *asset_type
+      - <<: *asset_type
+        dimension: {type: categorical}
 
-      - *company_name
+      - <<: *company_name
+        dimension: {type: categorical}
 
       - *business_description
 
@@ -1476,11 +1739,14 @@ models:
 
       - *currency
 
-      - *country
+      - <<: *country
+        dimension: {type: categorical}
 
-      - *sector
+      - <<: *sector
+        dimension: {type: categorical}
 
-      - *industry
+      - <<: *industry
+        dimension: {type: categorical}
 
       - *address
 
@@ -1577,15 +1843,64 @@ models:
       - *record_id
 
       - <<: *valid_from
+        dimension: {type: time, validity_params: {is_start: true}}
         data_tests: [not_null]
 
-      - *valid_to
+      - <<: *valid_to
+        dimension: {type: time, validity_params: {is_end: true}}
 
       - <<: *is_current
         data_tests: [not_null]
 
+  - name: dim_calendar_days
+    description: >
+      One row per calendar day with no gaps, marking trading days: the semantic layer's time spine. Runs from the
+      earliest economic observation to calendar_future_years past the latest trading day. A trading day is any date
+      with a loaded price, so a day missing from every ticker's load also reads as a market holiday.
+    time_spine:
+      standard_granularity_column: calendar_date
+    data_tests:
+      - dbt_utils.sequential_values:  # no gaps: the time spine needs every day
+          arguments:
+            column_name: calendar_date
+            datepart: day
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "coalesce(is_trading_day, false) = (trading_day_number is not null)"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "as_of_trading_date <= calendar_date"
+    columns:
+
+      - <<: *calendar_date
+        data_tests: [unique, not_null]
+
+      - *is_trading_day
+
+      - <<: *trading_day_number
+        data_tests:
+          - unique
+          - dbt_utils.sequential_values:  # trading days are numbered without gaps
+              arguments:
+                interval: 1
+              config:
+                where: "trading_day_number is not null"
+
+      - <<: *as_of_trading_date
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: trading_date
+
   - name: fct_daily_prices
-    description: Daily price bars, one row per ticker per trading day, with returns and a rebased close for charting.
+    description: >
+      Daily price bars, one row per ticker per trading day, with returns and a rebased close for charting. Feeds
+      the daily_prices semantic model; its metrics are per security, so group by ticker.
+    semantic_model:
+      name: daily_prices
+    primary_entity: price_day
+    agg_time_dimension: trading_date
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -1593,11 +1908,16 @@ models:
       - dbt_utils.expression_is_true:
           arguments:
             expression: "close_index > 0"
+      - dbt_utils.expression_is_true:  # closes are unadjusted: a move this large is more likely a split than a trade
+          arguments:
+            expression: "daily_return is null or daily_return between -0.3 and 0.5"
     columns:
 
-      - *ticker_symbol
+      - <<: *ticker_symbol
+        entity: {name: ticker, type: foreign}
 
-      - *trading_date
+      - <<: *trading_date
+        dimension: {type: time}
 
       - *open_price
 
@@ -1619,25 +1939,65 @@ models:
       - <<: *record_id
         data_tests: [unique, not_null]
 
+    metrics:
+
+      - name: sum_log_return
+        hidden: true
+        type: simple
+        agg: sum
+        expr: ln(1 + daily_return)
+
+      - name: period_price_return
+        description: Return from price changes over the period, as a fraction
+        type: derived
+        expr: exp(sum_log_return) - 1
+        input_metrics:
+          - {name: sum_log_return}
+
+      - name: last_close_price
+        description: Closing price on the period's last trading day
+        type: simple
+        agg: max
+        expr: close_price
+        non_additive_dimension: {name: trading_date, window_agg: max, group_by: [ticker]}
+
+      - name: average_daily_volume
+        description: Average number of shares traded per trading day
+        type: simple
+        agg: average
+        expr: trade_volume
+
   - name: fct_economic_indicators
-    description: US macroeconomic observations at their native grain, one row per indicator per period.
+    description: >
+      US macroeconomic observations at their native grain, one row per indicator per period. Feeds the
+      economic_indicators semantic model, which dates each observation by when it became available; its metric is
+      per series, so group by it.
+    semantic_model:
+      name: economic_indicators
+    primary_entity: economic_observation
+    agg_time_dimension: available_from_date
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns: [indicator, period_start_date]
     columns:
 
-      - *indicator
+      - <<: *indicator
+        entity: {name: economic_series, type: foreign}
 
-      - *series_name
+      - <<: *series_name
+        dimension: {type: categorical}
 
       - *series_interval
 
-      - *series_unit
+      - <<: *series_unit
+        dimension: {type: categorical}
 
-      - *period_start_date
+      - <<: *period_start_date
+        dimension: {type: time}
 
-      - *available_from_date
+      - <<: *available_from_date
+        dimension: {type: time}
 
       - *value
 
@@ -1645,6 +2005,15 @@ models:
 
       - <<: *record_id
         data_tests: [unique, not_null]
+
+    metrics:
+
+      - name: latest_indicator_value
+        description: Latest value of the economic series known by the end of the period, in its unit
+        type: simple
+        agg: max
+        expr: value
+        non_additive_dimension: {name: available_from_date, window_agg: max, group_by: [economic_series]}
 
   - name: mart_daily_market
     description: >
@@ -1711,7 +2080,12 @@ models:
   - name: fct_portfolio_positions_daily
     description: >
       Each holding in the portfolio_holdings seed, one row per ticker per trading day from its purchase date:
-      value, cost, returns and ESTIMATED dividends.
+      value, cost, returns and ESTIMATED dividends. Feeds the portfolio_positions semantic model, whose metrics
+      take the holdings on the period's last trading day.
+    semantic_model:
+      name: portfolio_positions
+    primary_entity: position_day
+    agg_time_dimension: trading_date
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -1721,9 +2095,11 @@ models:
             expression: "trading_date >= purchase_date and estimated_dividends >= 0 and position_value > 0"
     columns:
 
-      - *ticker_symbol
+      - <<: *ticker_symbol
+        entity: {name: ticker, type: foreign}
 
-      - *trading_date
+      - <<: *trading_date
+        dimension: {type: time}
 
       - *shares_held
 
@@ -1755,6 +2131,39 @@ models:
                 to: ref('fct_daily_prices')
                 field: record_id
 
+    metrics:
+
+      - name: holdings_value
+        description: Value of the holdings at the close of the period's last trading day
+        type: simple
+        agg: sum
+        expr: position_value
+        non_additive_dimension: {name: trading_date, window_agg: max}
+
+      - name: holdings_cost_basis
+        description: Amount paid for the holdings held on the period's last trading day
+        type: simple
+        agg: sum
+        expr: cost_basis
+        non_additive_dimension: {name: trading_date, window_agg: max}
+
+      - name: holdings_unrealized_gain
+        description: Gain in the holdings' value since purchase at the end of the period, excluding dividends
+        type: derived
+        expr: holdings_value - holdings_cost_basis
+        input_metrics:
+          - {name: holdings_value}
+          - {name: holdings_cost_basis}
+
+      - name: holdings_estimated_dividends
+        description: >
+          Dividends earned on the holdings since purchase, at the end of the period. An estimate, not actual
+          payments.
+        type: simple
+        agg: sum
+        expr: estimated_dividends
+        non_additive_dimension: {name: trading_date, window_agg: max}
+
   - name: fct_portfolio_daily
     description: The whole portfolio, one row per trading day, summed from fct_portfolio_positions_daily.
     data_tests:
@@ -1785,6 +2194,554 @@ models:
       - <<: *price_record_ids_hash
         data_tests: [not_null]
 
+  - name: fct_daily_returns_vs_benchmark
+    description: >
+      Each return series' daily return beside its benchmark's and the risk-free return, one row per series,
+      benchmark and trading day where both returns cover the same period. A series is a security or the whole
+      portfolio. Feeds the benchmark_returns semantic model: its metrics are per series and benchmark, so group
+      by both, or the figures mix series.
+    semantic_model:
+      name: benchmark_returns
+    primary_entity: benchmark_return_day
+    agg_time_dimension: trading_date
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [return_series, benchmark_ticker_symbol, trading_date]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "return_series <> benchmark_ticker_symbol"
+      - dbt_utils.expression_is_true:  # a security's series is its ticker; the portfolio has none
+          arguments:
+            expression: "coalesce(ticker_symbol, 'Portfolio') = return_series"
+      - dbt_utils.expression_is_true:  # a security keeps its price row's id, the portfolio a hash of its rows
+          arguments:
+            expression: "(price_record_id is null) = (ticker_symbol is null) and (price_record_ids_hash is null) = (ticker_symbol is not null)"
+    columns:
+
+      - <<: *return_series
+        dimension: {type: categorical}
+        data_tests: [not_null]
+
+      - <<: *ticker_symbol
+        entity: {name: ticker, type: foreign}
+
+      - <<: *benchmark_ticker_symbol
+        entity: {name: benchmark, type: foreign}
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('benchmarks')
+                field: ticker_symbol
+
+      - <<: *trading_date
+        dimension: {type: time}  # the shorthand `dimension: time` drops the concept's granularity
+
+      - <<: *daily_return
+        data_tests: [not_null]
+
+      - <<: *benchmark_daily_return
+        data_tests: [not_null]
+
+      - <<: *risk_free_return
+        data_tests: [not_null]  # the risk-free series covers every trading day
+
+      - *beta_60_day
+
+      - <<: *price_record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+      - *price_record_ids_hash
+
+      - <<: *benchmark_price_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+      - <<: *indicator_record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_economic_indicators')
+                field: record_id
+
+    # Beta, correlation, alpha, volatility and the Sharpe ratio aren't sums, so each is derived from sums
+    # that are (x = the benchmark's return above the risk-free rate, y = the series'). They're then correct
+    # over any period chosen at query time. Daily figures are annualized over 252 trading days, and every
+    # derived metric is null below 20 trading days, where the figures are mostly noise.
+    metrics:
+
+      - name: benchmark_return_days
+        description: >
+          Number of trading days with returns for both the series and its benchmark. The risk figures are left
+          empty for periods of fewer than 20 trading days, which are too short to be meaningful.
+        type: simple
+        agg: count
+        expr: daily_return
+
+      - name: sum_daily_return
+        hidden: true
+        type: simple
+        agg: sum
+        expr: daily_return
+
+      - name: sum_daily_return_squared
+        hidden: true
+        type: simple
+        agg: sum
+        expr: daily_return * daily_return
+
+      - name: sum_excess_return
+        hidden: true
+        type: simple
+        agg: sum
+        expr: daily_return - risk_free_return
+
+      - name: sum_excess_return_squared
+        hidden: true
+        type: simple
+        agg: sum
+        expr: (daily_return - risk_free_return) * (daily_return - risk_free_return)
+
+      - name: sum_benchmark_excess_return
+        hidden: true
+        type: simple
+        agg: sum
+        expr: benchmark_daily_return - risk_free_return
+
+      - name: sum_benchmark_excess_return_squared
+        hidden: true
+        type: simple
+        agg: sum
+        expr: (benchmark_daily_return - risk_free_return) * (benchmark_daily_return - risk_free_return)
+
+      - name: sum_excess_return_cross_product
+        hidden: true
+        type: simple
+        agg: sum
+        expr: (daily_return - risk_free_return) * (benchmark_daily_return - risk_free_return)
+
+      - name: benchmark_beta
+        description: >
+          How far the series' return moves with its benchmark's over the period, both measured above the
+          risk-free rate: 1 moves with the benchmark, above 1 amplifies it. Can differ from the company's
+          reported beta, which covers a different period.
+        type: derived
+        expr: >
+          case when days >= 20 then
+            (days * sum_xy - sum_x * sum_y) / nullif(days * sum_xx - sum_x * sum_x, 0)
+          end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: sum_benchmark_excess_return_squared, alias: sum_xx}
+          - {name: sum_excess_return_cross_product, alias: sum_xy}
+
+      - name: benchmark_correlation
+        description: >
+          Correlation between the series' and its benchmark's daily returns above the risk-free rate over the
+          period, from -1 to 1
+        type: derived
+        expr: >
+          case when days >= 20 then
+            (days * sum_xy - sum_x * sum_y)
+            / nullif(sqrt((days * sum_xx - sum_x * sum_x) * (days * sum_yy - sum_y * sum_y)), 0)
+          end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: sum_benchmark_excess_return_squared, alias: sum_xx}
+          - {name: sum_excess_return_squared, alias: sum_yy}
+          - {name: sum_excess_return_cross_product, alias: sum_xy}
+
+      - name: annualized_alpha
+        description: >
+          Yearly return above what the series' beta and its benchmark's return predict, as a fraction
+        type: derived
+        expr: >
+          case when days >= 20 then 252 * (sum_y - beta * sum_x) / days end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: benchmark_beta, alias: beta}
+
+      - name: annualized_excess_return
+        description: Average daily return above the risk-free rate, as a yearly fraction
+        type: derived
+        expr: >
+          case when days >= 20 then 252 * sum_y / days end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_excess_return, alias: sum_y}
+
+      - name: benchmark_annualized_excess_return
+        description: The benchmark's average daily return above the risk-free rate on the same days, as a yearly fraction
+        type: derived
+        expr: >
+          case when days >= 20 then 252 * sum_x / days end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_benchmark_excess_return, alias: sum_x}
+
+      - name: annualized_volatility
+        description: Standard deviation of the series' daily return, scaled to a year
+        type: derived
+        expr: >
+          case when days >= 20 then sqrt(252 * (sum_rr - sum_r * sum_r / days) / (days - 1)) end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_daily_return, alias: sum_r}
+          - {name: sum_daily_return_squared, alias: sum_rr}
+
+      - name: sharpe_ratio
+        description: Yearly return above the risk-free rate per unit of its yearly volatility
+        type: derived
+        expr: >
+          case when days >= 20 then
+            sqrt(252) * (sum_y / days) / nullif(sqrt((sum_yy - sum_y * sum_y / days) / (days - 1)), 0)
+          end
+        input_metrics:
+          - {name: benchmark_return_days, alias: days}
+          - {name: sum_excess_return, alias: sum_y}
+          - {name: sum_excess_return_squared, alias: sum_yy}
+
+  - name: fct_price_targets_daily
+    description: >
+      Each security's analyst target and forecast earnings in effect on each trading day, measured against the
+      day's close: one row per security per trading day from the day after its first company version was loaded.
+      Feeds the price_targets semantic model, whose metrics take each security's last trading day in the period;
+      group by ticker, as across securities they're averaged.
+    semantic_model:
+      name: price_targets
+    primary_entity: target_day
+    agg_time_dimension: trading_date
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, trading_date]
+    columns:
+
+      - <<: *ticker_symbol
+        entity: {name: ticker, type: foreign}
+
+      - <<: *trading_date
+        dimension: {type: time}
+
+      - <<: *close_price
+        data_tests: [not_null]
+
+      - <<: *analyst_target_price
+        data_tests: [not_null]
+
+      - *implied_upside
+
+      - *dividend_per_share
+
+      - *forward_eps
+
+      - *forward_earnings
+
+      - *forward_pe_at_close
+
+      - *implied_earnings_growth
+
+      - *earnings_yield
+
+      - *earnings_yield_spread
+
+      - <<: *price_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+      - <<: *company_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_companies')
+                field: record_id
+
+      - <<: *indicator_record_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_economic_indicators')
+                field: record_id
+
+    metrics:
+
+      - name: latest_analyst_target_price
+        description: Consensus analyst price target on the period's last trading day
+        type: simple
+        agg: average
+        expr: analyst_target_price
+        non_additive_dimension: {name: trading_date, window_agg: max, group_by: [ticker]}
+
+      - name: latest_implied_upside
+        description: Return to the analyst target from the close on the period's last trading day, as a fraction
+        type: simple
+        agg: average
+        expr: implied_upside
+        non_additive_dimension: {name: trading_date, window_agg: max, group_by: [ticker]}
+
+      - name: latest_forward_eps
+        description: Forecast earnings per share for the coming year, as known on the period's last trading day
+        type: simple
+        agg: average
+        expr: forward_eps
+        non_additive_dimension: {name: trading_date, window_agg: max, group_by: [ticker]}
+
+      - name: latest_forward_pe_at_close
+        description: Price-to-earnings ratio on forecast earnings at the close on the period's last trading day
+        type: simple
+        agg: average
+        expr: forward_pe_at_close
+        non_additive_dimension: {name: trading_date, window_agg: max, group_by: [ticker]}
+
+      - name: latest_implied_earnings_growth
+        description: >
+          Forecast growth in earnings per share over the last twelve months' earnings, as known on the period's
+          last trading day, as a fraction
+        type: simple
+        agg: average
+        expr: implied_earnings_growth
+        non_additive_dimension: {name: trading_date, window_agg: max, group_by: [ticker]}
+
+      - name: latest_earnings_yield_spread
+        description: Earnings yield minus the 10-year Treasury yield on the period's last trading day
+        type: simple
+        agg: average
+        expr: earnings_yield_spread
+        non_additive_dimension: {name: trading_date, window_agg: max, group_by: [ticker]}
+
+  - name: fct_portfolio_projections_daily
+    description: >
+      What each holding would be worth, and earn in dividends, at each horizon in the projection_horizons seed if
+      it reached its analyst target: one row per holding, trading day and horizon. Feeds the portfolio_projections
+      semantic model, whose metrics take the holdings on the period's last trading day. Group them by horizon:
+      summed across horizons they're meaningless.
+    semantic_model:
+      name: portfolio_projections
+    primary_entity: projection_day
+    agg_time_dimension: trading_date
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ticker_symbol, trading_date, horizon_months]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "horizon_date > trading_date and projected_dividends >= 0"
+    columns:
+
+      - <<: *ticker_symbol
+        entity: {name: ticker, type: foreign}
+
+      - <<: *trading_date
+        dimension: {type: time}
+
+      - <<: *horizon_months
+        dimension: {type: categorical}
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('projection_horizons')
+                field: horizon_months
+
+      - <<: *horizon_date
+        dimension: {type: time}
+
+      - *shares_held
+
+      - *close_price
+
+      - *position_value
+
+      - *analyst_target_price
+
+      - <<: *projected_price
+        data_tests: [not_null]
+
+      - *projected_position_value
+
+      - *projected_price_gain
+
+      - *projected_dividends
+
+      - *projected_total_return
+
+      - <<: *price_record_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_daily_prices')
+                field: record_id
+
+      - <<: *company_record_id
+        data_tests: [not_null]
+
+    metrics:
+
+      - name: projected_holdings_value
+        description: Value of the holdings at the horizon, at their projected prices
+        type: simple
+        agg: sum
+        expr: projected_position_value
+        non_additive_dimension: {name: trading_date, window_agg: max}
+
+      - name: projected_holdings_price_gain
+        description: Change in the holdings' value from the period's last close to the horizon, at projected prices
+        type: simple
+        agg: sum
+        expr: projected_price_gain
+        non_additive_dimension: {name: trading_date, window_agg: max}
+
+      - name: projected_holdings_dividends
+        description: Dividends expected on the holdings by the horizon. An estimate.
+        type: simple
+        agg: sum
+        expr: projected_dividends
+        non_additive_dimension: {name: trading_date, window_agg: max}
+
+      - name: projection_base_value
+        hidden: true
+        type: simple
+        agg: sum
+        expr: position_value
+        non_additive_dimension: {name: trading_date, window_agg: max}
+
+      - name: projected_holdings_total_return
+        description: >
+          Return on the holdings from the period's last close to the horizon at projected prices, including
+          expected dividends, as a fraction
+        type: derived
+        expr: (price_gain + dividends) / nullif(base_value, 0)
+        input_metrics:
+          - {name: projected_holdings_price_gain, alias: price_gain}
+          - {name: projected_holdings_dividends, alias: dividends}
+          - {name: projection_base_value, alias: base_value}
+
+# Named metric queries: what the chart boards read, compiled to SQL by `task charts:metrics`. Each risk query
+# has the same metrics, grouped over a different period.
+saved_queries:
+
+  - name: risk_all_history
+    description: Risk figures for each series against each benchmark over all the history they share
+    query_params:
+      metrics: &risk_metrics
+        - benchmark_return_days
+        - benchmark_beta
+        - benchmark_correlation
+        - annualized_alpha
+        - annualized_excess_return
+        - benchmark_annualized_excess_return
+        - annualized_volatility
+        - sharpe_ratio
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+
+  - name: risk_by_quarter
+    description: Risk figures for each series against each benchmark, per calendar quarter
+    query_params:
+      metrics: *risk_metrics
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+        - TimeDimension('metric_time', 'quarter')
+
+  - name: risk_by_month
+    description: Risk figures for each series against each benchmark, per calendar month
+    query_params:
+      metrics: *risk_metrics
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+        - TimeDimension('metric_time', 'month')
+
+  - name: risk_by_year
+    description: Risk figures for each series against each benchmark, per calendar year
+    query_params:
+      metrics: *risk_metrics
+      group_by:
+        - Dimension('benchmark_return_day__return_series')
+        - Entity('benchmark')
+        - TimeDimension('metric_time', 'year')
+
+  - name: targets_by_holding
+    description: Each security's close, analyst target and forecast earnings on the latest trading day
+    query_params:
+      metrics:
+        - last_close_price
+        - latest_analyst_target_price
+        - latest_implied_upside
+        - latest_forward_eps
+        - latest_forward_pe_at_close
+        - latest_implied_earnings_growth
+        - latest_earnings_yield_spread
+      group_by:
+        - Entity('ticker')
+
+  - name: target_gap_by_day
+    description: Each security's close and analyst target per trading day
+    query_params:
+      metrics:
+        - last_close_price
+        - latest_analyst_target_price
+        - latest_earnings_yield_spread
+      group_by:
+        - Entity('ticker')
+        - TimeDimension('metric_time', 'day')
+
+  - name: projections_by_horizon
+    description: The holdings' projected value, gain, dividends and return at each horizon, from the latest close
+    query_params:
+      metrics: &projection_metrics
+        - projected_holdings_value
+        - projected_holdings_price_gain
+        - projected_holdings_dividends
+        - projected_holdings_total_return
+      group_by:
+        - Dimension('projection_day__horizon_months')
+
+  - name: projections_by_holding
+    description: Each holding's projected value, gain, dividends and return at each horizon, from the latest close
+    query_params:
+      metrics: *projection_metrics
+      group_by:
+        - Entity('ticker')
+        - Dimension('projection_day__horizon_months')
+
+  - name: holdings_value_by_day
+    description: The holdings' total value at each trading day's close
+    query_params:
+      metrics: [holdings_value]
+      group_by:
+        - TimeDimension('metric_time', 'day')
+
+  - name: holdings_value_by_sector
+    description: >
+      The holdings' value by sector at each month's end, with each company's sector as it was at the time
+    query_params:
+      metrics: [holdings_value]
+      group_by:
+        - Dimension('ticker__sector')
+        - TimeDimension('metric_time', 'month')
+
 seeds:
   - name: portfolio_holdings
     description: >
@@ -1813,6 +2770,38 @@ seeds:
       - <<: *purchase_date
         data_tests: [not_null]
 
+  - name: benchmarks
+    description: >
+      The index funds that securities and the portfolio are measured against (beta, alpha, excess return):
+      one row per benchmark. Each must also be in the price loader's symbols, so its prices are loaded.
+    config:
+      column_types:
+        ticker_symbol: varchar
+    data_tests: [declared_types_match]
+    columns:
+
+      - <<: *ticker_symbol
+        data_tests:
+          - unique
+          - not_null
+          - relationships:  # the benchmark's prices are loaded
+              arguments:
+                to: ref('fct_daily_prices')
+                field: ticker_symbol
+
+  - name: projection_horizons
+    description: >
+      The horizons, in months, that holdings are projected to (fct_portfolio_projections_daily). Edit this file to
+      change them.
+    config:
+      column_types:
+        horizon_months: integer
+    data_tests: [declared_types_match]
+    columns:
+
+      - <<: *horizon_months
+        data_tests: [unique, not_null]
+
 unit_tests:
   - name: company_overviews_nulls_placeholders_and_casts
     description: >
@@ -1834,6 +2823,133 @@ unit_tests:
            market_capitalization: 212460716000, dividend_date: 2026-01-15, percent_insiders: 0.5}
         - {ticker_symbol: BBB, sector: TECHNOLOGY, pe_ratio: 31.2, peg_ratio: 1.8, beta: null,
            market_capitalization: null, dividend_date: null, percent_insiders: null}
+
+  - name: calendar_days_mark_trading_days
+    description: >
+      Weekends and holidays aren't trading days and map to the previous trading day; days outside the price
+      history are unknown (null); trading days are numbered without gaps.
+    model: dim_calendar_days
+    overrides:
+      vars: {calendar_future_years: 0}
+    given:
+      - input: ref('fct_daily_prices')
+        rows:
+          - {trading_date: 2026-11-06}  # Friday
+          - {trading_date: 2026-11-09}  # Monday
+          - {trading_date: 2026-11-09}  # a second ticker on the same day
+          - {trading_date: 2026-11-11}  # Wednesday, after a holiday
+      - input: ref('fct_economic_indicators')
+        rows:
+          - {period_start_date: 2026-11-05}
+    expect:
+      rows:
+        - {calendar_date: 2026-11-05, is_trading_day: null, trading_day_number: null, as_of_trading_date: null}
+        - {calendar_date: 2026-11-06, is_trading_day: true, trading_day_number: 1, as_of_trading_date: 2026-11-06}
+        - {calendar_date: 2026-11-07, is_trading_day: false, trading_day_number: null, as_of_trading_date: 2026-11-06}
+        - {calendar_date: 2026-11-08, is_trading_day: false, trading_day_number: null, as_of_trading_date: 2026-11-06}
+        - {calendar_date: 2026-11-09, is_trading_day: true, trading_day_number: 2, as_of_trading_date: 2026-11-09}
+        - {calendar_date: 2026-11-10, is_trading_day: false, trading_day_number: null, as_of_trading_date: 2026-11-09}
+        - {calendar_date: 2026-11-11, is_trading_day: true, trading_day_number: 3, as_of_trading_date: 2026-11-11}
+
+  - name: returns_vs_benchmark_pair_matching_periods
+    description: >
+      Securities pair with each benchmark but not themselves, only on days both returns span the same period;
+      the risk-free return accrues over the calendar days since the previous close. The portfolio's return is
+      weighted by the previous day's position values.
+    model: fct_daily_returns_vs_benchmark
+    given:
+      - input: ref('fct_portfolio_positions_daily')
+        rows:  # AAA +50% and SPY flat on equal values is +25%; both then fall 25%
+          - {ticker_symbol: AAA, trading_date: 2026-11-05, position_value: 64, price_record_id: a1}
+          - {ticker_symbol: AAA, trading_date: 2026-11-06, position_value: 96, price_record_id: a2}
+          - {ticker_symbol: AAA, trading_date: 2026-11-09, position_value: 72, price_record_id: a3}
+          - {ticker_symbol: SPY, trading_date: 2026-11-05, position_value: 64, price_record_id: s1}
+          - {ticker_symbol: SPY, trading_date: 2026-11-06, position_value: 64, price_record_id: s2}
+          - {ticker_symbol: SPY, trading_date: 2026-11-09, position_value: 48, price_record_id: s3}
+      - input: ref('fct_daily_prices')
+        rows:
+          - {ticker_symbol: AAA, trading_date: 2026-11-05, daily_return: null, record_id: a1}
+          - {ticker_symbol: AAA, trading_date: 2026-11-06, daily_return: 0.01, record_id: a2}
+          - {ticker_symbol: AAA, trading_date: 2026-11-09, daily_return: -0.02, record_id: a3}
+          - {ticker_symbol: SPY, trading_date: 2026-11-05, daily_return: null, record_id: s1}
+          - {ticker_symbol: SPY, trading_date: 2026-11-06, daily_return: 0.005, record_id: s2}
+          - {ticker_symbol: SPY, trading_date: 2026-11-09, daily_return: -0.01, record_id: s3}
+          # BBB misses Friday, so its Monday return spans Thursday to Monday and isn't compared
+          - {ticker_symbol: BBB, trading_date: 2026-11-05, daily_return: null, record_id: b1}
+          - {ticker_symbol: BBB, trading_date: 2026-11-09, daily_return: 0.03, record_id: b2}
+      - input: ref('benchmarks')
+        rows:
+          - {ticker_symbol: SPY}
+      - input: ref('int_alpha_vantage__indicators_as_of_daily')
+        rows:  # a yield of 36.5 keeps the arithmetic exact: 36.5 x days / 365
+          - {trading_date: 2026-11-06, indicator: TREASURY_YIELD_3MONTH, value: 36.5, record_id: r1}
+          - {trading_date: 2026-11-09, indicator: TREASURY_YIELD_3MONTH, value: 36.5, record_id: r1}
+          - {trading_date: 2026-11-09, indicator: TREASURY_YIELD_10YEAR, value: 99, record_id: r2}
+    expect:
+      rows:
+        - {return_series: AAA, ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-06,
+           daily_return: 0.01, benchmark_daily_return: 0.005, risk_free_return: 0.1, beta_60_day: null,
+           price_record_id: a2, benchmark_price_record_id: s2, indicator_record_id: r1}
+        - {return_series: AAA, ticker_symbol: AAA, benchmark_ticker_symbol: SPY, trading_date: 2026-11-09,
+           daily_return: -0.02, benchmark_daily_return: -0.01, risk_free_return: 0.3, beta_60_day: null,
+           price_record_id: a3, benchmark_price_record_id: s3, indicator_record_id: r1}
+        - {return_series: Portfolio, ticker_symbol: null, benchmark_ticker_symbol: SPY, trading_date: 2026-11-06,
+           daily_return: 0.25, benchmark_daily_return: 0.005, risk_free_return: 0.1, beta_60_day: null,
+           price_record_id: null, benchmark_price_record_id: s2, indicator_record_id: r1}
+        - {return_series: Portfolio, ticker_symbol: null, benchmark_ticker_symbol: SPY, trading_date: 2026-11-09,
+           daily_return: -0.25, benchmark_daily_return: -0.01, risk_free_return: 0.3, beta_60_day: null,
+           price_record_id: null, benchmark_price_record_id: s3, indicator_record_id: r1}
+
+  - name: price_targets_use_versions_from_the_day_after_loading
+    description: >
+      A company version applies from the trading day after it was loaded; forecast EPS comes from the provider's
+      trailing and forward P/E, and the earnings yield spread subtracts the long rate known that day.
+    model: fct_price_targets_daily
+    given:
+      - input: ref('fct_daily_prices')
+        rows:
+          - {ticker_symbol: AAA, trading_date: 2026-11-05, close_price: 100, record_id: p1}
+          - {ticker_symbol: AAA, trading_date: 2026-11-06, close_price: 100, record_id: p2}
+      - input: ref('dim_companies')
+        rows:  # loaded on the 5th, so it applies from the 6th
+          - {ticker_symbol: AAA, valid_from: "2026-11-05 12:00:00+00", valid_to: null, analyst_target_price: 125,
+             dividend_per_share: 2, diluted_eps_ttm: 10, trailing_pe: 25, forward_pe: 20, shares_outstanding: 1000,
+             record_id: c1}
+      - input: ref('int_alpha_vantage__indicators_as_of_daily')
+        rows:
+          - {trading_date: 2026-11-06, indicator: TREASURY_YIELD_10YEAR, value: 0.0625, record_id: r1}
+          - {trading_date: 2026-11-06, indicator: TREASURY_YIELD_3MONTH, value: 0.5, record_id: r2}
+    expect:
+      rows:  # forecast EPS = 10 x 25 / 20 = 12.5
+        - {ticker_symbol: AAA, trading_date: 2026-11-06, close_price: 100, analyst_target_price: 125,
+           implied_upside: 0.25, forward_eps: 12.5, forward_earnings: 12500, forward_pe_at_close: 8,
+           implied_earnings_growth: 0.25, earnings_yield: 0.125, earnings_yield_spread: 0.0625,
+           price_record_id: p2, company_record_id: c1, indicator_record_id: r1}
+
+  - name: projections_compound_the_target_return_to_each_horizon
+    description: >
+      The implied 12-month return compounds to each horizon (a target of 4x the close is 2x at 6 months), and
+      dividends accrue by the months held.
+    model: fct_portfolio_projections_daily
+    given:
+      - input: ref('fct_portfolio_positions_daily')
+        rows:
+          - {ticker_symbol: AAA, trading_date: 2026-11-06, shares_held: 10, close_price: 100, position_value: 1000,
+             price_record_id: p1}
+      - input: ref('fct_price_targets_daily')
+        rows:
+          - {ticker_symbol: AAA, trading_date: 2026-11-06, analyst_target_price: 400, dividend_per_share: 2,
+             company_record_id: c1}
+      - input: ref('projection_horizons')
+        rows:
+          - {horizon_months: 6}
+          - {horizon_months: 12}
+    expect:
+      rows:
+        - {horizon_months: 6, horizon_date: 2027-05-06, projected_price: 200, projected_position_value: 2000,
+           projected_price_gain: 1000, projected_dividends: 10, projected_total_return: 1.01}
+        - {horizon_months: 12, horizon_date: 2027-11-06, projected_price: 400, projected_position_value: 4000,
+           projected_price_gain: 3000, projected_dividends: 20, projected_total_return: 3.02}
 
   - name: economic_indicators_percent_series_become_fractions
     description: Series reported in percent are divided by 100 and relabelled "fraction"; other units are unchanged.

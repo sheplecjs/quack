@@ -76,7 +76,7 @@ queries:
     sql: |
       SELECT trading_date, ANY_VALUE(value) AS yield
       FROM mart_daily_market
-      WHERE indicator = 'TREASURY_YIELD'
+      WHERE indicator = 'TREASURY_YIELD_10YEAR'
         AND trading_date >= (SELECT MIN(trading_date) FROM fct_portfolio_daily)
       GROUP BY trading_date
       ORDER BY trading_date
@@ -329,7 +329,10 @@ charts:
           align: right
 
 rows:
-- text: "[Data dictionary →](data_dictionary.html): what every figure means and where it comes from"
+- text: >-
+    [Risk and return →](risk.html): beta, alpha and the Sharpe ratio against the benchmark ·
+    [Targets and projections →](targets.html): analyst targets and where they'd take the portfolio ·
+    [Data dictionary →](data_dictionary.html): what every figure means and where it comes from
 - cols:
   - width: "17%"
     rows:

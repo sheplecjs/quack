@@ -1,0 +1,451 @@
+extends: ./_metrics.yml
+title: Targets and Projections
+notes: |
+  Where analysts expect the holdings to go, and what that would mean for the portfolio. Projections assume
+  each holding moves steadily to its consensus analyst target over 12 months, and keep that rate beyond it
+  (the 24-month horizon); dividends accrue at the current yearly rate. They're projections from analyst
+  targets, not forecasts. Every figure comes from the semantic layer's saved queries (charts/_metrics.yml,
+  generated). Targets apply from the trading day after they were loaded. Built for static HTML export.
+
+source: analytics
+
+style:
+  frame:
+    width: 1440
+  variables:
+    position: title-inline
+  charts:
+    category_colors:
+      price_measure:
+        values:
+          Close: dbt-grays.muted
+          Analyst target: category[5]
+      path:  # the portfolio as a whole, in the Portfolio series' color on the other boards
+        values:
+          Actual: category[4]
+          Projected at analyst targets: category_light[4]
+
+queries:
+  # ── The anchor ──────────────────────────────────────────────────────────
+  holdings:
+    notes: The portfolio's holdings, which every figure on the board is limited to.
+    sql: |
+      SELECT ticker_symbol FROM portfolio_holdings
+
+  as_of:
+    notes: The latest trading day with holdings' values.
+    sql: |
+      SELECT max(metric_time__day) AS as_of_date FROM {{ queries.holdings_value_by_day }}
+
+  # ── KPI rail ────────────────────────────────────────────────────────────
+  twelve_months:
+    notes: The holdings projected 12 months ahead from the latest close, with today's value for comparison.
+    sql: |
+      SELECT
+        projected_holdings_value,
+        projected_holdings_price_gain,
+        projected_holdings_dividends,
+        projected_holdings_total_return,
+        projected_holdings_value - projected_holdings_price_gain AS holdings_value,
+        projected_holdings_price_gain / (projected_holdings_value - projected_holdings_price_gain)
+          AS implied_upside
+      FROM {{ queries.projections_by_horizon }}
+      WHERE projection_day__horizon_months = 12
+
+  targets_since:
+    notes: The first trading day an analyst target was available for, and how many holdings have one.
+    sql: |
+      SELECT min(metric_time__day) AS first_date, strftime(min(metric_time__day), '%-d %b %Y') AS first_date_label
+      FROM {{ queries.target_gap_by_day }}
+      WHERE latest_analyst_target_price IS NOT NULL
+        AND ticker IN (SELECT ticker_symbol FROM {{ queries.holdings }})
+
+  # ── Projection path ─────────────────────────────────────────────────────
+  value_path:
+    notes: >
+      The holdings' value at each close so far, then projected from the latest close to each horizon.
+    sql: |
+      SELECT metric_time__day AS value_date, 'Actual' AS path, holdings_value AS value
+      FROM {{ queries.holdings_value_by_day }}
+      UNION ALL
+      SELECT as_of_date, 'Projected at analyst targets', holdings_value
+      FROM {{ queries.holdings_value_by_day }}, {{ queries.as_of }}
+      WHERE metric_time__day = as_of_date
+      UNION ALL
+      SELECT
+        cast(as_of_date + to_months(projection_day__horizon_months) AS date),
+        'Projected at analyst targets',
+        projected_holdings_value
+      FROM {{ queries.projections_by_horizon }}, {{ queries.as_of }}
+      ORDER BY value_date, path
+
+  # ── Close against target ───────────────────────────────────────────────
+  upside:
+    notes: Each holding's return to its analyst target from the latest close.
+    sql: |
+      SELECT ticker, latest_implied_upside
+      FROM {{ queries.targets_by_holding }}
+      WHERE ticker IN (SELECT ticker_symbol FROM {{ queries.holdings }})
+      ORDER BY ticker
+
+  # ── Return by horizon ───────────────────────────────────────────────────
+  return_by_horizon:
+    notes: Each holding's projected total return at each horizon, from the latest close.
+    sql: |
+      SELECT
+        projection_day__horizon_months AS horizon_months,
+        projection_day__horizon_months || ' months' AS horizon,
+        ticker,
+        projected_holdings_total_return
+      FROM {{ queries.projections_by_holding }}
+      ORDER BY horizon_months, ticker
+
+  # ── Gap to target over time ────────────────────────────────────────────
+  gap_over_time:
+    notes: >
+      Each holding's close at every trading day, and the analyst target in effect each day since targets
+      were first loaded.
+    sql: |
+      WITH daily AS (
+        SELECT * FROM {{ queries.target_gap_by_day }}
+        WHERE ticker IN (SELECT ticker_symbol FROM {{ queries.holdings }})
+      )
+      SELECT metric_time__day AS trading_date, ticker, 'Close' AS price_measure, last_close_price AS price
+      FROM daily
+      UNION ALL
+      SELECT metric_time__day, ticker, 'Analyst target', latest_analyst_target_price
+      FROM daily
+      WHERE latest_analyst_target_price IS NOT NULL
+      ORDER BY ticker, trading_date, price_measure
+
+  earnings_spread:
+    notes: Each holding's forecast earnings yield minus the 10-year Treasury yield, per trading day.
+    sql: |
+      SELECT metric_time__day AS trading_date, ticker, latest_earnings_yield_spread AS earnings_yield_spread
+      FROM {{ queries.target_gap_by_day }}
+      WHERE latest_earnings_yield_spread IS NOT NULL
+        AND ticker IN (SELECT ticker_symbol FROM {{ queries.holdings }})
+      ORDER BY trading_date, ticker
+
+  # ── Detail table ────────────────────────────────────────────────────────
+  target_table:
+    notes: Each holding's target, forecast earnings and 12-month projection on the latest trading day.
+    sql: |
+      WITH targets AS (SELECT * FROM {{ queries.targets_by_holding }}),
+      twelve AS (
+        SELECT * FROM {{ queries.projections_by_holding }} WHERE projection_day__horizon_months = 12
+      )
+      SELECT
+        targets.ticker,
+        companies.company_name,
+        upper(left(companies.sector, 1)) || lower(substr(companies.sector, 2)) AS sector,
+        targets.last_close_price,
+        targets.latest_analyst_target_price,
+        targets.latest_implied_upside,
+        targets.latest_forward_eps,
+        targets.latest_forward_pe_at_close,
+        targets.latest_implied_earnings_growth,
+        targets.latest_earnings_yield_spread,
+        twelve.projected_holdings_value,
+        twelve.projected_holdings_dividends,
+        twelve.projected_holdings_total_return,
+        'asset_' || lower(targets.ticker) || '.html' AS detail_page
+      FROM targets
+      INNER JOIN twelve ON twelve.ticker = targets.ticker
+      LEFT JOIN dim_companies AS companies
+        ON companies.ticker_symbol = targets.ticker
+       AND companies.is_current
+      ORDER BY targets.latest_implied_upside DESC
+
+charts:
+  # ── KPIs ────────────────────────────────────────────────────────────────
+  kpi_value_12m:
+    type: kpi
+    query: twelve_months
+    label: Value in 12 months
+    notes: The holdings' projected value a year from the latest close, if each reaches its analyst target.
+    value: projected_holdings_value
+    style:
+      value:
+        format: currency_whole
+    support:
+      value: holdings_value
+      label: value today
+      format: currency_whole
+
+  kpi_upside:
+    type: kpi
+    query: twelve_months
+    label: Upside to targets
+    notes: Price return to the analyst targets, weighted by each holding's value.
+    value: implied_upside
+    style:
+      value:
+        format: percent_delta
+    support:
+      value: projected_holdings_price_gain
+      label: price gain
+      format: currency_whole
+
+  kpi_total_12m:
+    type: kpi
+    query: twelve_months
+    label: Projected return (12 months)
+    notes: Price gain to the targets plus a year of dividends at the current rate.
+    value: projected_holdings_total_return
+    style:
+      value:
+        format: percent_delta
+    support:
+      value: projected_holdings_dividends
+      label: expected dividends
+      format: currency_whole
+
+  kpi_since:
+    type: kpi
+    query: targets_since
+    label: Targets known since
+    notes: Analyst targets are only available from the first company load onwards.
+    value: first_date_label
+
+  # ── Projection path ─────────────────────────────────────────────────────
+  value_path_chart:
+    query: value_path
+    type: line
+    title: Portfolio value, actual and projected
+    subtitle: Value at each close, then projected to 3, 6, 12 and 24 months at the analyst targets' pace
+    notes: >
+      How far the analyst targets would carry the portfolio from today. Beyond 12 months the projection keeps
+      the targets' pace, so the 24-month point is an extrapolation.
+    x: value_date
+    y: value
+    color: path
+    style:
+      padding:
+        right: 36
+      time_format: "%b %Y"
+      axis_y:
+        labels:
+          align: right
+          format: "$,.0f"
+      axis_x:
+        ticks:
+          count: 5
+        labels:
+          align: left
+      endpoint_labels:
+        visible: true
+
+  upside_chart:
+    query: upside
+    type: bar
+    title: Upside to analyst target
+    subtitle: Return to each holding's consensus target from the latest close
+    notes: How much further analysts expect each holding to go; below zero, the target is under the close.
+    x: ticker
+    y: latest_implied_upside
+    color: ticker
+    style:
+      orientation: horizontal
+      legend:
+        visible: false
+      axis_y:
+        labels:
+          format: percent_whole
+      marks:
+        bar:
+          labels:
+            visible: true
+            format: percent_delta
+            position: above
+
+  # ── Return by horizon ───────────────────────────────────────────────────
+  return_by_horizon_chart:
+    query: return_by_horizon
+    type: bar
+    title: Projected return by horizon
+    subtitle: Price gain to the analyst target's pace plus dividends, from the latest close
+    notes: >
+      Each holding's projected total return at each horizon. 24 months extends the targets' pace past
+      their own horizon.
+    x: horizon
+    y: projected_holdings_total_return
+    color: ticker
+    sort:
+      by: horizon_months
+      order: asc
+    style:
+      stack: none
+      orientation: vertical
+      axis_y:
+        labels:
+          format: percent_whole
+
+  # ── Gap to target over time ────────────────────────────────────────────
+  gap_chart:
+    query: gap_over_time
+    type: line
+    title: Close against target
+    subtitle: Daily close per holding, and the analyst target in effect since targets were first loaded
+    notes: >
+      Whether each holding is closing in on its target. A target changes when a new company version is
+      loaded.
+    x: trading_date
+    y: price
+    color: price_measure
+    multiples:
+      columns: ticker
+      scale: independent
+    style:
+      axis_y:
+        labels:
+          format: currency
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+
+  spread_chart:
+    query: earnings_spread
+    type: line
+    title: Earnings yield over the 10-year Treasury
+    subtitle: Forecast earnings yield minus the 10-year yield, per trading day
+    notes: >
+      A rough measure of the extra return each holding offers over government bonds at its price; below zero,
+      bonds yield more than the forecast earnings.
+    x: trading_date
+    y: earnings_yield_spread
+    color: ticker
+    sort:
+      by: ticker
+      order: asc
+    style:
+      padding:
+        right: 36
+      axis_y:
+        labels:
+          format: ".1%"
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+      endpoint_labels:
+        visible: true
+
+  # ── Detail table ────────────────────────────────────────────────────────
+  target_detail_table:
+    type: table
+    query: target_table
+    title: Targets by holding
+    subtitle: Latest trading day; 12-month projection at the analyst target. Select a holding for its detail
+    notes: Each holding's target, forecast earnings and 12-month projection, sorted by upside.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        ticker:
+          label: Ticker
+          width: 70
+          link: "{{ detail_page }}"
+        company_name:
+          label: Company
+          width: 180
+          link: "{{ detail_page }}"
+        detail_page:
+          visible: false
+        sector:
+          label: Sector
+          width: 110
+        last_close_price:
+          label: Close
+          width: 90
+          format: currency_full
+          align: right
+        latest_analyst_target_price:
+          label: Target
+          width: 90
+          format: currency_full
+          align: right
+        latest_implied_upside:
+          label: Upside
+          format: percent_delta
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+        latest_forward_eps:
+          label: Fwd EPS
+          format: currency_full
+          align: right
+        latest_forward_pe_at_close:
+          label: Fwd P/E
+          format: ",.1f"
+          align: right
+        latest_implied_earnings_growth:
+          label: EPS growth
+          format: percent_delta
+          align: right
+        latest_earnings_yield_spread:
+          label: Yield spread
+          format: percent_delta
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+        projected_holdings_value:
+          label: Value in 12m
+          format: currency_whole
+          align: right
+        projected_holdings_dividends:
+          label: Dividends 12m
+          format: currency_whole
+          align: right
+        projected_holdings_total_return:
+          label: Return 12m
+          format: percent_delta
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+
+rows:
+- text: "[← Portfolio](portfolio.html) · [Risk and return →](risk.html) · [Data dictionary →](data_dictionary.html)"
+- cols:
+  - width: "17%"
+    rows:
+    - kpi_value_12m
+    - kpi_upside
+    - kpi_total_12m
+    - kpi_since
+  - width: "53%"
+    rows:
+    - value_path_chart
+  - width: "30%"
+    rows:
+    - upside_chart
+- cols:
+  - width: "40%"
+    rows:
+    - return_by_horizon_chart
+  - width: "60%"
+    rows:
+    - gap_chart
+- cols:
+  - width: "55%"
+    rows:
+    - spread_chart
+  - width: "45%"
+    rows:
+    - text: |
+        **How these projections work.** Each holding is assumed to move at a steady rate to its consensus
+        analyst target, which analysts usually set 12 months ahead. The 3- and 6-month points sit on the
+        way there; the 24-month point keeps the same rate for a second year, so it's an extrapolation, not
+        a target. Dividends accrue at each company's current yearly dividend. Forecast earnings per share
+        come from the company's forward price-to-earnings ratio, so the forward P/E and earnings yield move
+        with each day's close. A target only counts from the trading day after it was loaded, so the charts
+        never use a target before it was known.
+- cols:
+  - target_detail_table

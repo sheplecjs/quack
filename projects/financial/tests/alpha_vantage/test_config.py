@@ -80,13 +80,39 @@ def test_rejects_invalid_indicators(indicator):
         make(indicators=[indicator])
 
 
-def test_rejects_duplicate_indicator_functions():
-    # (indicator, date) is the primary key, so two TREASURY_YIELD series would collide
-    with pytest.raises(ValidationError, match="duplicate indicator"):
+def test_indicator_code_adds_the_maturity():
+    assert EconomicIndicator(function="CPI").code == "CPI"
+    assert (
+        EconomicIndicator(function="TREASURY_YIELD", maturity="3month").code
+        == "TREASURY_YIELD_3MONTH"
+    )
+
+
+def test_accepts_one_function_at_several_maturities():
+    # Each maturity is its own series, with its own code in the primary key
+    settings = make(
+        indicators=[
+            {"function": "TREASURY_YIELD", "maturity": "3month"},
+            {"function": "TREASURY_YIELD", "maturity": "10year"},
+        ]
+    )
+    assert [i.code for i in settings.indicators] == [
+        "TREASURY_YIELD_3MONTH",
+        "TREASURY_YIELD_10YEAR",
+    ]
+
+
+def test_rejects_duplicate_indicator_series():
+    # (indicator, date) is the primary key, so the same series twice would collide
+    with pytest.raises(ValidationError, match="duplicate indicator series"):
         make(
             indicators=[
                 {"function": "TREASURY_YIELD", "maturity": "2year"},
-                {"function": "TREASURY_YIELD", "maturity": "10year"},
+                {
+                    "function": "TREASURY_YIELD",
+                    "interval": "weekly",
+                    "maturity": "2year",
+                },
             ]
         )
 

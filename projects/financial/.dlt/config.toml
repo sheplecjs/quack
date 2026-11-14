@@ -4,4 +4,5 @@ log_level="WARNING"
 dlthub_telemetry=false
 
 [sources.alpha_vantage]
-symbols = ["JNJ", "CVX", "NVDA"]
+# SPY is the benchmark index fund (financial_dbt/seeds/benchmarks.csv)
+symbols = ["JNJ", "CVX", "NVDA", "SPY"]

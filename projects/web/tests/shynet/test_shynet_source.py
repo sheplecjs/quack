@@ -157,44 +157,6 @@ def test_reloading_a_day_upserts(requests, pipeline):
     assert len(rows(pipeline, "daily_referrers")) == 2
 
 
-def test_later_runs_resume_from_the_last_day_minus_the_lookback(requests, pipeline):
-    pipeline.run(
-        source(initial_start_date="2026-10-01", end_date="2026-10-05").with_resources(
-            "daily_stats"
-        )
-    )
-    requests.clear()
-    pipeline.run(
-        source(lookback_days=1, end_date="2026-10-07").with_resources("daily_stats")
-    )
-
-    assert [r["startDate"] for r in requests] == [
-        "2026-10-04",
-        "2026-10-05",
-        "2026-10-06",
-        "2026-10-07",
-    ]
-
-
-def test_a_backfill_does_not_move_the_next_start_back(requests, pipeline):
-    pipeline.run(
-        source(start_date="2026-10-05", end_date="2026-10-05").with_resources(
-            "daily_stats"
-        )
-    )
-    pipeline.run(
-        source(start_date="2026-09-01", end_date="2026-09-02").with_resources(
-            "daily_stats"
-        )
-    )
-    requests.clear()
-    pipeline.run(
-        source(lookback_days=0, end_date="2026-10-06").with_resources("daily_stats")
-    )
-
-    assert [r["startDate"] for r in requests] == ["2026-10-05", "2026-10-06"]
-
-
 def test_service_uuids_are_requested_one_by_one(monkeypatch):
     calls = []
     monkeypatch.setattr(

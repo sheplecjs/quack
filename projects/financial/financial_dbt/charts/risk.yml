@@ -1,0 +1,464 @@
+extends: ./_metrics.yml
+title: Risk and Return
+notes: |
+  Risk of the portfolio and each holding against the benchmark index fund (the first ticker in the
+  benchmarks seed, SPY): beta, alpha, correlation, volatility and the Sharpe ratio, measured above the
+  3-month Treasury bill rate. Every figure except the rolling beta comes from the semantic layer's saved
+  queries (charts/_metrics.yml, generated), so one metric definition serves every period shown. Periods
+  of fewer than 20 trading days are left empty: too short to be meaningful. Built for static HTML export.
+
+source: analytics
+
+style:
+  frame:
+    width: 1440
+  variables:
+    position: title-inline
+
+queries:
+  # ── The anchor ──────────────────────────────────────────────────────────
+  # Every figure is against this one benchmark, so a second benchmark in the seed can't mix into them.
+  benchmark:
+    notes: The benchmark every figure on the board is measured against.
+    sql: |
+      SELECT min(ticker_symbol) AS benchmark FROM benchmarks
+
+  risk_all:
+    notes: Risk figures per series (each holding and the portfolio) over all the history shared with the benchmark.
+    sql: |
+      SELECT
+        benchmark_return_day__return_series AS return_series,
+        benchmark_return_days,
+        benchmark_beta,
+        benchmark_correlation,
+        annualized_alpha,
+        annualized_excess_return,
+        benchmark_annualized_excess_return,
+        annualized_volatility,
+        sharpe_ratio
+      FROM {{ queries.risk_all_history }}
+      WHERE benchmark = (SELECT benchmark FROM {{ queries.benchmark }})
+
+  # ── KPI rail: the portfolio over all history ───────────────────────────
+  portfolio_risk:
+    notes: The whole portfolio's risk figures over all the history shared with the benchmark.
+    sql: |
+      SELECT * FROM {{ queries.risk_all }} WHERE return_series = 'Portfolio'
+
+  history_span:
+    notes: First and last trading day with returns for both the portfolio and the benchmark.
+    sql: |
+      SELECT
+        count(*) AS trading_days,
+        strftime(min(trading_date), '%-d %b %Y') || ' – ' || strftime(max(trading_date), '%-d %b %Y') AS span
+      FROM fct_daily_returns_vs_benchmark
+      WHERE return_series = 'Portfolio'
+        AND benchmark_ticker_symbol = (SELECT benchmark FROM {{ queries.benchmark }})
+
+  # ── Security market line ───────────────────────────────────────────────
+  # The line runs from the risk-free rate (beta 0, no excess return) through the benchmark (beta 1, its
+  # excess return). A point's height above it is its alpha.
+  market_points:
+    notes: Each series' beta against its excess return over all history.
+    sql: |
+      SELECT return_series, benchmark_beta, annualized_excess_return
+      FROM {{ queries.risk_all }}
+      ORDER BY return_series
+
+  market_line:
+    notes: The return each beta earns at the benchmark's price of risk, from beta 0 past the highest beta.
+    sql: |
+      WITH line AS (
+        SELECT
+          max(benchmark_annualized_excess_return) AS market_excess,
+          greatest(max(benchmark_beta), 1) + 0.25 AS beta_end
+        FROM {{ queries.risk_all }}
+      )
+      SELECT 0.0 AS benchmark_beta, 0.0 AS annualized_excess_return FROM line
+      UNION ALL
+      SELECT beta_end, beta_end * market_excess FROM line
+
+  # ── Rolling beta ────────────────────────────────────────────────────────
+  # Path-dependent, so a mart column rather than a metric (see CLAUDE.md, Semantic layer).
+  rolling_beta:
+    notes: Beta over each trailing 60 trading days, per series.
+    sql: |
+      SELECT trading_date, return_series, beta_60_day
+      FROM fct_daily_returns_vs_benchmark
+      WHERE beta_60_day IS NOT NULL
+        AND benchmark_ticker_symbol = (SELECT benchmark FROM {{ queries.benchmark }})
+      ORDER BY trading_date, return_series
+
+  # ── Beta by month ───────────────────────────────────────────────────────
+  beta_by_month:
+    notes: >
+      Each series' beta per calendar month, with the month's trading days. Months under 20 days have no
+      beta, by the metrics' minimum.
+    sql: |
+      SELECT
+        metric_time__month AS month,
+        benchmark_return_day__return_series AS return_series,
+        benchmark_beta,
+        benchmark_return_days
+      FROM {{ queries.risk_by_month }}
+      WHERE benchmark = (SELECT benchmark FROM {{ queries.benchmark }})
+      ORDER BY month, return_series
+
+  # ── One definition, four windows ───────────────────────────────────────
+  portfolio_windows:
+    notes: >
+      The portfolio's figures to date for the latest month, quarter and year, and over all history: the
+      same metrics, grouped over four periods.
+    sql: |
+      WITH portfolio AS (
+        SELECT 'month' AS grain, metric_time__month AS period_start, *
+        FROM {{ queries.risk_by_month }}
+        UNION ALL BY NAME
+        SELECT 'quarter' AS grain, metric_time__quarter AS period_start, *
+        FROM {{ queries.risk_by_quarter }}
+        UNION ALL BY NAME
+        SELECT 'year' AS grain, metric_time__year AS period_start, *
+        FROM {{ queries.risk_by_year }}
+      ),
+      latest AS (
+        SELECT * FROM portfolio
+        WHERE benchmark_return_day__return_series = 'Portfolio'
+          AND benchmark = (SELECT benchmark FROM {{ queries.benchmark }})
+        QUALIFY period_start = max(period_start) OVER (PARTITION BY grain)
+      )
+      SELECT
+        CASE grain
+          WHEN 'month' THEN strftime(period_start, '%B %Y') || ' to date'
+          WHEN 'quarter' THEN 'Q' || quarter(period_start) || ' ' || year(period_start) || ' to date'
+          ELSE year(period_start) || ' to date'
+        END AS period,
+        benchmark_return_days,
+        benchmark_beta,
+        annualized_alpha,
+        annualized_volatility,
+        sharpe_ratio,
+        CASE grain WHEN 'month' THEN 1 WHEN 'quarter' THEN 2 ELSE 3 END AS period_order
+      FROM latest
+      UNION ALL
+      SELECT
+        'All history' AS period,
+        benchmark_return_days,
+        benchmark_beta,
+        annualized_alpha,
+        annualized_volatility,
+        sharpe_ratio,
+        4 AS period_order
+      FROM {{ queries.portfolio_risk }}
+      ORDER BY period_order
+
+  # ── Detail table ────────────────────────────────────────────────────────
+  risk_table:
+    notes: Every risk figure per series over all history, beside the company's reported beta.
+    sql: |
+      WITH risk AS (SELECT * FROM {{ queries.risk_all }})
+      SELECT
+        risk.return_series,
+        risk.benchmark_return_days,
+        risk.benchmark_beta,
+        companies.beta AS reported_beta,
+        risk.benchmark_correlation,
+        risk.annualized_excess_return,
+        risk.annualized_alpha,
+        risk.annualized_volatility,
+        risk.sharpe_ratio,
+        CASE WHEN risk.return_series = 'Portfolio' THEN 'portfolio.html'
+          ELSE 'asset_' || lower(risk.return_series) || '.html' END AS detail_page
+      FROM risk
+      LEFT JOIN dim_companies AS companies
+        ON companies.ticker_symbol = risk.return_series
+       AND companies.is_current
+      ORDER BY risk.return_series = 'Portfolio' DESC, risk.return_series
+
+charts:
+  # ── KPIs ────────────────────────────────────────────────────────────────
+  kpi_beta:
+    type: kpi
+    query: portfolio_risk
+    label: Portfolio beta
+    notes: How far the portfolio moves with the benchmark; 1 moves with it.
+    value: benchmark_beta
+    style:
+      value:
+        format: number_full
+    support:
+      value: benchmark_correlation
+      label: correlation with the benchmark
+      format: number_full
+
+  kpi_alpha:
+    type: kpi
+    query: portfolio_risk
+    label: Alpha (yearly)
+    notes: Return above what the portfolio's beta and the benchmark's return predict.
+    value: annualized_alpha
+    style:
+      value:
+        format: percent_delta
+    support:
+      value: annualized_excess_return
+      label: return above the risk-free rate
+      format: percent_delta
+
+  kpi_sharpe:
+    type: kpi
+    query: portfolio_risk
+    label: Sharpe ratio
+    notes: Return above the risk-free rate per unit of volatility.
+    value: sharpe_ratio
+    style:
+      value:
+        format: number_full
+    support:
+      value: annualized_volatility
+      label: yearly volatility
+      format: percent
+
+  kpi_days:
+    type: kpi
+    query: history_span
+    label: Trading days measured
+    notes: How many trading days the all-history figures cover, and their span.
+    value: trading_days
+    style:
+      value:
+        format: integer
+    support:
+      value: span
+
+  # ── Security market line ───────────────────────────────────────────────
+  market_line_chart:
+    query: market_points
+    type: scatter
+    title: Return against risk
+    subtitle: Yearly return above the risk-free rate by beta, all history; the line is the benchmark's trade-off
+    notes: >
+      Points above the line earned more than their beta predicts (positive alpha), points below less.
+      The line runs from the risk-free rate (beta 0) through the benchmark (beta 1).
+    x: benchmark_beta
+    y: annualized_excess_return
+    color: return_series
+    x_label: Beta
+    layers:
+      - type: line
+        query: market_line
+        x: benchmark_beta
+        y: annualized_excess_return
+        label: Benchmark trade-off
+    style:
+      axis_y:
+        position: left
+        title:
+          visible: false  # the subtitle names the measure; the layer's label would join the title
+        labels:
+          format: percent_whole
+      axis_x:
+        labels:
+          format: ".1f"
+      marks:
+        point:
+          size: 120
+          labels:
+            visible: true
+            field: return_series
+            position: right
+            dx: 10
+
+  # ── Rolling beta ────────────────────────────────────────────────────────
+  rolling_beta_chart:
+    query: rolling_beta
+    type: line
+    title: Rolling beta
+    subtitle: Beta over the latest 60 trading days
+    notes: How each holding's and the portfolio's sensitivity to the market has shifted.
+    x: trading_date
+    y: beta_60_day
+    color: return_series
+    sort:
+      by: return_series
+      order: asc
+    style:
+      padding:
+        right: 36
+      axis_y:
+        labels:
+          format: ".1f"
+      axis_x:
+        labels:
+          time_unit: yearmonth
+          align: left
+      endpoint_labels:
+        visible: true
+
+  # ── Beta by month ───────────────────────────────────────────────────────
+  beta_by_month_chart:
+    query: beta_by_month
+    type: bar
+    title: Beta by month
+    subtitle: Months with fewer than 20 trading days are left empty
+    notes: >
+      The same beta metric grouped by month. The row above the bars counts each month's trading days;
+      the first and latest months are too short to measure.
+    x: month
+    y: benchmark_beta
+    color: return_series
+    sort:
+      by: return_series
+      order: asc
+    support_table:
+      - aggregate: max
+        source: benchmark_return_days
+        label: Trading days
+        format: integer
+    height: 380
+    style:
+      stack: none
+      orientation: vertical
+      support_table:
+        position: bottom
+      time_format: "%b %Y"
+      axis_y:
+        labels:
+          format: ".1f"
+
+  # ── Windows ─────────────────────────────────────────────────────────────
+  windows_table:
+    type: table
+    query: portfolio_windows
+    title: The portfolio over four periods
+    subtitle: One metric definition per figure, grouped over each period
+    notes: The portfolio's figures to date for the latest month, quarter and year, and over all history.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        period:
+          label: Period
+          width: 170
+        benchmark_return_days:
+          label: Days
+          width: 60
+          format: integer
+          align: right
+        benchmark_beta:
+          label: Beta
+          format: number_full
+          align: right
+        annualized_alpha:
+          label: Alpha
+          format: percent_delta
+          align: right
+        annualized_volatility:
+          label: Volatility
+          format: percent
+          align: right
+        sharpe_ratio:
+          label: Sharpe
+          format: number_full
+          align: right
+        period_order:
+          visible: false
+
+  # ── Detail table ────────────────────────────────────────────────────────
+  risk_detail_table:
+    type: table
+    query: risk_table
+    title: Risk by holding
+    subtitle: All history against the benchmark; select a row for its detail
+    notes: >
+      Every risk figure per series. Reported beta is the company's own figure, measured over a longer
+      period, so it can differ from the beta calculated here.
+    style:
+      pagination:
+        enabled: false
+      columns:
+        return_series:
+          label: Series
+          width: 90
+          link: "{{ detail_page }}"
+        detail_page:
+          visible: false
+        benchmark_return_days:
+          label: Days
+          format: integer
+          align: right
+        benchmark_beta:
+          label: Beta
+          format: number_full
+          align: right
+        reported_beta:
+          label: Reported beta
+          format: number_full
+          align: right
+        benchmark_correlation:
+          label: Correlation
+          format: number_full
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+        annualized_excess_return:
+          label: Excess return
+          format: percent_delta
+          align: right
+        annualized_alpha:
+          label: Alpha
+          format: percent_delta
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+        annualized_volatility:
+          label: Volatility
+          format: percent
+          align: right
+          scale:
+            background:
+              palette: dbt-seq-amber
+        sharpe_ratio:
+          label: Sharpe
+          format: number_full
+          align: right
+          scale:
+            background:
+              palette: dbt-div-crimson-green
+              hinge: 0
+
+rows:
+- text: "[← Portfolio](portfolio.html) · [Targets and projections →](targets.html) · [Data dictionary →](data_dictionary.html)"
+- cols:
+  - width: "17%"
+    rows:
+    - kpi_beta
+    - kpi_alpha
+    - kpi_sharpe
+    - kpi_days
+  - width: "45%"
+    rows:
+    - market_line_chart
+  - width: "38%"
+    rows:
+    - rolling_beta_chart
+- cols:
+  - width: "55%"
+    rows:
+    - beta_by_month_chart
+  - width: "45%"
+    rows:
+    - windows_table
+    - text: |
+        **How these figures are calculated.** Returns are daily, from closing prices, and measured above
+        the 3-month Treasury bill rate. Beta, alpha, correlation, volatility and the Sharpe ratio are each
+        defined once in the semantic layer, from sums of daily returns, so the same definition gives
+        correct figures over any period: a month, a quarter, a year or all history. Periods of fewer than
+        20 trading days are left empty, as too short to be meaningful. Yearly figures scale daily ones
+        over 252 trading days. The rolling beta is the exception: it's calculated day by day over the
+        latest 60 trading days.
+- cols:
+  - risk_detail_table
