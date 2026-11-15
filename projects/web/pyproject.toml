@@ -25,7 +25,7 @@ build-backend = "uv_build"
 # What the container image adds to run a step against S3 (see the root Dockerfile)
 deploy = ["quack-runtime"]
 dbt = [
-    "dbt-charts>=0.8.0",
+    "dbt-charts>=0.11.1",
     "dbt-core<2",
     "dbt-duckdb>=1.11.1",
 ]
