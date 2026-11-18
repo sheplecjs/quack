@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:0.13.7-python3.14-trixie@sha256:9335539f5fb873b1d0b0aa1885dcd2ce3cea8473d9c47c5f24ce2e00fd3a158f
+FROM ghcr.io/astral-sh/uv:0.13.8-python3.14-trixie@sha256:b60feb07c9c2a9b41d8a6dd97fa76ecf2107ee31be002cc76c8a1814d0dba3dc
 
 ARG PROJECT
 RUN test -n "$PROJECT" || (echo "PROJECT build arg is required" >&2 && exit 1)
