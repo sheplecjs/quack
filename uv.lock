@@ -837,7 +837,7 @@ interactive = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dlt", extras = ["duckdb"], specifier = ">=1.31.0" },
+    { name = "dlt", extras = ["duckdb"], specifier = ">=1.32.0" },
     { name = "pydantic", specifier = ">=2.14.1" },
 ]
 
