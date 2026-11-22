@@ -33,7 +33,7 @@ members = [
 
 [dependency-groups]
 dbt = [
-    "dbt-metricflow>=0.15.0",
+    "dbt-metricflow>=0.16.0",
 ]
 dev = [
     "detect-secrets>=1.5.0",
